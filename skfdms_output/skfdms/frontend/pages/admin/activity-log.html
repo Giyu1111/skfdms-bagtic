@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Activity Log — SK-FDMS Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;}
+    .admin-layout{display:flex;flex:1;}
+    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sidebar-nav{padding:12px 0;flex:1;}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);font-size:.88rem;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;font-weight:600;}
+    .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.85rem;color:#fff;}
+    .sidebar-user .urole{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .admin-main{flex:1;overflow-y:auto;}
+    .topbar{background:#fff;padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
+    .topbar h2{font-size:1rem;color:#0D2B55;font-weight:700;}
+    .content{padding:24px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+    .btn-secondary{background:#f0f0f0;color:#444;} .btn-secondary:hover{background:#ddd;}
+    .btn-sm{padding:5px 11px;font-size:.75rem;}
+    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;}
+    .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;}
+    .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+    .card-header h3{font-size:.9rem;color:#0D2B55;font-weight:700;}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    thead tr{background:#0D2B55;}
+    thead th{color:#fff;font-size:.73rem;font-weight:600;padding:10px 14px;text-align:left;white-space:nowrap;}
+    tbody tr{border-bottom:1px solid #f2f2f2;transition:background .15s;}
+    tbody tr:hover{background:#f8fbfe;}
+    tbody td{padding:10px 14px;font-size:.8rem;color:#444;vertical-align:middle;}
+    .action-chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.68rem;font-weight:800;font-family:monospace;letter-spacing:.3px;}
+    .chip-upload  {background:#D5F5E3;color:#1E8449;}
+    .chip-publish {background:#D6EAF8;color:#1A5276;}
+    .chip-delete  {background:#FADBD8;color:#C0392B;}
+    .chip-login   {background:#FEF9E7;color:#B7950B;}
+    .chip-logout  {background:#F4ECF7;color:#7D3C98;}
+    .chip-user    {background:#EBF0F4;color:#555;}
+    .chip-ann     {background:#FDF2E9;color:#CA6F1E;}
+    .chip-default {background:#f0f0f0;color:#666;}
+    .empty{text-align:center;padding:50px;color:#bbb;}
+    .count-badge{background:#EBF5FB;color:#1A5276;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px;}
+    .filter-row{padding:12px 22px;border-bottom:1px solid #f5f5f5;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fafafa;}
+    .filter-row select{padding:7px 11px;border:1.5px solid #ddd;border-radius:8px;font-size:.8rem;outline:none;font-family:inherit;}
+    .filter-row select:focus{border-color:#2E86C1;}
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sk-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="documents.html">📁 Documents</a>
+      <a href="upload.html">⬆ Upload</a>
+      <a href="announcements.html">📢 Announcements</a>
+      <a href="users.html">👥 Users</a>
+      <a href="activity-log.html" class="active">📋 Activity Log</a>
+      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    </nav>
+    <div class="sidebar-user"><div class="uname" id="sName">…</div><div class="urole" id="sRole"></div></div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="topbar">
+      <h2>📋 Activity Log</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-secondary btn-sm" onclick="loadLogs()">↻ Refresh</button>
+        <button class="btn-logout" onclick="doLogout()">Log Out</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card">
+        <div class="card-header">
+          <h3>All Admin Actions — Barangay Bagtic</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="count-badge" id="logCount">0 entries</span>
+          </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-row">
+          <div>
+            <select id="fAction" onchange="applyFilter()">
+              <option value="">All Actions</option>
+              <option value="LOGIN">Login</option>
+              <option value="LOGOUT">Logout</option>
+              <option value="UPLOAD">Upload</option>
+              <option value="PUBLISH">Publish</option>
+              <option value="DELETE">Delete</option>
+              <option value="USER">User</option>
+              <option value="ANNOUNCEMENT">Announcement</option>
+            </select>
+          </div>
+          <span style="font-size:.78rem;color:#aaa;" id="filterInfo"></span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Action</th>
+                <th>User</th>
+                <th>Role</th>
+                <th>Details</th>
+                <th>IP Address</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody id="logBody">
+              <tr><td colspan="7"><div class="empty">Loading…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var API = window.location.origin + '/api';
+  var allLogs = [];
+
+  function fmtTs(d){
+    if(!d)return'—';
+    return new Date(d).toLocaleString('en-PH',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  }
+
+  function chipClass(action){
+    if(!action)return'chip-default';
+    if(action.includes('UPLOAD'))  return'chip-upload';
+    if(action.includes('PUBLISH')) return'chip-publish';
+    if(action.includes('DELETE'))  return'chip-delete';
+    if(action.includes('LOGIN')&&!action.includes('LOGOUT')) return'chip-login';
+    if(action.includes('LOGOUT'))  return'chip-logout';
+    if(action.includes('USER'))    return'chip-user';
+    if(action.includes('ANNOUNCE'))return'chip-ann';
+    return'chip-default';
+  }
+
+  function renderLogs(logs){
+    var tbody=document.getElementById('logBody');
+    document.getElementById('logCount').textContent=logs.length+' entries';
+    if(!logs.length){
+      tbody.innerHTML='<tr><td colspan="7"><div class="empty">📭 No activity logs found.</div></td></tr>';
+      return;
+    }
+    tbody.innerHTML=logs.map(function(l,i){
+      return '<tr>'
+        +'<td style="color:#ccc;">'+(i+1)+'</td>'
+        +'<td><span class="action-chip '+chipClass(l.action)+'">'+l.action+'</span></td>'
+        +'<td><strong>'+(l.user_name||'System')+'</strong></td>'
+        +'<td style="text-transform:capitalize;color:#888;">'+(l.role||'—')+'</td>'
+        +'<td style="max-width:280px;font-size:.78rem;color:#666;">'+(l.details||'—')+'</td>'
+        +'<td style="font-size:.75rem;color:#aaa;font-family:monospace;">'+(l.ip_address||'—')+'</td>'
+        +'<td style="font-size:.76rem;white-space:nowrap;">'+fmtTs(l.created_at)+'</td>'
+      +'</tr>';
+    }).join('');
+  }
+
+  function applyFilter(){
+    var f=document.getElementById('fAction').value;
+    if(!f){ renderLogs(allLogs); document.getElementById('filterInfo').textContent=''; return; }
+    var filtered=allLogs.filter(function(l){ return l.action&&l.action.includes(f); });
+    renderLogs(filtered);
+    document.getElementById('filterInfo').textContent='Showing '+filtered.length+' of '+allLogs.length+' entries';
+  }
+
+  async function loadLogs(){
+    var r=await fetch(API+'/admin/activity-logs?limit=200',{credentials:'include'});
+    var d=await r.json();
+    if(!d.success){ document.getElementById('logBody').innerHTML='<tr><td colspan="7"><div class="empty">Failed to load logs.</div></td></tr>'; return; }
+    allLogs=d.data;
+    renderLogs(allLogs);
+  }
+
+  window.addEventListener('load', async function(){
+    var r=await fetch(API+'/auth/me',{credentials:'include'});
+    var d=await r.json();
+    if(!d.success){window.location.href='/pages/login.html';return;}
+    document.getElementById('sName').textContent=d.user.name;
+    document.getElementById('sRole').textContent=d.user.role;
+    loadLogs();
+  });
+
+  async function doLogout(){
+    if(!confirm('Are you sure you want to log out?'))return;
+    await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
+    window.location.href='/';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SK-FDMS — Barangay Bagtic</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .announcements-section { background: var(--white); border-top: 1px solid var(--gray-100); }
+    .announcement-card { border-left: 4px solid var(--gold); padding: 18px 20px; background: var(--off-white); border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 16px; }
+    .announcement-card h4 { color: var(--navy); font-family: var(--font-display); margin-bottom: 6px; }
+    .doc-preview-card { display: flex; gap: 16px; align-items: flex-start; padding: 18px; border: 1px solid var(--gray-100); border-radius: var(--radius-lg); background: var(--white); box-shadow: var(--shadow-sm); transition: all var(--transition); }
+    .doc-preview-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .doc-icon { width: 44px; height: 44px; background: var(--sky-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .doc-info h4 { color: var(--navy); font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .compliance-item { background: var(--white); border: 1px solid var(--gray-100); border-radius: var(--radius); padding: 16px; display: flex; align-items: center; gap: 12px; }
+    .check { color: var(--success); font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ─────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-brand">
+      <span class="logo-badge">SK-FDMS</span>
+      <span>Barangay Bagtic</span>
+    </a>
+    <div class="navbar-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="pages/documents.html">Documents</a>
+      <a href="pages/about.html">About</a>
+      <a href="pages/login.html" class="btn-login"></a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Barangay Bagtic · Catigbian · Bohol</div>
+    <h1>SK Full Disclosure<br>Management System</h1>
+    <p>Transparent. Accountable. Accessible.<br>
+       Sangguniang Kabataan official records available online for every resident of Barangay Bagtic.</p>
+    <div class="hero-actions">
+      <a href="pages/documents.html" class="btn btn-gold btn-lg">📄 Browse Documents</a>
+      <a href="pages/about.html" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,.6);color:white;">Learn More</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── STATS BAR ───────────────────────────────────────────── -->
+<div class="container" style="margin-top:-30px;position:relative;z-index:10;">
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item"><div class="stat-number" id="statTotal">—</div><div class="stat-label">Published Documents</div></div>
+    <div class="stat-item"><div class="stat-number" id="statCategories">9</div><div class="stat-label">Disclosure Categories</div></div>
+    <div class="stat-item"><div class="stat-number">2024</div><div class="stat-label">Current Fiscal Year</div></div>
+    <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Free Public Access</div></div>
+  </div>
+</div>
+
+<!-- ── RECENT DOCUMENTS ────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="flex-between mb-3">
+      <div>
+        <h2>Recent Disclosures</h2>
+        <p class="text-muted">Latest documents posted by SK Barangay Bagtic officials</p>
+      </div>
+      <a href="pages/documents.html" class="btn btn-secondary">View All →</a>
+    </div>
+    <div class="grid-2" id="recentDocs">
+      <p class="text-muted">Loading documents…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── ANNOUNCEMENTS ───────────────────────────────────────── -->
+<section class="section announcements-section">
+  <div class="container">
+    <h2 class="mb-3">Announcements</h2>
+    <div id="announcements"><p class="text-muted">Loading…</p></div>
+  </div>
+</section>
+
+<!-- ── DILG COMPLIANCE ─────────────────────────────────────── -->
+<section class="section">
+  <div class="container text-center">
+    <h2 class="mb-2">DILG Full Disclosure Policy Compliance</h2>
+    <p class="text-muted mb-3">Barangay Bagtic SK is committed to posting all required disclosures</p>
+    <div class="compliance-grid">
+      <div class="compliance-item"><span class="check">✔</span> Annual Investment Plan</div>
+      <div class="compliance-item"><span class="check">✔</span> Statement of Receipts & Expenditures</div>
+      <div class="compliance-item"><span class="check">✔</span> SK Resolutions & Ordinances</div>
+      <div class="compliance-item"><span class="check">✔</span> Project Accomplishment Reports</div>
+      <div class="compliance-item"><span class="check">✔</span> Minutes of Meetings</div>
+      <div class="compliance-item"><span class="check">✔</span> Approved SK Budget</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-brand">SK-FDMS · Barangay Bagtic</div>
+  <p>Sangguniang Kabataan Full Disclosure Management System</p>
+  <p class="mt-1">Barangay Bagtic, Catigbian, Bohol · In compliance with DILG Full Disclosure Policy</p>
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+  const fileIcons = { pdf:'📄', jpg:'🖼️', jpeg:'🖼️', png:'🖼️', doc:'📝', docx:'📝' };
+
+  async function loadRecent() {
+    const { ok, data } = await window.SkFDMS.Documents.listPublic({ limit: 6 });
+    const container = document.getElementById('recentDocs');
+    if (!ok || !data.data?.length) {
+      container.innerHTML = '<p class="text-muted">No published documents yet.</p>';
+      document.getElementById('statTotal').textContent = '0';
+      return;
+    }
+    document.getElementById('statTotal').textContent = data.data.length + '+';
+    container.innerHTML = data.data.slice(0, 6).map(doc => `
+      <div class="doc-preview-card">
+        <div class="doc-icon">${fileIcons[doc.file_type] || '📄'}</div>
+        <div class="doc-info">
+          <h4>${doc.title}</h4>
+          <p class="text-muted">${doc.category_name} · ${doc.fiscal_year} · ${window.SkFDMS.formatFileSize(doc.file_size_kb)}</p>
+          <div class="mt-1" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge badge-category">${doc.category_code}</span>
+            <a href="${window.SkFDMS.Documents.downloadUrl(doc.id)}" class="btn btn-primary btn-sm">⬇ Download</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadAnnouncements() {
+    const { ok, data } = await window.SkFDMS.Announcements.listPublic();
+    const container = document.getElementById('announcements');
+    if (!ok || !data.data?.length) {
+      container.innerHTML = '<p class="text-muted">No announcements at this time.</p>';
+      return;
+    }
+    container.innerHTML = data.data.map(a => `
+      <div class="announcement-card">
+        <h4>${a.title}</h4>
+        <p>${a.body}</p>
+        <p class="text-muted mt-1">Posted by ${a.created_by} · ${window.SkFDMS.formatDate(a.created_at)}</p>
+      </div>
+    `).join('');
+  }
+
+  loadRecent();
+  loadAnnouncements();
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — SK-FDMS Bagtic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .about-hero { background: var(--navy); color: white; padding: 60px 24px; }
+    .about-hero h1 { color: white; margin-bottom: 12px; }
+    .about-hero p  { opacity: .8; max-width: 600px; }
+    .info-block { border-left: 4px solid var(--sky); padding: 16px 20px; background: var(--white); border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+    .info-block h4 { color: var(--navy); margin-bottom: 6px; font-family: var(--font-display); }
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--sky-light); }
+    .timeline-item { position: relative; margin-bottom: 24px; }
+    .timeline-item::before { content: ''; position: absolute; left: -28px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--sky); border: 2px solid white; box-shadow: 0 0 0 2px var(--sky-light); }
+    .timeline-item h4 { color: var(--navy); margin-bottom: 4px; }
+    .timeline-item p  { color: var(--gray-700); font-size: .9rem; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-brand">
+      <span class="logo-badge">SK-FDMS</span>
+      <span>Barangay Bagtic</span>
+    </a>
+    <div class="navbar-links">
+      <a href="../index.html">Home</a>
+      <a href="documents.html">Documents</a>
+      <a href="about.html" class="active">About</a>
+      <a href="login.html" class="btn-login">Admin Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="about-hero">
+  <div class="container">
+    <h1>About SK-FDMS</h1>
+    <p>The Sangguniang Kabataan Full Disclosure Management System of Barangay Bagtic — promoting transparency, accountability, and youth empowerment in local governance.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <div>
+        <h2 class="mb-3">What is SK-FDMS?</h2>
+        <p class="mb-2">The SK-FDMS is a web-based platform designed for the Sangguniang Kabataan (SK) of Barangay Bagtic, Balilihan, Bohol. It allows SK officials to upload, organize, and publish their official documents online, making them freely accessible to the youth and entire community — anytime, anywhere.</p>
+        <p>The system was developed in response to the Department of the Interior and Local Government (DILG) Full Disclosure Policy, which requires all SK units to proactively disclose their financial statements, resolutions, and project reports to the public.</p>
+      </div>
+      <div>
+        <h2 class="mb-3">Why It Matters</h2>
+        <div class="info-block">
+          <h4>🌐 Online Access</h4>
+          <p>No need to visit the barangay hall. All SK documents are available online 24/7.</p>
+        </div>
+        <div class="info-block">
+          <h4>🔒 Data Integrity</h4>
+          <p>Documents are securely stored and cannot be altered after submission.</p>
+        </div>
+        <div class="info-block">
+          <h4>✅ DILG Compliant</h4>
+          <p>Covers all DILG-required disclosure categories for SK councils.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--white);border-top:1px solid var(--gray-100);">
+  <div class="container">
+    <h2 class="text-center mb-3">Disclosure Requirements</h2>
+    <p class="text-center text-muted mb-3">DILG Full Disclosure Policy — Required SK Documents</p>
+    <div class="grid-3">
+      <div class="card"><div class="card-body"><div style="font-size:1.5rem;margin-bottom:8px;">📊</div><div class="card-title">Annual Investment Plan</div><p class="card-meta">Yearly plan for SK programs and projects</p></div></div>
+      <div class="card"><div class="card-body"><div style="font-size:1.5rem;margin-bottom:8px;">💰</div><div class="card-title">SRE Report</div><p class="card-meta">Statement of Receipts and Expenditures</p></div></div>
+      <div class="card"><div class="card-body"><div style="font-size:1.5rem;margin-bottom:8px;">📜</div><div class="card-title">SK Resolutions</div><p class="card-meta">Formal decisions of the SK council</p></div></div>
+      <div class="card"><div class="card-body"><div style="font-size:1.5rem;margin-bottom:8px;">✅</div><div class="card-title">Project Reports</div><p class="card-meta">Accomplishment reports of SK programs</p></div></div>
+      <div class="card"><div class="card-body"><div style="font-size:1.5rem;margin-bottom:8px;">📝</div><div class="card-title">Meeting Minutes</div><p class="card-meta">Official minutes of SK sessions</p></div></div>
+      <div class="card"><div class="card-body"><div style="font-size:1.5rem;margin-bottom:8px;">📋</div><div class="card-title">Approved Budget</div><p class="card-meta">Officially approved annual SK budget</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid-2">
+      <div>
+        <h2 class="mb-3">System Development Timeline</h2>
+        <div class="timeline">
+          <div class="timeline-item"><h4>Phase 1 — Requirements Gathering</h4><p>Interviews with SK Bagtic officials, DILG policy review, and system requirements analysis.</p></div>
+          <div class="timeline-item"><h4>Phase 2 — System Design</h4><p>Database schema, UI/UX wireframes, 3-tier architecture design.</p></div>
+          <div class="timeline-item"><h4>Phase 3 — Development</h4><p>Backend API (Node.js/Express), frontend pages, security implementation.</p></div>
+          <div class="timeline-item"><h4>Phase 4 — Testing & Evaluation</h4><p>Functional, usability, and security testing with Barangay Bagtic SK officials.</p></div>
+          <div class="timeline-item"><h4>Phase 5 — Deployment</h4><p>Live deployment, SK official training, and system handover.</p></div>
+        </div>
+      </div>
+      <div>
+        <h2 class="mb-3">Contact</h2>
+        <div class="info-block">
+          <h4>🏛️ Barangay Bagtic</h4>
+          <p>Balilihan, Bohol<br>Region VII — Central Visayas</p>
+        </div>
+        <div class="info-block">
+          <h4>📧 SK Officials</h4>
+          <p>For concerns about published documents, contact the SK officials of Barangay Bagtic at your barangay hall.</p>
+        </div>
+        <div class="info-block">
+          <h4>📖 Research</h4>
+          <p>Developed as a research project at Bohol Island State University — Balilihan Campus, Magsija, Balilihan, Bohol.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">SK-FDMS · Barangay Bagtic</div>
+  <p>Barangay Bagtic, Balilihan, Bohol · DILG Full Disclosure Policy Compliant</p>
+</footer>
+
+</body>
+</html>

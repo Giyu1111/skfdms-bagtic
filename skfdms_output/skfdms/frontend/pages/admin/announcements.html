@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Announcements — SK-FDMS Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;}
+    .admin-layout{display:flex;flex:1;}
+    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sidebar-nav{padding:12px 0;flex:1;}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);font-size:.88rem;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;font-weight:600;}
+    .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.85rem;color:#fff;}
+    .sidebar-user .urole{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .admin-main{flex:1;overflow-y:auto;}
+    .topbar{background:#fff;padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
+    .topbar h2{font-size:1rem;color:#0D2B55;font-weight:700;}
+    .content{padding:24px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+    .btn-primary{background:#2E86C1;color:#fff;} .btn-primary:hover{background:#1A5276;}
+    .btn-danger{background:#C0392B;color:#fff;} .btn-danger:hover{background:#922B21;}
+    .btn-sm{padding:5px 11px;font-size:.75rem;}
+    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;}
+    .two-col{display:grid;grid-template-columns:1fr 380px;gap:22px;}
+    .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;}
+    .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;}
+    .card-header h3{font-size:.9rem;color:#0D2B55;font-weight:700;}
+    .card-body{padding:22px;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-weight:600;font-size:.8rem;color:#555;margin-bottom:5px;}
+    .form-control{width:100%;padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:.88rem;outline:none;box-sizing:border-box;font-family:inherit;transition:border-color .18s;}
+    .form-control:focus{border-color:#2E86C1;box-shadow:0 0 0 3px rgba(46,134,193,.1);}
+    textarea.form-control{resize:vertical;}
+    .alert{padding:10px 15px;border-radius:8px;margin-bottom:14px;font-size:.84rem;}
+    .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
+    .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
+    .ann-item{border-left:4px solid #D4AC0D;padding:14px 16px;background:#FDFAF0;border-radius:0 10px 10px 0;margin-bottom:14px;transition:all .18s;}
+    .ann-item:hover{background:#FEF9E7;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .ann-title{font-weight:700;color:#0D2B55;font-size:.95rem;margin-bottom:6px;}
+    .ann-body{font-size:.86rem;color:#555;line-height:1.6;margin-bottom:8px;}
+    .ann-meta{font-size:.72rem;color:#aaa;display:flex;justify-content:space-between;align-items:center;}
+    .empty{text-align:center;padding:40px;color:#bbb;}
+    .count-badge{background:#EBF5FB;color:#1A5276;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px;}
+    @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sk-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="documents.html">📁 Documents</a>
+      <a href="upload.html">⬆ Upload</a>
+      <a href="announcements.html" class="active">📢 Announcements</a>
+      <a href="users.html">👥 Users</a>
+      <a href="activity-log.html">📋 Activity Log</a>
+      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    </nav>
+    <div class="sidebar-user"><div class="uname" id="sName">…</div><div class="urole" id="sRole"></div></div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="topbar">
+      <h2>📢 Announcements</h2>
+      <button class="btn-logout" onclick="doLogout()">Log Out</button>
+    </div>
+    <div class="content">
+      <div id="alertBox"></div>
+      <div class="two-col">
+
+        <!-- Announcements List -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Posted Announcements</h3>
+            <span class="count-badge" id="annCount">0</span>
+          </div>
+          <div class="card-body" id="annList">
+            <div class="empty">Loading…</div>
+          </div>
+        </div>
+
+        <!-- Post New -->
+        <div style="align-self:start;">
+          <div class="card">
+            <div class="card-header"><h3>📝 Post New Announcement</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Title <span style="color:#e74c3c;">*</span></label>
+                <input type="text" class="form-control" id="annTitle" placeholder="e.g. SK General Assembly — March 2024"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message <span style="color:#e74c3c;">*</span></label>
+                <textarea class="form-control" id="annBody" rows="6" placeholder="Write your announcement here…"></textarea>
+              </div>
+              <button class="btn btn-primary" id="postBtn" onclick="postAnn()" style="width:100%;justify-content:center;">
+                📢 Post Announcement
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var API = window.location.origin + '/api';
+
+  function fmt(d){ if(!d)return'—'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+  function showAlert(msg,type){ var e=document.getElementById('alertBox'); e.innerHTML='<div class="alert alert-'+type+'">'+msg+'</div>'; if(type==='success')setTimeout(function(){e.innerHTML='';},4000); }
+
+  window.addEventListener('load', async function(){
+    var r=await fetch(API+'/auth/me',{credentials:'include'});
+    var d=await r.json();
+    if(!d.success){window.location.href='/pages/login.html';return;}
+    document.getElementById('sName').textContent=d.user.name;
+    document.getElementById('sRole').textContent=d.user.role;
+    loadAnn();
+  });
+
+  async function loadAnn(){
+    var r=await fetch(API+'/admin/announcements',{credentials:'include'});
+    var d=await r.json();
+    var container=document.getElementById('annList');
+    if(!d.success||!d.data.length){
+      container.innerHTML='<div class="empty">📭 No announcements yet.<br><small>Post one using the form →</small></div>';
+      document.getElementById('annCount').textContent='0';
+      return;
+    }
+    document.getElementById('annCount').textContent=d.data.length;
+    container.innerHTML=d.data.map(function(a){
+      return '<div class="ann-item" id="ann-'+a.id+'">'
+        +'<div class="ann-title">'+a.title+'</div>'
+        +'<div class="ann-body">'+a.body+'</div>'
+        +'<div class="ann-meta">'
+          +'<span>👤 '+a.created_by_name+' · 🗓 '+fmt(a.created_at)+'</span>'
+          +'<button class="btn btn-danger btn-sm" onclick="deleteAnn('+a.id+')">🗑 Delete</button>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+  }
+
+  async function postAnn(){
+    var title=document.getElementById('annTitle').value.trim();
+    var body=document.getElementById('annBody').value.trim();
+    if(!title||!body){showAlert('Title and message are required.','danger');return;}
+    var btn=document.getElementById('postBtn');
+    btn.disabled=true; btn.textContent='Posting…';
+    var r=await fetch(API+'/admin/announcements',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:title,body:body})});
+    var d=await r.json();
+    btn.disabled=false; btn.textContent='📢 Post Announcement';
+    if(r.ok&&d.success){
+      showAlert('✅ Announcement posted successfully!','success');
+      document.getElementById('annTitle').value='';
+      document.getElementById('annBody').value='';
+      loadAnn();
+    } else { showAlert(d.message||'Failed to post.','danger'); }
+  }
+
+  async function deleteAnn(id){
+    if(!confirm('Delete this announcement?'))return;
+    var r=await fetch(API+'/admin/announcements/'+id,{method:'DELETE',credentials:'include'});
+    var d=await r.json();
+    if(r.ok&&d.success){
+      document.getElementById('ann-'+id)?.remove();
+      showAlert('Announcement deleted.','success');
+      var remaining=document.querySelectorAll('[id^="ann-"]').length;
+      document.getElementById('annCount').textContent=remaining;
+      if(!remaining) document.getElementById('annList').innerHTML='<div class="empty">📭 No announcements yet.</div>';
+    } else { showAlert(d.message||'Failed.','danger'); }
+  }
+
+  async function doLogout(){
+    if(!confirm('Are you sure you want to log out?'))return;
+    await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
+    window.location.href='/';
+  }
+</script>
+</body>
+</html>

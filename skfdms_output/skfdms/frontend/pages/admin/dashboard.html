@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — SK-FDMS Bagtic Admin</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; background: #F0F4F8; margin: 0; }
+    .admin-layout { display: flex; flex: 1; }
+
+    /* Sidebar */
+    .sidebar { width: 240px; background: #0D2B55; flex-shrink: 0; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sidebar-logo .sk-badge { font-size: 1.5rem; font-weight: 700; color: #D4AC0D; letter-spacing: 2px; }
+    .sidebar-logo p { font-size: .75rem; color: rgba(255,255,255,.55); margin-top: 4px; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 11px 20px; color: rgba(255,255,255,.72); font-size: .9rem; text-decoration: none; transition: all .2s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,.1); color: #fff; }
+    .sidebar-user { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
+    .sidebar-user .uname { font-weight: 700; font-size: .88rem; color: #fff; }
+    .sidebar-user .urole { font-size: .72rem; color: rgba(255,255,255,.45); text-transform: capitalize; margin-top: 2px; }
+
+    /* Main */
+    .admin-main { flex: 1; overflow-y: auto; }
+    .admin-topbar { background: #fff; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,.06); position: sticky; top: 0; z-index: 50; }
+    .admin-topbar h2 { font-size: 1.05rem; color: #0D2B55; margin: 0; }
+    .admin-content { padding: 28px; }
+
+    /* Stat cards */
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; margin-bottom: 28px; }
+    .stat-card { background: #fff; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; border-left: 4px solid #2E86C1; transition: transform .2s, box-shadow .2s; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+    .stat-card.green { border-left-color: #1E8449; }
+    .stat-card.gold  { border-left-color: #D4AC0D; }
+    .stat-card.red   { border-left-color: #C0392B; }
+    .stat-card.purple{ border-left-color: #7D3C98; }
+    .stat-num   { font-size: 2.4rem; font-weight: 800; color: #0D2B55; line-height: 1; }
+    .stat-label { font-size: .78rem; color: #888; margin-top: 6px; }
+    .stat-sub   { font-size: .72rem; color: #aaa; margin-top: 3px; }
+
+    /* Section card */
+    .section-card { background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; overflow: hidden; margin-bottom: 24px; }
+    .sc-header { padding: 16px 24px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .sc-header h3 { font-size: .95rem; color: #0D2B55; margin: 0; }
+    .sc-header .badge-count { background: #EBF5FB; color: #1A5276; font-size: .78rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #0D2B55; }
+    thead th { color: #fff; font-size: .78rem; font-weight: 600; padding: 11px 16px; text-align: left; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid #f0f0f0; transition: background .15s; }
+    tbody tr:hover { background: #f8fbfe; }
+    tbody td { padding: 11px 16px; font-size: .85rem; color: #444; vertical-align: middle; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .72rem; font-weight: 700; }
+    .badge-pub   { background: #D5F5E3; color: #1E8449; }
+    .badge-draft { background: #FEF9E7; color: #B7950B; }
+    .badge-cat   { background: #EBF5FB; color: #1A5276; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: .82rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .2s; }
+    .btn-primary { background: #2E86C1; color: #fff; }
+    .btn-primary:hover { background: #1A5276; }
+    .btn-secondary { background: #f0f0f0; color: #444; }
+    .btn-secondary:hover { background: #ddd; }
+    .btn-sm { padding: 5px 12px; font-size: .78rem; }
+    .btn-logout { background: #f0f0f0; color: #444; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: .85rem; cursor: pointer; }
+    .btn-logout:hover { background: #e0e0e0; }
+
+    /* Category breakdown */
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 20px 24px; }
+    .cat-item { background: #F8FBFE; border: 1px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .cat-name { font-size: .82rem; color: #1A5276; font-weight: 600; }
+    .cat-count { font-size: 1.3rem; font-weight: 800; color: #0D2B55; }
+
+    .empty-state { text-align: center; padding: 48px; color: #aaa; }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sk-badge">SK-FDMS</div>
+      <p>Barangay Bagtic Admin</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="active">🏠 Dashboard</a>
+      <a href="documents.html">📁 Documents</a>
+      <a href="upload.html">⬆ Upload</a>
+      <a href="announcements.html">📢 Announcements</a>
+      <a href="users.html">👥 Users</a>
+      <a href="activity-log.html">📋 Activity Log</a>
+      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="uname" id="sidebarName">Loading…</div>
+      <div class="urole" id="sidebarRole"></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h2>📊 Dashboard — <span id="barangayLabel" style="color:#888;font-weight:400;"></span></h2>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:.8rem;color:#aaa;" id="lastUpdated"></span>
+        <button class="btn-logout" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="alertBox"></div>
+
+      <!-- STAT CARDS -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-label">Total Documents</div>
+          <div class="stat-sub">All uploaded files</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-num" id="statPublished">—</div>
+          <div class="stat-label">Published</div>
+          <div class="stat-sub">Visible to public</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-num" id="statDraft">—</div>
+          <div class="stat-label">Drafts</div>
+          <div class="stat-sub">Pending publish</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-num" id="statCategories">—</div>
+          <div class="stat-label">Categories Used</div>
+          <div class="stat-sub">Out of 9 total</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-num" id="statUsers">—</div>
+          <div class="stat-label">SK Officials</div>
+          <div class="stat-sub">Active accounts</div>
+        </div>
+      </div>
+
+      <!-- RECENT UPLOADS TABLE -->
+      <div class="section-card">
+        <div class="sc-header">
+          <h3>📄 Recent Document Uploads</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="badge-count" id="recentCount">0 docs</span>
+            <a href="documents.html" class="btn btn-secondary btn-sm">View All</a>
+            <a href="upload.html" class="btn btn-primary btn-sm">⬆ Upload New</a>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Document Title</th>
+                <th>Category</th>
+                <th>Fiscal Year</th>
+                <th>Status</th>
+                <th>Uploaded By</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentDocsBody">
+              <tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa;">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS BY CATEGORY BREAKDOWN -->
+      <div class="section-card">
+        <div class="sc-header">
+          <h3>📊 Documents by Category</h3>
+          <span class="badge-count" id="catBreakdownTotal">0 total</span>
+        </div>
+        <div class="cat-grid" id="catBreakdown">
+          <p style="padding:20px;color:#aaa;">Loading…</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  var API = window.location.origin + '/api';
+
+  function formatDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  // ── Auth check ──────────────────────────────────────────────
+  window.addEventListener('load', async function() {
+    var res  = await fetch(API + '/auth/me', { credentials: 'include' });
+    var data = await res.json();
+    if (!data.success) { window.location.href = '/'; return; }
+
+    var user = data.user;
+    document.getElementById('sidebarName').textContent   = user.name;
+    document.getElementById('sidebarRole').textContent   = user.role;
+    document.getElementById('barangayLabel').textContent = 'Brgy. ' + user.barangay;
+
+    loadDashboard();
+  });
+
+  async function loadDashboard() {
+    // Update timestamp
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-PH');
+
+    // Load stats
+    var statsRes  = await fetch(API + '/admin/stats', { credentials: 'include' });
+    var statsData = await statsRes.json();
+
+    if (statsData.success) {
+      var s = statsData.data;
+      document.getElementById('statTotal').textContent     = s.totalDocs;
+      document.getElementById('statPublished').textContent = s.publishedDocs;
+      document.getElementById('statDraft').textContent     = s.draftDocs;
+      document.getElementById('statCategories').textContent= s.categories;
+    }
+
+    // Load user count
+    try {
+      var usersRes  = await fetch(API + '/admin/users', { credentials: 'include' });
+      var usersData = await usersRes.json();
+      if (usersData.success) {
+        var active = usersData.data.filter(function(u) { return u.is_active; }).length;
+        document.getElementById('statUsers').textContent = active;
+      }
+    } catch(e) {}
+
+    // Load ALL documents for table and category breakdown
+    var docsRes  = await fetch(API + '/admin/documents', { credentials: 'include' });
+    var docsData = await docsRes.json();
+
+    if (docsData.success) {
+      var docs = docsData.data;
+      document.getElementById('recentCount').textContent = docs.length + ' docs';
+
+      // Recent 10 docs table
+      var tbody = document.getElementById('recentDocsBody');
+      if (!docs.length) {
+        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>No documents uploaded yet.</p></div></td></tr>';
+      } else {
+        tbody.innerHTML = docs.slice(0, 10).map(function(d, i) {
+          return '<tr>' +
+            '<td style="color:#aaa;">' + (i + 1) + '</td>' +
+            '<td><strong>' + d.title + '</strong></td>' +
+            '<td><span class="badge badge-cat">' + d.category_code + '</span></td>' +
+            '<td>' + d.fiscal_year + ' · ' + d.quarter + '</td>' +
+            '<td><span class="badge ' + (d.is_published ? 'badge-pub' : 'badge-draft') + '">' + (d.is_published ? '✅ Published' : '⏳ Draft') + '</span></td>' +
+            '<td>' + (d.uploaded_by_name || '—') + '</td>' +
+            '<td>' + formatDate(d.created_at) + '</td>' +
+            '<td><a href="documents.html" class="btn btn-secondary btn-sm">Manage</a></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      // Category breakdown
+      var catMap = {};
+      docs.forEach(function(d) {
+        var key = d.category_code + '|' + d.category_name;
+        if (!catMap[key]) catMap[key] = 0;
+        catMap[key]++;
+      });
+
+      document.getElementById('catBreakdownTotal').textContent = docs.length + ' total';
+
+      var catGrid = document.getElementById('catBreakdown');
+      var keys = Object.keys(catMap);
+      if (!keys.length) {
+        catGrid.innerHTML = '<p style="padding:20px;color:#aaa;">No documents yet.</p>';
+      } else {
+        catGrid.innerHTML = keys.map(function(k) {
+          var parts = k.split('|');
+          return '<div class="cat-item">' +
+            '<div><div class="cat-name">' + parts[0] + '</div><div style="font-size:.72rem;color:#888;margin-top:2px;">' + parts[1] + '</div></div>' +
+            '<div class="cat-count">' + catMap[k] + '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+  }
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', async function() {
+    if (!confirm('Are you sure you want to log out?')) return;
+    await fetch(API + '/auth/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = '/';
+  });
+</script>
+</body>
+</html>

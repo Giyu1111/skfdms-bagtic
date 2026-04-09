@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Document — SK-FDMS Bagtic</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <style>
+    body{background:#F0F4F8;margin:0;}
+    .layout{display:flex;min-height:100vh;}
+    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;}
+    .sb-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sb-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sb-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sb-nav{padding:16px 0;flex:1;}
+    .sb-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.72);font-size:.88rem;text-decoration:none;transition:background .2s;}
+    .sb-nav a:hover,.sb-nav a.active{background:rgba(255,255,255,.1);color:#fff;}
+    .sb-user{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);}
+    .sb-uname{font-weight:700;font-size:.85rem;color:#fff;}
+    .sb-role{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .main{flex:1;overflow-y:auto;}
+    .topbar{background:#fff;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.06);position:sticky;top:0;z-index:50;}
+    .topbar h2{font-size:1rem;color:#0D2B55;margin:0;}
+    .content{padding:24px;max-width:700px;}
+    .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;padding:32px;}
+    .drop-zone{border:2px dashed #aac4e0;border-radius:12px;padding:44px 24px;text-align:center;background:#f4f8fc;cursor:pointer;transition:all .2s;position:relative;}
+    .drop-zone:hover{border-color:#2E86C1;background:#e8f4fd;}
+    .drop-zone.over{border-color:#2E86C1;background:#d6ecf9;border-style:solid;}
+    .dz-icon{font-size:3rem;display:block;margin-bottom:10px;}
+    .drop-zone p{color:#555;font-size:.92rem;margin:0;}
+    .drop-zone small{color:#999;font-size:.78rem;display:block;margin-top:6px;}
+    .file-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:10;}
+    .preview{display:none;align-items:center;gap:14px;background:#eafaf1;border:1px solid #a9dfbf;border-radius:10px;padding:14px 16px;margin-top:12px;}
+    .preview.show{display:flex;}
+    .pv-icon{font-size:2rem;}
+    .pv-info{flex:1;}
+    .pv-name{font-weight:700;font-size:.9rem;color:#1a3c2e;word-break:break-all;}
+    .pv-size{font-size:.76rem;color:#555;margin-top:2px;}
+    .rm-btn{background:#C0392B;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:.76rem;font-weight:700;cursor:pointer;white-space:nowrap;}
+    .prog-wrap{margin-top:14px;display:none;}
+    .prog-wrap.show{display:block;}
+    .prog-bg{height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;}
+    .prog-fill{height:100%;background:#2E86C1;border-radius:4px;width:0%;transition:width .4s;}
+    .prog-lbl{font-size:.76rem;color:#666;margin-top:5px;text-align:center;}
+    hr{border:none;border-top:1px solid #eee;margin:24px 0;}
+    .form-group{margin-bottom:16px;}
+    .form-group label{display:block;font-weight:700;font-size:.76rem;color:#555;margin-bottom:5px;}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;border:1.5px solid #ccc;border-radius:8px;font-size:.88rem;outline:none;box-sizing:border-box;font-family:inherit;}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#2E86C1;}
+    .req{color:#C0392B;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-actions{display:flex;gap:12px;margin-top:20px;}
+    .btn-submit{flex:1;padding:13px;background:#2E86C1;color:#fff;border:none;border-radius:9px;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .2s;}
+    .btn-submit:hover{background:#1A5276;}
+    .btn-submit:disabled{background:#aaa;cursor:not-allowed;}
+    .btn-cancel{padding:13px 22px;background:#eee;color:#444;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+    .btn-cancel:hover{background:#ddd;}
+    .logout-btn{background:#eee;color:#444;border:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:.82rem;cursor:pointer;}
+    .logout-btn:hover{background:#ddd;}
+    .alert{padding:12px 15px;border-radius:8px;margin-bottom:14px;font-size:.86rem;}
+    .alert-s{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
+    .alert-e{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="sb-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
+    <nav class="sb-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="documents.html">📁 Documents</a>
+      <a href="upload.html" class="active">⬆ Upload</a>
+      <a href="announcements.html">📢 Announcements</a>
+      <a href="users.html">👥 Users</a>
+      <a href="activity-log.html">📋 Activity Log</a>
+      <a href="/" style="border-top:1px solid rgba(255,255,255,.1);margin-top:8px;padding-top:16px;">🌐 Public Site</a>
+    </nav>
+    <div class="sb-user"><div class="sb-uname" id="sName">…</div><div class="sb-role" id="sRole"></div></div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <h2>⬆ Upload Disclosure Document</h2>
+      <button class="logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+    <div class="content">
+      <div id="alertBox"></div>
+      <div class="card">
+        <h3 style="color:#0D2B55;margin:0 0 22px;font-size:1.05rem;">New Document Upload</h3>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"/>
+          <span class="dz-icon">📄</span>
+          <p>Drag &amp; drop your file here, or <strong style="color:#2E86C1;">click to browse</strong></p>
+          <small>Allowed: PDF, JPG, PNG, DOC, DOCX &middot; Max 10MB</small>
+        </div>
+
+        <!-- File preview -->
+        <div class="preview" id="preview">
+          <div class="pv-icon" id="pvIcon">📄</div>
+          <div class="pv-info"><div class="pv-name" id="pvName"></div><div class="pv-size" id="pvSize"></div></div>
+          <button class="rm-btn" onclick="clearFile()">✕ Remove</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="prog-wrap" id="progWrap">
+          <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
+          <div class="prog-lbl" id="progLbl">Uploading…</div>
+        </div>
+
+        <hr/>
+
+        <!-- Form fields -->
+        <div class="form-group">
+          <label>Document Title <span class="req">*</span></label>
+          <input type="text" id="fTitle" placeholder="e.g. FY 2024 Q1 Statement of Receipts and Expenditures"/>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Category <span class="req">*</span></label>
+            <select id="fCat"><option value="">Select category…</option></select>
+          </div>
+          <div class="form-group">
+            <label>Fiscal Year <span class="req">*</span></label>
+            <select id="fYear"><option value="2026">2026</option><option value="2025">2025</option><option value="2024" selected>2024</option><option value="2023">2023</option><option value="2022">2022</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Quarter / Period</label>
+          <select id="fQuarter">
+            <option value="Annual">Annual</option>
+            <option value="Q1">Q1 (January–March)</option>
+            <option value="Q2">Q2 (April–June)</option>
+            <option value="Q3">Q3 (July–September)</option>
+            <option value="Q4">Q4 (October–December)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description (optional)</label>
+          <textarea id="fDesc" rows="3" placeholder="Brief description…" style="resize:vertical;"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-submit" id="uploadBtn" onclick="doUpload()">⬆ Upload Document</button>
+          <a href="documents.html" class="btn-cancel">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var API=window.location.origin+'/api', selectedFile=null;
+var icons={pdf:'📄',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',doc:'📝',docx:'📝'};
+
+function showA(m,t){var e=document.getElementById('alertBox');e.innerHTML='<div class="alert alert-'+(t==='success'?'s':'e')+'">'+m+'</div>';if(t==='success')setTimeout(function(){e.innerHTML='';},5000);}
+function fsize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+
+window.addEventListener('load',async function(){
+  var r=await fetch(API+'/auth/me',{credentials:'include'});
+  var d=await r.json();
+  if(!d.success){window.location.href='/pages/login.html';return;}
+  document.getElementById('sName').textContent=d.user.name;
+  document.getElementById('sRole').textContent=d.user.role;
+  // Load categories
+  var cr=await fetch(API+'/categories',{credentials:'include'});
+  var cd=await cr.json();
+  var sel=document.getElementById('fCat');
+  if(cd.data)cd.data.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.code+' — '+c.name;sel.appendChild(o);});
+});
+
+// File input
+document.getElementById('fileInput').addEventListener('change',function(e){if(e.target.files[0])handleFile(e.target.files[0]);});
+
+// Drag & drop
+var dz=document.getElementById('dropZone');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave',function(){dz.classList.remove('over');});
+dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+
+function handleFile(f){
+  var allowed=['pdf','jpg','jpeg','png','doc','docx'];
+  var ext=f.name.split('.').pop().toLowerCase();
+  if(!allowed.includes(ext)){showA('Only PDF, JPG, PNG, DOC, DOCX files allowed.','error');return;}
+  if(f.size>10485760){showA('File too large. Max 10MB.','error');return;}
+  selectedFile=f;
+  document.getElementById('pvIcon').textContent=icons[ext]||'📄';
+  document.getElementById('pvName').textContent=f.name;
+  document.getElementById('pvSize').textContent=fsize(f.size);
+  document.getElementById('preview').classList.add('show');
+  dz.style.display='none';
+  document.getElementById('alertBox').innerHTML='';
+}
+
+function clearFile(){
+  selectedFile=null;
+  document.getElementById('fileInput').value='';
+  document.getElementById('preview').classList.remove('show');
+  dz.style.display='';
+}
+
+async function doUpload(){
+  if(!selectedFile){showA('Please select a file first.','error');return;}
+  var title=document.getElementById('fTitle').value.trim();
+  var cat=document.getElementById('fCat').value;
+  var year=document.getElementById('fYear').value;
+  var quarter=document.getElementById('fQuarter').value;
+  var desc=document.getElementById('fDesc').value.trim();
+  if(!title){showA('Document title is required.','error');document.getElementById('fTitle').focus();return;}
+  if(!cat){showA('Please select a category.','error');document.getElementById('fCat').focus();return;}
+
+  var btn=document.getElementById('uploadBtn');
+  btn.disabled=true;btn.textContent='Uploading…';
+  document.getElementById('progWrap').classList.add('show');
+  document.getElementById('progFill').style.width='40%';
+  document.getElementById('progLbl').textContent='Uploading file…';
+
+  var fd=new FormData();
+  fd.append('file',selectedFile);
+  fd.append('title',title);
+  fd.append('category_id',cat);
+  fd.append('fiscal_year',year);
+  fd.append('quarter',quarter);
+  fd.append('description',desc);
+
+  try{
+    document.getElementById('progFill').style.width='70%';
+    var r=await fetch(API+'/admin/documents',{method:'POST',credentials:'include',body:fd});
+    document.getElementById('progFill').style.width='100%';
+    document.getElementById('progLbl').textContent='Done!';
+    var d=await r.json();
+    if(r.ok&&d.success){
+      showA('✅ Document uploaded successfully! Redirecting…','success');
+      setTimeout(function(){window.location.href='documents.html';},1500);
+    }else{
+      showA('❌ '+(d.message||'Upload failed.'),'error');
+      btn.disabled=false;btn.textContent='⬆ Upload Document';
+      document.getElementById('progWrap').classList.remove('show');
+    }
+  }catch(err){
+    showA('❌ Upload error: '+err.message,'error');
+    btn.disabled=false;btn.textContent='⬆ Upload Document';
+    document.getElementById('progWrap').classList.remove('show');
+  }
+}
+
+document.getElementById('logoutBtn').addEventListener('click',async function(){
+  if(!confirm('Are you sure you want to log out?'))return;
+  await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
+  window.location.href='/';
+});
+</script>
+</body>
+</html>

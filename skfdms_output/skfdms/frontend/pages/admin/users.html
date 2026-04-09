@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Users — SK-FDMS Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;}
+    .admin-layout{display:flex;flex:1;}
+    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sidebar-nav{padding:12px 0;flex:1;}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);font-size:.88rem;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;font-weight:600;}
+    .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.85rem;color:#fff;}
+    .sidebar-user .urole{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .admin-main{flex:1;overflow-y:auto;}
+    .topbar{background:#fff;padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
+    .topbar h2{font-size:1rem;color:#0D2B55;font-weight:700;}
+    .content{padding:24px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+    .btn-primary{background:#2E86C1;color:#fff;} .btn-primary:hover{background:#1A5276;}
+    .btn-success{background:#1E8449;color:#fff;} .btn-success:hover{background:#145A32;}
+    .btn-danger{background:#C0392B;color:#fff;} .btn-danger:hover{background:#922B21;}
+    .btn-sm{padding:5px 11px;font-size:.75rem;}
+    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;}
+    .two-col{display:grid;grid-template-columns:1fr 360px;gap:22px;}
+    .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;}
+    .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;}
+    .card-header h3{font-size:.9rem;color:#0D2B55;font-weight:700;}
+    .card-body{padding:22px;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-weight:600;font-size:.8rem;color:#555;margin-bottom:5px;}
+    .form-control{width:100%;padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:.88rem;outline:none;box-sizing:border-box;font-family:inherit;transition:border-color .18s;}
+    .form-control:focus{border-color:#2E86C1;box-shadow:0 0 0 3px rgba(46,134,193,.1);}
+    .alert{padding:10px 15px;border-radius:8px;margin-bottom:14px;font-size:.84rem;}
+    .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
+    .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
+    .user-card{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f5f5f5;}
+    .user-card:last-child{border-bottom:none;}
+    .avatar{width:42px;height:42px;border-radius:50%;background:#2E86C1;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;}
+    .user-info{flex:1;}
+    .user-info .name{font-weight:700;font-size:.9rem;color:#0D2B55;}
+    .user-info .meta{font-size:.75rem;color:#888;margin-top:2px;}
+    .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700;}
+    .badge-active{background:#D5F5E3;color:#1E8449;}
+    .badge-inactive{background:#FDEDEC;color:#C0392B;}
+    .badge-role{background:#F4ECF7;color:#7D3C98;}
+    .empty{text-align:center;padding:40px;color:#bbb;}
+    @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sk-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="documents.html">📁 Documents</a>
+      <a href="upload.html">⬆ Upload</a>
+      <a href="announcements.html">📢 Announcements</a>
+      <a href="users.html" class="active">👥 Users</a>
+      <a href="activity-log.html">📋 Activity Log</a>
+      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    </nav>
+    <div class="sidebar-user"><div class="uname" id="sName">…</div><div class="urole" id="sRole"></div></div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="topbar">
+      <h2>👥 User Management</h2>
+      <button class="btn-logout" onclick="doLogout()">Log Out</button>
+    </div>
+    <div class="content">
+      <div id="alertBox"></div>
+      <div class="two-col">
+
+        <!-- Users List -->
+        <div class="card">
+          <div class="card-header">
+            <h3>SK Officials — Barangay Bagtic</h3>
+            <span style="font-size:.78rem;color:#888;" id="userCount">0 users</span>
+          </div>
+          <div class="card-body" id="userList"><div class="empty">Loading…</div></div>
+        </div>
+
+        <!-- Add User -->
+        <div style="align-self:start;">
+          <div class="card">
+            <div class="card-header"><h3>➕ Add New SK Official</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Full Name <span style="color:#e74c3c;">*</span></label>
+                <input type="text" class="form-control" id="nName" placeholder="e.g. Juan Dela Cruz"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address <span style="color:#e74c3c;">*</span></label>
+                <input type="email" class="form-control" id="nEmail" placeholder="juan@skbagtic.gov.ph"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Role <span style="color:#e74c3c;">*</span></label>
+                <select class="form-control" id="nRole">
+                  <option value="secretary">Secretary</option>
+                  <option value="treasurer">Treasurer</option>
+                  <option value="chairperson">Chairperson</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password <span style="color:#e74c3c;">*</span></label>
+                <input type="password" class="form-control" id="nPass" placeholder="Min. 6 characters"/>
+              </div>
+              <button class="btn btn-primary" id="addBtn" onclick="addUser()" style="width:100%;justify-content:center;">
+                ➕ Add User
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var API = window.location.origin + '/api';
+  var currentUserId = null;
+
+  function fmt(d){ if(!d)return'Never'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
+  function showAlert(msg,type){ var e=document.getElementById('alertBox'); e.innerHTML='<div class="alert alert-'+type+'">'+msg+'</div>'; if(type==='success')setTimeout(function(){e.innerHTML='';},4000); }
+
+  window.addEventListener('load', async function(){
+    var r=await fetch(API+'/auth/me',{credentials:'include'});
+    var d=await r.json();
+    if(!d.success){window.location.href='/pages/login.html';return;}
+    if(d.user.role!=='admin'){alert('Admin access required.');window.location.href='dashboard.html';return;}
+    currentUserId=d.user.id;
+    document.getElementById('sName').textContent=d.user.name;
+    document.getElementById('sRole').textContent=d.user.role;
+    loadUsers();
+  });
+
+  async function loadUsers(){
+    var r=await fetch(API+'/admin/users',{credentials:'include'});
+    var d=await r.json();
+    var container=document.getElementById('userList');
+    if(!d.success||!d.data.length){
+      container.innerHTML='<div class="empty">No users found.</div>';
+      document.getElementById('userCount').textContent='0 users';
+      return;
+    }
+    document.getElementById('userCount').textContent=d.data.length+' user(s)';
+    container.innerHTML=d.data.map(function(u){
+      var colors={'admin':'#7D3C98','chairperson':'#1A5276','treasurer':'#1E8449','secretary':'#B7950B'};
+      var bgColor=colors[u.role]||'#2E86C1';
+      var isSelf=(u.id===currentUserId);
+      return '<div class="user-card" id="uc-'+u.id+'">'
+        +'<div class="avatar" style="background:'+bgColor+';">'+u.name.charAt(0).toUpperCase()+'</div>'
+        +'<div class="user-info">'
+          +'<div class="name">'+u.name+(isSelf?' <span style="font-size:.68rem;color:#2E86C1;">(You)</span>':'')+'</div>'
+          +'<div class="meta">'+u.email+'</div>'
+          +'<div class="meta" style="margin-top:3px;">'
+            +'<span class="badge badge-role" style="margin-right:5px;">'+u.role+'</span>'
+            +'<span class="badge '+(u.is_active?'badge-active':'badge-inactive')+'">'+(u.is_active?'Active':'Inactive')+'</span>'
+          +'</div>'
+          +'<div class="meta" style="margin-top:3px;">Last login: '+fmt(u.last_login)+'</div>'
+        +'</div>'
+        +(!isSelf?'<button class="btn '+(u.is_active?'btn-danger':'btn-success')+' btn-sm" onclick="toggleUser('+u.id+','+u.is_active+',\''+u.name+'\')">'+(u.is_active?'Deactivate':'Activate')+'</button>':'')
+      +'</div>';
+    }).join('');
+  }
+
+  async function toggleUser(id, isActive, name){
+    if(!confirm((isActive?'Deactivate':'Activate')+' user "'+name+'"?'))return;
+    var r=await fetch(API+'/admin/users/'+id+'/toggle',{method:'PATCH',credentials:'include'});
+    var d=await r.json();
+    if(r.ok&&d.success){showAlert(d.message,'success');loadUsers();}
+    else{showAlert(d.message||'Failed.','danger');}
+  }
+
+  async function addUser(){
+    var name=document.getElementById('nName').value.trim();
+    var email=document.getElementById('nEmail').value.trim();
+    var role=document.getElementById('nRole').value;
+    var pass=document.getElementById('nPass').value;
+    if(!name||!email||!pass){showAlert('All fields are required.','danger');return;}
+    if(pass.length<6){showAlert('Password must be at least 6 characters.','danger');return;}
+    var btn=document.getElementById('addBtn');
+    btn.disabled=true; btn.textContent='Adding…';
+    var r=await fetch(API+'/admin/users',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email,role:role,password:pass})});
+    var d=await r.json();
+    btn.disabled=false; btn.textContent='➕ Add User';
+    if(r.ok&&d.success){
+      showAlert('✅ User "'+name+'" added successfully!','success');
+      document.getElementById('nName').value='';
+      document.getElementById('nEmail').value='';
+      document.getElementById('nPass').value='';
+      loadUsers();
+    } else { showAlert(d.message||'Failed to add user.','danger'); }
+  }
+
+  async function doLogout(){
+    if(!confirm('Are you sure you want to log out?'))return;
+    await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
+    window.location.href='/';
+  }
+</script>
+</body>
+</html>

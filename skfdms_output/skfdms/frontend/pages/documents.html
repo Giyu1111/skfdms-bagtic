@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documents — SK-FDMS Bagtic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* Stats bar */
+    .pub-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.08); overflow: hidden; border: 1px solid #eee; margin-bottom: 28px; }
+    .pub-stat-item { padding: 22px; border-right: 1px solid #eee; text-align: center; }
+    .pub-stat-item:last-child { border-right: none; }
+    .pub-stat-num   { font-size: 2rem; font-weight: 800; color: #0D2B55; line-height: 1; }
+    .pub-stat-label { font-size: .78rem; color: #888; margin-top: 6px; }
+
+    /* Search area */
+    .search-box { background: #fff; border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; margin-bottom: 20px; }
+    .search-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .search-field { flex: 2; min-width: 200px; position: relative; }
+    .search-field input { width: 100%; padding: 10px 14px; border: 1.5px solid #ccc; border-radius: 8px; font-size: .92rem; outline: none; box-sizing: border-box; }
+    .search-field input:focus { border-color: #2E86C1; }
+
+    /* Suggestions dropdown */
+    .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1.5px solid #2E86C1; border-top: none; border-radius: 0 0 10px 10px; z-index: 100; max-height: 260px; overflow-y: auto; box-shadow: 0 6px 20px rgba(0,0,0,.12); display: none; }
+    .suggestions.open { display: block; }
+    .suggestion-item { padding: 10px 16px; cursor: pointer; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; transition: background .15s; }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: #EBF5FB; }
+    .suggestion-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .suggestion-title { font-size: .88rem; font-weight: 600; color: #0D2B55; }
+    .suggestion-meta  { font-size: .75rem; color: #888; margin-top: 1px; }
+    .suggestion-badge { font-size: .7rem; background: #EBF5FB; color: #1A5276; padding: 2px 8px; border-radius: 20px; font-weight: 700; white-space: nowrap; }
+    .no-suggestions { padding: 16px; text-align: center; color: #aaa; font-size: .85rem; }
+
+    /* Category filter group */
+    .cat-filter-group { flex: 1; min-width: 160px; }
+    .cat-filter-group label { display: block; font-weight: 600; font-size: .8rem; color: #555; margin-bottom: 5px; }
+    .cat-filter-group select { width: 100%; padding: 10px 14px; border: 1.5px solid #ccc; border-radius: 8px; font-size: .88rem; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    .cat-filter-group select:focus { border-color: #2E86C1; }
+
+    /* Category tabs */
+    .cat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .cat-tab { padding: 6px 16px; border-radius: 20px; font-size: .8rem; font-weight: 600; cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #555; transition: all .2s; white-space: nowrap; }
+    .cat-tab:hover { border-color: #2E86C1; color: #2E86C1; }
+    .cat-tab.active { background: #2E86C1; color: #fff; border-color: #2E86C1; }
+
+    /* Document list */
+    .doc-list { display: flex; flex-direction: column; gap: 14px; }
+    .doc-row { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 18px 22px; display: flex; align-items: flex-start; gap: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.05); transition: all .2s; }
+    .doc-row:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); border-color: #AED6F1; transform: translateY(-1px); }
+    .doc-icon { font-size: 2rem; flex-shrink: 0; }
+    .doc-body { flex: 1; }
+    .doc-title { font-weight: 700; font-size: .98rem; color: #0D2B55; margin-bottom: 6px; }
+    .doc-meta  { display: flex; gap: 14px; flex-wrap: wrap; font-size: .78rem; color: #888; margin-bottom: 10px; }
+    .doc-meta span { display: flex; align-items: center; gap: 4px; }
+    .doc-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .badge-cat  { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .72rem; font-weight: 700; background: #EBF5FB; color: #1A5276; }
+    .btn-download { background: #2E86C1; color: #fff; border: none; padding: 7px 16px; border-radius: 8px; font-size: .82rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background .2s; }
+    .btn-download:hover { background: #1A5276; }
+
+    /* Page header */
+    .page-header { background: #0D2B55; color: #fff; padding: 40px 24px; }
+    .page-header h1 { color: #fff; margin-bottom: 8px; font-size: 2rem; }
+    .page-header p  { opacity: .75; margin: 0; }
+
+    .results-info { font-size: .85rem; color: #888; margin-bottom: 14px; }
+    .empty-state { text-align: center; padding: 60px; color: #aaa; background: #fff; border-radius: 14px; border: 1px solid #eee; }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+    @media(max-width:600px) { .search-row { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav style="background:#0D2B55;padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);">
+  <div style="max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;">
+    <a href="/" style="display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:700;">
+      <span style="background:#D4AC0D;color:#0D2B55;padding:3px 10px;border-radius:4px;font-size:.85rem;font-weight:800;">SK-FDMS</span>
+      <span>Barangay Bagtic</span>
+    </a>
+    <div style="display:flex;gap:4px;">
+      <a href="/" style="color:rgba(255,255,255,.75);padding:8px 16px;border-radius:8px;font-size:.9rem;text-decoration:none;">Home</a>
+      <a href="/pages/documents.html" style="color:#fff;padding:8px 16px;border-radius:8px;font-size:.9rem;background:rgba(255,255,255,.12);text-decoration:none;">Documents</a>
+      <a href="/pages/about.html" style="color:rgba(255,255,255,.75);padding:8px 16px;border-radius:8px;font-size:.9rem;text-decoration:none;">About</a>
+      <a href="/pages/login.html" style="background:#D4AC0D;color:#0D2B55;padding:8px 16px;border-radius:8px;font-size:.9rem;font-weight:700;text-decoration:none;margin-left:8px;">Admin Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div style="max-width:1120px;margin:0 auto;">
+    <h1>📁 Disclosure Documents</h1>
+    <p>All published SK Barangay Bagtic documents in compliance with the DILG Full Disclosure Policy</p>
+  </div>
+</div>
+
+<div style="max-width:1120px;margin:0 auto;padding:36px 24px;">
+
+  <!-- Published Stats Bar -->
+  <div class="pub-stats" id="pubStats">
+    <div class="pub-stat-item"><div class="pub-stat-num" id="pubTotal">—</div><div class="pub-stat-label">Published Documents</div></div>
+    <div class="pub-stat-item"><div class="pub-stat-num" id="pubCategories">—</div><div class="pub-stat-label">Categories</div></div>
+    <div class="pub-stat-item"><div class="pub-stat-num" id="pubYear">—</div><div class="pub-stat-label">Latest Fiscal Year</div></div>
+    <div class="pub-stat-item"><div class="pub-stat-num">Free</div><div class="pub-stat-label">Public Access</div></div>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-box">
+    <div class="search-row">
+      <!-- Search input with suggestions -->
+      <div class="search-field">
+        <label style="display:block;font-weight:600;font-size:.8rem;color:#555;margin-bottom:5px;">🔍 Search Documents</label>
+        <input type="text" id="searchInput" placeholder="Type to search documents…" autocomplete="off" />
+        <div class="suggestions" id="suggestionsBox"></div>
+      </div>
+
+      <!-- Category filter -->
+      <div class="cat-filter-group">
+        <label>📁 Category</label>
+        <select id="categorySelect">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+
+      <!-- Year filter -->
+      <div class="cat-filter-group">
+        <label>📅 Fiscal Year</label>
+        <select id="yearSelect">
+          <option value="">All Years</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <button onclick="applyFilters()" style="padding:10px 20px;background:#2E86C1;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;">Search</button>
+        <button onclick="resetFilters()" style="padding:10px 16px;background:#eee;color:#444;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:.9rem;">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Quick Tabs -->
+  <div class="cat-tabs" id="catTabs">
+    <div class="cat-tab active" onclick="filterByTab('')" data-id="">All</div>
+  </div>
+
+  <!-- Results info -->
+  <div class="results-info" id="resultsInfo"></div>
+
+  <!-- Document List -->
+  <div class="doc-list" id="docList">
+    <div style="text-align:center;padding:40px;color:#aaa;">Loading documents…</div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer style="background:#0D2B55;color:rgba(255,255,255,.7);padding:32px 24px;text-align:center;margin-top:60px;">
+  <div style="font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:6px;">SK-FDMS · Barangay Bagtic</div>
+  <p style="font-size:.82rem;margin:0;">Barangay Bagtic, Balilihan, Bohol · DILG Full Disclosure Policy Compliant</p>
+</footer>
+
+<script>
+  var API = window.location.origin + '/api';
+  var allDocs = [];
+  var allCategories = [];
+  var activeTabId = '';
+  var fileIcons = { pdf:'📄', jpg:'🖼️', jpeg:'🖼️', png:'🖼️', doc:'📝', docx:'📝' };
+
+  function formatDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric' });
+  }
+  function formatSize(kb) {
+    if (!kb) return '—';
+    if (kb < 1024) return kb + ' KB';
+    return (kb/1024).toFixed(1) + ' MB';
+  }
+
+  // ── Load categories into dropdown and tabs ─────────────────
+  async function loadCategories() {
+    var res  = await fetch(API + '/categories');
+    var data = await res.json();
+    if (!data.data) return;
+    allCategories = data.data;
+
+    var sel  = document.getElementById('categorySelect');
+    var tabs = document.getElementById('catTabs');
+
+    data.data.forEach(function(c) {
+      // Dropdown option
+      var opt = document.createElement('option');
+      opt.value       = c.id;
+      opt.textContent = c.code + ' — ' + c.name;
+      sel.appendChild(opt);
+
+      // Tab button
+      var tab = document.createElement('div');
+      tab.className    = 'cat-tab';
+      tab.textContent  = c.code;
+      tab.title        = c.name;
+      tab.dataset.id   = c.id;
+      tab.onclick      = function() { filterByTab(c.id); };
+      tabs.appendChild(tab);
+    });
+  }
+
+  // ── Load all published documents ───────────────────────────
+  async function loadDocs(params) {
+    var qs  = params ? '?' + new URLSearchParams(params).toString() : '';
+    var res  = await fetch(API + '/documents' + qs);
+    var data = await res.json();
+
+    if (!data.data) { allDocs = []; }
+    else            { allDocs = data.data; }
+
+    // Update stats
+    var catSet = new Set(allDocs.map(function(d) { return d.category_code; }));
+    var years  = allDocs.map(function(d) { return d.fiscal_year; });
+    var maxYear = years.length ? Math.max.apply(null, years) : '—';
+
+    document.getElementById('pubTotal').textContent      = allDocs.length;
+    document.getElementById('pubCategories').textContent = catSet.size;
+    document.getElementById('pubYear').textContent       = maxYear;
+
+    renderDocs(allDocs);
+  }
+
+  // ── Render document list ───────────────────────────────────
+  function renderDocs(docs) {
+    var container = document.getElementById('docList');
+    var info      = document.getElementById('resultsInfo');
+
+    info.textContent = docs.length
+      ? 'Showing ' + docs.length + ' document' + (docs.length !== 1 ? 's' : '')
+      : '';
+
+    if (!docs.length) {
+      container.innerHTML =
+        '<div class="empty-state"><div class="icon">🔍</div><p>No documents found.<br>Try a different search or category.</p></div>';
+      return;
+    }
+
+    container.innerHTML = docs.map(function(d) {
+      var ext = d.file_type || 'pdf';
+      return '<div class="doc-row">' +
+        '<div class="doc-icon">' + (fileIcons[ext] || '📄') + '</div>' +
+        '<div class="doc-body">' +
+          '<div class="doc-title">' + d.title + '</div>' +
+          '<div class="doc-meta">' +
+            '<span>📁 ' + d.category_name + '</span>' +
+            '<span>📅 FY ' + d.fiscal_year + ' · ' + d.quarter + '</span>' +
+            '<span>💾 ' + formatSize(d.file_size_kb) + '</span>' +
+            '<span>👤 ' + (d.uploaded_by || '—') + '</span>' +
+            '<span>🗓 ' + formatDate(d.published_at) + '</span>' +
+          '</div>' +
+          '<div class="doc-actions">' +
+            '<span class="badge-cat">' + d.category_code + '</span>' +
+            '<a href="' + API + '/documents/' + d.id + '/download" class="btn-download" target="_blank">⬇ Download</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── Search suggestions ─────────────────────────────────────
+  var suggestTimeout;
+  document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(suggestTimeout);
+    var q = this.value.trim();
+
+    if (!q) { closeSuggestions(); return; }
+
+    suggestTimeout = setTimeout(function() {
+      showSuggestions(q);
+    }, 200);
+  });
+
+  function showSuggestions(q) {
+    var catId  = document.getElementById('categorySelect').value;
+    var box    = document.getElementById('suggestionsBox');
+    var ql     = q.toLowerCase();
+
+    // Filter from already loaded docs OR search from all
+    var filtered = allDocs.filter(function(d) {
+      var matchQ   = d.title.toLowerCase().includes(ql);
+      var matchCat = !catId || String(d.category_id) === catId;
+      return matchQ && matchCat;
+    });
+
+    if (!filtered.length) {
+      box.innerHTML = '<div class="no-suggestions">No documents found for "' + q + '"</div>';
+      box.classList.add('open');
+      return;
+    }
+
+    box.innerHTML = filtered.slice(0, 8).map(function(d) {
+      var ext = d.file_type || 'pdf';
+      return '<div class="suggestion-item" onclick="selectSuggestion(' + d.id + ', \'' + d.title.replace(/'/g,"\\'") + '\')">' +
+        '<div class="suggestion-icon">' + (fileIcons[ext] || '📄') + '</div>' +
+        '<div style="flex:1;">' +
+          '<div class="suggestion-title">' + d.title + '</div>' +
+          '<div class="suggestion-meta">FY ' + d.fiscal_year + ' · ' + d.quarter + ' · ' + formatSize(d.file_size_kb) + '</div>' +
+        '</div>' +
+        '<span class="suggestion-badge">' + d.category_code + '</span>' +
+      '</div>';
+    }).join('');
+
+    box.classList.add('open');
+  }
+
+  function selectSuggestion(id, title) {
+    document.getElementById('searchInput').value = title;
+    closeSuggestions();
+    // Show just this doc
+    var match = allDocs.filter(function(d) { return d.id === id; });
+    renderDocs(match);
+  }
+
+  function closeSuggestions() {
+    document.getElementById('suggestionsBox').classList.remove('open');
+  }
+
+  // Close suggestions when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-field')) closeSuggestions();
+  });
+
+  // ── Category tab filter ────────────────────────────────────
+  function filterByTab(catId) {
+    activeTabId = catId;
+
+    // Update tab active state
+    document.querySelectorAll('.cat-tab').forEach(function(t) {
+      t.classList.toggle('active', t.dataset.id === String(catId));
+    });
+
+    // Sync dropdown
+    document.getElementById('categorySelect').value = catId;
+
+    // Filter docs
+    var q       = document.getElementById('searchInput').value.trim().toLowerCase();
+    var year    = document.getElementById('yearSelect').value;
+    applyAllFilters(q, catId, year);
+  }
+
+  // ── Apply search + category + year filters ─────────────────
+  function applyFilters() {
+    closeSuggestions();
+    var q      = document.getElementById('searchInput').value.trim().toLowerCase();
+    var catId  = document.getElementById('categorySelect').value;
+    var year   = document.getElementById('yearSelect').value;
+    activeTabId = catId;
+
+    // Sync tabs
+    document.querySelectorAll('.cat-tab').forEach(function(t) {
+      t.classList.toggle('active', t.dataset.id === String(catId));
+    });
+
+    applyAllFilters(q, catId, year);
+  }
+
+  function applyAllFilters(q, catId, year) {
+    var filtered = allDocs.filter(function(d) {
+      var matchQ    = !q    || d.title.toLowerCase().includes(q);
+      var matchCat  = !catId|| String(d.category_id) === String(catId);
+      var matchYear = !year || String(d.fiscal_year)  === String(year);
+      return matchQ && matchCat && matchYear;
+    });
+    renderDocs(filtered);
+  }
+
+  function resetFilters() {
+    document.getElementById('searchInput').value  = '';
+    document.getElementById('categorySelect').value = '';
+    document.getElementById('yearSelect').value   = '';
+    activeTabId = '';
+    closeSuggestions();
+    document.querySelectorAll('.cat-tab').forEach(function(t) {
+      t.classList.toggle('active', t.dataset.id === '');
+    });
+    renderDocs(allDocs);
+  }
+
+  // ── Category select change → filter ───────────────────────
+  document.getElementById('categorySelect').addEventListener('change', function() {
+    filterByTab(this.value);
+  });
+
+  // ── Init ───────────────────────────────────────────────────
+  loadCategories();
+  loadDocs();
+</script>
+</body>
+</html>

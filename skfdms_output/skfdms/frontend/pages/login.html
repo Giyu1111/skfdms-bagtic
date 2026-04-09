@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — SK-FDMS Bagtic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #070a0e 0%, #1A5276 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    }
+    .login-logo { text-align: center; margin-bottom: 32px; }
+    .badge-big {
+      display: inline-block;
+      background: #9b8d0d;
+      color: #fff;
+      font-size: 1.8rem;
+      font-weight: 700;
+      padding: 10px 24px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+    .login-logo h2 { font-size: 1.1rem; color: #0D2B55; margin-bottom: 4px; }
+    .login-logo p  { font-size: 0.83rem; color: #888; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-weight: 600; font-size: 0.875rem; color: #444; margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #ccc; border-radius: 8px;
+      font-size: 0.95rem; outline: none;
+      box-sizing: border-box;
+    }
+    input:focus { border-color: #2E86C1; }
+    .btn-login {
+      width: 100%; padding: 13px;
+      background: #1A5276; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; margin-top: 8px;
+    }
+    .btn-login:disabled { background: #aaa; cursor: not-allowed; }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; }
+    .alert-danger  { background: #FDEDEC; color: #C0392B; border: 1px solid #F5B7B1; }
+    .alert-success { background: #EAFAF1; color: #1E8449; border: 1px solid #A9DFBF; }
+    .divider { height: 1px; background: #eee; margin: 24px 0; }
+    .back-link { text-align: center; font-size: .82rem; color: #888; }
+    .back-link a { color: #2E86C1; }
+  </style>
+</head>
+<body>
+<div class="login-card">
+  <div class="login-logo">
+    <div class="badge-big">SK-FDMS</div>
+    <h2>Barangay Bagtic Admin</h2>
+    <p>Balilihan, Bohol &middot; SK Officials Only</p>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" id="emailInput" placeholder="admin@skbagtic.gov.ph" />
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="passwordInput" placeholder="your password" />
+  </div>
+
+  <button class="btn-login" id="loginBtn">&#128273; Log In</button>
+
+  <div class="divider"></div>
+  <div class="back-link">
+    <a href="/">&larr; Back to public site</a>
+  </div>
+</div>
+
+<script>
+  // Uses same port as the page — works whether on 3000 or 5500
+  var API = window.location.origin + '/api';
+
+  function showAlert(msg, type) {
+    var el = document.getElementById('alertBox');
+    el.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  async function doLogin() {
+    var email    = document.getElementById('emailInput').value.trim();
+    var password = document.getElementById('passwordInput').value;
+    var btn      = document.getElementById('loginBtn');
+
+    if (!email || !password) {
+      showAlert('Please enter your email and password.', 'danger');
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Logging in...';
+
+    try {
+      var response = await fetch(API + '/auth/login', {
+        method:      'POST',
+        credentials: 'include',
+        headers:     { 'Content-Type': 'application/json' },
+        body:        JSON.stringify({ email: email, password: password })
+      });
+
+      var data = await response.json();
+
+      if (response.ok && data.success) {
+        showAlert('Welcome, ' + data.user.name + '! Redirecting...', 'success');
+        setTimeout(function() {
+          window.location.href = '/pages/admin/dashboard.html';
+        }, 800);
+      } else {
+        showAlert(data.message || 'Invalid email or password.', 'danger');
+        btn.disabled    = false;
+        btn.textContent = '&#128273; Log In';
+      }
+
+    } catch (err) {
+      showAlert('Cannot connect to server. Make sure CMD is running npm run dev.', 'danger');
+      btn.disabled    = false;
+      btn.textContent = '&#128273; Log In';
+    }
+  }
+
+  // If already logged in redirect straight to dashboard
+  fetch(API + '/auth/me', { credentials: 'include' })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) window.location.href = '/pages/admin/dashboard.html';
+    })
+    .catch(function() {});
+</script>
+</body>
+</html>

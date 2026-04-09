@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documents — SK-FDMS Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;}
+    .admin-layout{display:flex;flex:1;}
+    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sidebar-nav{padding:12px 0;flex:1;}
+    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);font-size:.88rem;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;font-weight:600;}
+    .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.85rem;color:#fff;}
+    .sidebar-user .urole{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .admin-main{flex:1;overflow-y:auto;}
+    .topbar{background:#fff;padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
+    .topbar h2{font-size:1rem;color:#0D2B55;font-weight:700;}
+    .content{padding:24px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+    .btn-primary{background:#2E86C1;color:#fff;}
+    .btn-primary:hover{background:#1A5276;}
+    .btn-success{background:#1E8449;color:#fff;}
+    .btn-success:hover{background:#145A32;}
+    .btn-danger{background:#C0392B;color:#fff;}
+    .btn-danger:hover{background:#922B21;}
+    .btn-warning{background:#D4AC0D;color:#0D2B55;}
+    .btn-secondary{background:#f0f0f0;color:#444;}
+    .btn-secondary:hover{background:#ddd;}
+    .btn-sm{padding:5px 11px;font-size:.75rem;}
+    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;}
+    .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;margin-bottom:20px;}
+    .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+    .card-header h3{font-size:.9rem;color:#0D2B55;font-weight:700;}
+    .filter-row{padding:14px 22px;border-bottom:1px solid #f5f5f5;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:#fafafa;}
+    .filter-row select,.filter-row input{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.82rem;outline:none;font-family:inherit;}
+    .filter-row select:focus,.filter-row input:focus{border-color:#2E86C1;}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    thead tr{background:#0D2B55;}
+    thead th{color:#fff;font-size:.73rem;font-weight:600;padding:10px 14px;text-align:left;white-space:nowrap;}
+    tbody tr{border-bottom:1px solid #f2f2f2;transition:background .15s;}
+    tbody tr:hover{background:#f8fbfe;}
+    tbody td{padding:10px 14px;font-size:.82rem;color:#444;vertical-align:middle;}
+    .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700;}
+    .badge-pub{background:#D5F5E3;color:#1E8449;}
+    .badge-draft{background:#FEF9E7;color:#B7950B;}
+    .badge-cat{background:#EBF5FB;color:#1A5276;}
+    .alert{padding:10px 15px;border-radius:8px;margin-bottom:14px;font-size:.84rem;}
+    .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
+    .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
+    .empty{text-align:center;padding:50px;color:#bbb;}
+    .empty .eicon{font-size:2.5rem;margin-bottom:10px;}
+    .stat-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:20px;}
+    .smi{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #eee;border-left:3px solid #2E86C1;}
+    .smi.g{border-left-color:#1E8449;} .smi.o{border-left-color:#D4AC0D;}
+    .smi-num{font-size:1.8rem;font-weight:800;color:#0D2B55;line-height:1;}
+    .smi-lbl{font-size:.72rem;color:#888;margin-top:4px;}
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sk-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="documents.html" class="active">📁 Documents</a>
+      <a href="upload.html">⬆ Upload</a>
+      <a href="announcements.html">📢 Announcements</a>
+      <a href="users.html">👥 Users</a>
+      <a href="activity-log.html">📋 Activity Log</a>
+      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    </nav>
+    <div class="sidebar-user"><div class="uname" id="sName">…</div><div class="urole" id="sRole"></div></div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="topbar">
+      <h2>📁 Manage Documents</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <a href="upload.html" class="btn btn-primary btn-sm">⬆ Upload New</a>
+        <button class="btn-logout" onclick="doLogout()">Log Out</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="alertBox"></div>
+
+      <!-- Mini stats -->
+      <div class="stat-mini">
+        <div class="smi"><div class="smi-num" id="mTotal">—</div><div class="smi-lbl">Total Documents</div></div>
+        <div class="smi g"><div class="smi-num" id="mPub">—</div><div class="smi-lbl">Published</div></div>
+        <div class="smi o"><div class="smi-num" id="mDraft">—</div><div class="smi-lbl">Drafts</div></div>
+      </div>
+
+      <!-- Document Table -->
+      <div class="card">
+        <div class="card-header">
+          <h3>All Documents</h3>
+          <span id="docCount" style="font-size:.78rem;color:#888;"></span>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-row">
+          <div>
+            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Category</div>
+            <select id="fCat"><option value="">All Categories</option></select>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Status</div>
+            <select id="fStatus">
+              <option value="">All</option>
+              <option value="1">Published</option>
+              <option value="0">Draft</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Year</div>
+            <select id="fYear">
+              <option value="">All Years</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Search</div>
+            <input type="text" id="fSearch" placeholder="Search title…" style="width:180px;"/>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply</button>
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>FY / Period</th>
+                <th>Size</th>
+                <th>Uploaded By</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="docsBody">
+              <tr><td colspan="9" class="empty"><div class="eicon">⏳</div><p>Loading…</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var API = window.location.origin + '/api';
+  var allDocs = [], currentUser = null;
+
+  function fmt(d){ if(!d)return'—'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
+  function fmtKb(kb){ if(!kb)return'—'; if(kb<1024)return kb+' KB'; return (kb/1024).toFixed(1)+' MB'; }
+  function showAlert(msg,type){ var e=document.getElementById('alertBox'); e.innerHTML='<div class="alert alert-'+type+'">'+msg+'</div>'; if(type==='success')setTimeout(function(){e.innerHTML='';},4000); }
+
+  window.addEventListener('load', async function(){
+    var r=await fetch(API+'/auth/me',{credentials:'include'});
+    var d=await r.json();
+    if(!d.success){window.location.href='/pages/login.html';return;}
+    currentUser=d.user;
+    document.getElementById('sName').textContent=d.user.name;
+    document.getElementById('sRole').textContent=d.user.role;
+    await loadCategories();
+    await loadDocs();
+  });
+
+  async function loadCategories(){
+    var r=await fetch(API+'/categories',{credentials:'include'});
+    var d=await r.json();
+    if(!d.data)return;
+    var sel=document.getElementById('fCat');
+    d.data.forEach(function(c){
+      var o=document.createElement('option');
+      o.value=c.id; o.textContent=c.code+' — '+c.name;
+      sel.appendChild(o);
+    });
+  }
+
+  async function loadDocs(params){
+    var qs=params?'?'+new URLSearchParams(params).toString():'';
+    var r=await fetch(API+'/admin/documents'+qs,{credentials:'include'});
+    var d=await r.json();
+    if(!d.success){showAlert('Failed to load documents.','danger');return;}
+    allDocs=d.data;
+    renderDocs(allDocs);
+    // Update mini stats
+    var pub=allDocs.filter(function(x){return x.is_published;}).length;
+    document.getElementById('mTotal').textContent=allDocs.length;
+    document.getElementById('mPub').textContent=pub;
+    document.getElementById('mDraft').textContent=allDocs.length-pub;
+    document.getElementById('docCount').textContent=allDocs.length+' document(s)';
+  }
+
+  function renderDocs(docs){
+    var tbody=document.getElementById('docsBody');
+    if(!docs.length){
+      tbody.innerHTML='<tr><td colspan="9"><div class="empty"><div class="eicon">📭</div><p>No documents found.</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML=docs.map(function(d,i){
+      var canDelete=(currentUser&&(currentUser.role==='admin'||currentUser.role==='chairperson'));
+      return '<tr id="row-'+d.id+'">'
+        +'<td style="color:#bbb;">'+(i+1)+'</td>'
+        +'<td><strong style="color:#0D2B55;">'+d.title+'</strong>'+(d.description?'<br><span style="font-size:.72rem;color:#888;">'+d.description+'</span>':'')+'</td>'
+        +'<td><span class="badge badge-cat">'+d.category_code+'</span></td>'
+        +'<td>'+d.fiscal_year+' · '+d.quarter+'</td>'
+        +'<td>'+fmtKb(d.file_size_kb)+'</td>'
+        +'<td>'+(d.uploaded_by_name||'—')+'</td>'
+        +'<td>'+fmt(d.created_at)+'</td>'
+        +'<td><span class="badge '+(d.is_published?'badge-pub':'badge-draft')+'" id="stat-'+d.id+'">'+(d.is_published?'✅ Published':'⏳ Draft')+'</span></td>'
+        +'<td><div style="display:flex;gap:5px;flex-wrap:wrap;">'
+          +'<a href="'+API+'/documents/'+d.id+'/download" class="btn btn-secondary btn-sm" target="_blank">⬇</a>'
+          +'<button class="btn '+(d.is_published?'btn-warning':'btn-success')+' btn-sm" id="pub-'+d.id+'" onclick="togglePublish('+d.id+','+d.is_published+')">'+(d.is_published?'Unpublish':'Publish')+'</button>'
+          +(canDelete?'<button class="btn btn-danger btn-sm" onclick="deleteDoc('+d.id+',\''+d.title.replace(/'/g,"\\'")+'\')" >Delete</button>':'')
+        +'</div></td>'
+      +'</tr>';
+    }).join('');
+  }
+
+  async function togglePublish(id, isPublished){
+    var btn=document.getElementById('pub-'+id);
+    btn.disabled=true; btn.textContent='…';
+    var r=await fetch(API+'/admin/documents/'+id+'/publish',{method:'PATCH',credentials:'include'});
+    var d=await r.json();
+    if(r.ok&&d.success){
+      var nowPub=d.is_published;
+      document.getElementById('stat-'+id).className='badge '+(nowPub?'badge-pub':'badge-draft');
+      document.getElementById('stat-'+id).textContent=nowPub?'✅ Published':'⏳ Draft';
+      btn.className='btn '+(nowPub?'btn-warning':'btn-success')+' btn-sm';
+      btn.textContent=nowPub?'Unpublish':'Publish';
+      btn.onclick=function(){togglePublish(id,nowPub);};
+      showAlert(d.message,'success');
+      // Refresh stats
+      var pub=0; document.querySelectorAll('[id^="stat-"]').forEach(function(e){if(e.textContent.includes('Published'))pub++;});
+      document.getElementById('mPub').textContent=pub;
+      document.getElementById('mDraft').textContent=allDocs.length-pub;
+    } else { showAlert(d.message||'Failed.','danger'); }
+    btn.disabled=false;
+  }
+
+  async function deleteDoc(id, title){
+    if(!confirm('Delete "'+title+'"?\n\nThis cannot be undone.'))return;
+    var r=await fetch(API+'/admin/documents/'+id,{method:'DELETE',credentials:'include'});
+    var d=await r.json();
+    if(r.ok&&d.success){
+      document.getElementById('row-'+id)?.remove();
+      showAlert(d.message,'success');
+      allDocs=allDocs.filter(function(x){return x.id!==id;});
+      document.getElementById('mTotal').textContent=allDocs.length;
+      document.getElementById('docCount').textContent=allDocs.length+' document(s)';
+    } else { showAlert(d.message||'Delete failed.','danger'); }
+  }
+
+  function applyFilters(){
+    var cat=document.getElementById('fCat').value;
+    var status=document.getElementById('fStatus').value;
+    var year=document.getElementById('fYear').value;
+    var q=document.getElementById('fSearch').value.trim().toLowerCase();
+    var filtered=allDocs.filter(function(d){
+      var mCat=!cat||String(d.category_id)===cat;
+      var mStat=status===''||String(d.is_published?1:0)===status;
+      var mYear=!year||String(d.fiscal_year)===year;
+      var mQ=!q||d.title.toLowerCase().includes(q);
+      return mCat&&mStat&&mYear&&mQ;
+    });
+    renderDocs(filtered);
+    document.getElementById('docCount').textContent=filtered.length+' result(s)';
+  }
+
+  function resetFilters(){
+    document.getElementById('fCat').value='';
+    document.getElementById('fStatus').value='';
+    document.getElementById('fYear').value='';
+    document.getElementById('fSearch').value='';
+    renderDocs(allDocs);
+    document.getElementById('docCount').textContent=allDocs.length+' document(s)';
+  }
+
+  async function doLogout(){
+    if(!confirm('Are you sure you want to log out?'))return;
+    await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
+    window.location.href='/';
+  }
+</script>
+</body>
+</html>
