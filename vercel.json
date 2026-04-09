@@ -3,11 +3,15 @@
   "rewrites": [
     { 
       "source": "/api/(.*)", 
-      "destination": "/skfdms_output/backend/server.js" 
+      "destination": "/skfdms_output/skfdms/backend/server.js" 
+    },
+    { 
+      "source": "/", 
+      "destination": "/skfdms_output/skfdms/frontend/index.html" 
     },
     { 
       "source": "/(.*)", 
-      "destination": "/skfdms_output/frontend/$1" 
+      "destination": "/skfdms_output/skfdms/frontend/$1" 
     }
   ]
 }
