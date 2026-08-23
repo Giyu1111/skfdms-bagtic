@@ -253,6 +253,21 @@
   }
 
   var API = window.location.origin + '/api';
+  var AUTH_CACHE_KEY = 'skfdms_current_user';
+
+  function getCachedLogin() {
+    try {
+      return JSON.parse(sessionStorage.getItem(AUTH_CACHE_KEY) || localStorage.getItem(AUTH_CACHE_KEY) || 'null');
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function setCachedLogin(value) {
+    var serialized = JSON.stringify(value);
+    sessionStorage.setItem(AUTH_CACHE_KEY, serialized);
+    localStorage.setItem(AUTH_CACHE_KEY, serialized);
+  }
 
   // ---------- PEEK BEHAVIOUR: show password only while button is pressed ----------
   (function() {
@@ -328,11 +343,11 @@
       var data = await response.json();
 
       if (response.ok && data.success) {
-        sessionStorage.setItem('skfdms_current_user', JSON.stringify({
+        setCachedLogin({
           user: data.user,
           token: data.token,
           cached_at: Date.now()
-        }));
+        });
         showAlert('Welcome, ' + data.user.name + '! Redirecting...', 'success');
         setTimeout(function() {
           var memberRoles = ['treasurer', 'secretary', 'councilor'];
@@ -352,8 +367,7 @@
   }
 
   // If already logged in, redirect
-  var cachedLogin = null;
-  try { cachedLogin = JSON.parse(sessionStorage.getItem('skfdms_current_user') || 'null'); } catch (err) {}
+  var cachedLogin = getCachedLogin();
   fetch(API + '/auth/me', {
       credentials: 'include',
       headers: cachedLogin && cachedLogin.token ? { 'X-SKFDMS-Auth': cachedLogin.token } : {}
@@ -361,11 +375,11 @@
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.success) {
-        sessionStorage.setItem('skfdms_current_user', JSON.stringify({
+        setCachedLogin({
           user: d.user,
           token: cachedLogin && cachedLogin.token,
           cached_at: Date.now()
-        }));
+        });
         var memberRoles = ['treasurer', 'secretary', 'councilor'];
         window.location.href = memberRoles.includes(d.user.role) ? '/pages/admin/documents' : '/pages/admin/dashboard';
       }

@@ -5,14 +5,35 @@
 
 // Automatically uses whatever port the page is served from
 const API_BASE = window.location.origin + '/api';
+const AUTH_CACHE_KEY = 'skfdms_current_user';
+const AUTH_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+function readAuthCache() {
+  try {
+    return JSON.parse(sessionStorage.getItem(AUTH_CACHE_KEY) || localStorage.getItem(AUTH_CACHE_KEY) || 'null');
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeAuthCache(value) {
+  const serialized = JSON.stringify(value);
+  sessionStorage.setItem(AUTH_CACHE_KEY, serialized);
+  localStorage.setItem(AUTH_CACHE_KEY, serialized);
+}
+
+function clearAuthCache() {
+  sessionStorage.removeItem(AUTH_CACHE_KEY);
+  localStorage.removeItem(AUTH_CACHE_KEY);
+}
+
+function isFreshAuthCache(cached) {
+  return cached && cached.user && cached.cached_at && Date.now() - cached.cached_at < AUTH_CACHE_MAX_AGE_MS;
+}
 
 function getStoredAuthToken() {
-  try {
-    const cached = JSON.parse(sessionStorage.getItem('skfdms_current_user') || 'null');
-    return cached && cached.token ? cached.token : '';
-  } catch (err) {
-    return '';
-  }
+  const cached = readAuthCache();
+  return cached && cached.token ? cached.token : '';
 }
 
 function withAuthHeader(headers = {}) {
@@ -156,29 +177,27 @@ function formatFileSize(kb) {
 }
 
 async function requireLogin() {
+  const cachedBeforeCheck = readAuthCache();
   const { ok, data } = await Auth.me();
   if (!ok || !data.success) {
-    const cached = (() => {
-      try { return JSON.parse(sessionStorage.getItem('skfdms_current_user') || 'null'); } catch (err) { return null; }
-    })();
-    if (cached && cached.user && cached.token) return cached.user;
-    sessionStorage.removeItem('skfdms_current_user');
+    if (isFreshAuthCache(cachedBeforeCheck)) return cachedBeforeCheck.user;
+    clearAuthCache();
     window.location.href = '/pages/login';
     return null;
   }
   const cachedToken = getStoredAuthToken();
-  sessionStorage.setItem('skfdms_current_user', JSON.stringify({
+  writeAuthCache({
     user: data.user,
     token: cachedToken,
     cached_at: Date.now()
-  }));
+  });
   window.dispatchEvent(new CustomEvent('skfdms:user', { detail: data.user }));
   return data.user;
 }
 
 async function logoutAndRedirect(target = '/') {
   await Auth.logout();
-  sessionStorage.removeItem('skfdms_current_user');
+  clearAuthCache();
   window.location.href = target;
 }
 
