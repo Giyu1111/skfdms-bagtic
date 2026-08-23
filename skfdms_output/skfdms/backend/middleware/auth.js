@@ -1,3 +1,5 @@
+const { getCurrentUser } = require('../utils/authCookie');
+
 // ============================================================
 // backend/middleware/auth.js
 // Session-based authentication middleware
@@ -8,14 +10,16 @@
  * Returns 401 JSON if not logged in
  */
 function requireAuth(req, res, next) {
-  if (!req.session || !req.session.user) {
+  const currentUser = getCurrentUser(req);
+  if (!currentUser) {
     return res.status(401).json({
       success: false,
       message: 'Unauthorized. Please log in.',
     });
   }
   // Attach user shorthand
-  req.user = req.session.user;
+  if (req.session && !req.session.user) req.session.user = currentUser;
+  req.user = currentUser;
   next();
 }
 
@@ -26,16 +30,18 @@ function requireAuth(req, res, next) {
 function requireRole(...roles) {
   const allowed = roles.flat();
   return (req, res, next) => {
-    if (!req.session || !req.session.user) {
+    const currentUser = getCurrentUser(req);
+    if (!currentUser) {
       return res.status(401).json({ success: false, message: 'Unauthorized.' });
     }
-    if (!allowed.includes(req.session.user.role)) {
+    if (!allowed.includes(currentUser.role)) {
       return res.status(403).json({
         success: false,
         message: `Access denied. Required role: ${allowed.join(' or ')}.`,
       });
     }
-    req.user = req.session.user;
+    if (req.session && !req.session.user) req.session.user = currentUser;
+    req.user = currentUser;
     next();
   };
 }

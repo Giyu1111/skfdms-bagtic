@@ -20,6 +20,8 @@ const app  = express();
 const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
 const MAX_PORT_RETRIES = process.env.NODE_ENV === 'production' ? 0 : 10;
 
+app.set('trust proxy', 1);
+
 // ── Security headers ─────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: false,

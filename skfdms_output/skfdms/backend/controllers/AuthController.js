@@ -7,6 +7,7 @@
 const bcrypt = require('bcryptjs');
 const db = require('../config/database');
 const { logActivity } = require('../utils/logger');
+const { clearAuthCookie, getCurrentUser, setAuthCookie } = require('../utils/authCookie');
 
 // ── POST /api/auth/login ────────────────────────────────────
 async function login(req, res) {
@@ -56,8 +57,8 @@ async function login(req, res) {
       return res.status(403).json({ success: false, message: 'Your account is inactive. Please contact SK Federated.' });
     }
 
-    // Store session
-    req.session.user = {
+    // Store auth both in the Express session and in a signed cookie for serverless deployments.
+    const sessionUser = {
       id:          user.id,
       name:        user.name,
       email:       user.email,
@@ -65,6 +66,8 @@ async function login(req, res) {
       barangay_id: user.barangay_id,
       barangay:    user.barangay_name,
     };
+    req.session.user = sessionUser;
+    setAuthCookie(res, sessionUser);
 
     // Update last login (UPDATED: $1 placeholder and NOW())
     await db.query(`UPDATE users SET last_login = NOW() WHERE id = $1`, [user.id]);
@@ -96,12 +99,13 @@ async function login(req, res) {
 
 // ── POST /api/auth/logout ───────────────────────────────────
 async function logout(req, res) {
-  if (req.session.user) {
+  const currentUser = getCurrentUser(req);
+  if (currentUser) {
     try {
       await logActivity({
-        userId:  req.session.user.id,
+        userId:  currentUser.id,
         action:  'LOGOUT',
-        details: `${req.session.user.name} logged out`,
+        details: `${currentUser.name} logged out`,
         ip:      req.ip,
       });
     } catch (logErr) {
@@ -110,16 +114,19 @@ async function logout(req, res) {
   }
   req.session.destroy(() => {
     res.clearCookie('connect.sid');
+    clearAuthCookie(res);
     return res.json({ success: true, message: 'Logged out successfully.' });
   });
 }
 
 // ── GET /api/auth/me ────────────────────────────────────────
 function me(req, res) {
-  if (!req.session.user) {
+  const currentUser = getCurrentUser(req);
+  if (!currentUser) {
     return res.status(401).json({ success: false, message: 'Not authenticated.' });
   }
-  return res.json({ success: true, user: req.session.user });
+  if (req.session && !req.session.user) req.session.user = currentUser;
+  return res.json({ success: true, user: currentUser });
 }
 
 module.exports = { login, logout, me };
