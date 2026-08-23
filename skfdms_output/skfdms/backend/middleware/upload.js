@@ -6,15 +6,16 @@
 const multer = require('multer');
 const path   = require('path');
 const fs     = require('fs');
+const { getUploadDir } = require('../config/uploadPath');
 require('dotenv').config();
 
-const UPLOAD_DIR      = process.env.UPLOAD_DIR || './uploads';
+const UPLOAD_DIR      = getUploadDir();
 const MAX_SIZE_MB     = parseInt(process.env.MAX_FILE_SIZE_MB) || 10;
 const ALLOWED_TYPES   = (process.env.ALLOWED_FILE_TYPES || 'pdf,jpg,jpeg,png,doc,docx')
                           .split(',').map(t => t.trim().toLowerCase());
 
 // Ensure upload directory exists
-if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 // ── Storage Engine ──────────────────────────────────────────
 const storage = multer.diskStorage({
@@ -22,7 +23,7 @@ const storage = multer.diskStorage({
     // Organise by year: uploads/2024/
     const year = new Date().getFullYear();
     const dir  = path.join(UPLOAD_DIR, String(year));
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
   filename: (req, file, cb) => {

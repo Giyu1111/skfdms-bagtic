@@ -14,6 +14,7 @@ const path      = require('path');
 const fs        = require('fs');
 
 const apiRoutes = require('./routes/api');
+const { getUploadDir } = require('./config/uploadPath');
 
 const app  = express();
 const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
@@ -68,7 +69,7 @@ app.use(session({
 }));
 
 // ── Serve uploaded files ─────────────────────────────────────
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(getUploadDir()));
 
 // ── API Routes ───────────────────────────────────────────────
 app.use('/api', apiRoutes);
