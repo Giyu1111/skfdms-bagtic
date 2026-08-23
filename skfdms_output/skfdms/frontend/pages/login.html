@@ -3,103 +3,302 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Login — SK-FDMS Bagtic</title>
+  <title>Admin Login</title>
+  <link rel="icon" type="image/png" href="../images/favicon.png">
   <link rel="stylesheet" href="../css/style.css" />
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: linear-gradient(135deg, #070a0e 0%, #1A5276 100%);
+      background: linear-gradient(135deg, #060f09 0%, #1A4530 60%, #2A6B4A 100%);
       min-height: 100vh;
+      margin: 0;
+      color: #222;
+      font-family: 'Plus Jakarta Sans', 'DM Sans', system-ui, sans-serif;
+    }
+
+    .login-page-main {
+      min-height: calc(100vh - 78px);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 24px;
     }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    /* CARD WITH GLOWING LOGO BACKGROUND */
     .login-card {
       background: #fff;
-      border-radius: 18px;
-      padding: 48px 40px;
+      border-radius: 20px;
+      padding: 44px 40px;
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+      box-shadow: 0 28px 70px rgba(0,0,0,0.35);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
     }
-    .login-logo { text-align: center; margin-bottom: 32px; }
-    .badge-big {
-      display: inline-block;
-      background: #9b8d0d;
-      color: #fff;
-      font-size: 1.8rem;
-      font-weight: 700;
-      padding: 10px 24px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      letter-spacing: 2px;
+
+    /* Glowing SK Logo in the background */
+    .login-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url('../images/favicon.png');
+      background-size: 70% 70%;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.3;
+      z-index: -1;
+      filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 60px rgba(255, 215, 0, 0.3));
+      mix-blend-mode: multiply;
+      pointer-events: none;
     }
-    .login-logo h2 { font-size: 1.1rem; color: #0D2B55; margin-bottom: 4px; }
-    .login-logo p  { font-size: 0.83rem; color: #888; }
-    .form-group { margin-bottom: 18px; }
-    label { display: block; font-weight: 600; font-size: 0.875rem; color: #444; margin-bottom: 6px; }
-    input {
-      width: 100%; padding: 11px 14px;
-      border: 1.5px solid #ccc; border-radius: 8px;
+
+    .login-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* LOGIN HEADER (logos + text) */
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .login-logos img {
+      height: 54px;
+      width: 54px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid rgba(26, 69, 48, .18);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .12);
+    }
+    .login-jurisdiction { font-size: .82rem; font-weight: 700; color: #1A4530; margin: 6px 0 2px; letter-spacing: .5px; }
+    .login-jurisdiction.sub { font-size: 1.02rem; font-weight: 500; color: #6B7B6E; letter-spacing: .3px; }
+    .login-logo h2 { font-size: 1rem; color: #1A4530; font-weight: 800; margin-top: 4px; }
+    .login-logo p  { font-size: 0.8rem; color: #999; }
+
+    /* FORM */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 700; font-size: 0.82rem; color: #3A4A3E; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .3px; }
+    .input-wrap { position: relative; }
+    input[type="email"], input[type="password"], input[type="text"] {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid #C8D8CE; border-radius: 10px;
       font-size: 0.95rem; outline: none;
       box-sizing: border-box;
+      font-family: inherit;
+      transition: border-color .2s, box-shadow .2s;
     }
-    input:focus { border-color: #2E86C1; }
+    input:focus { border-color: #3D8C62; box-shadow: 0 0 0 3px rgba(61,140,98,.1); }
+
+    /* PASSWORD TOGGLE BUTTON */
+    .show-pass {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      color: #7A8C80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .2s;
+      line-height: 0;
+    }
+    .show-pass:hover {
+      color: #2A6B4A;
+    }
+    .show-pass svg {
+      pointer-events: none;
+    }
+
     .btn-login {
       width: 100%; padding: 13px;
-      background: #1A5276; color: #fff;
-      border: none; border-radius: 8px;
-      font-size: 1rem; font-weight: 700;
-      cursor: pointer; margin-top: 8px;
+      background: #3D8C62; color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 800;
+      cursor: pointer; margin-top: 6px;
+      font-family: inherit;
+      transition: background .2s;
     }
-    .btn-login:disabled { background: #aaa; cursor: not-allowed; }
-    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; }
-    .alert-danger  { background: #FDEDEC; color: #C0392B; border: 1px solid #F5B7B1; }
-    .alert-success { background: #EAFAF1; color: #1E8449; border: 1px solid #A9DFBF; }
-    .divider { height: 1px; background: #eee; margin: 24px 0; }
-    .back-link { text-align: center; font-size: .82rem; color: #888; }
-    .back-link a { color: #2E86C1; }
+    .btn-login:hover { background: #1A4530; }
+    .btn-login:disabled { background: #C8D8CE; cursor: not-allowed; }
+
+    .alert { padding: 11px 15px; border-radius: 9px; margin-bottom: 14px; font-size: 0.88rem; }
+    .alert-danger  { background: #FDEDEC; color: #943030; border: 1px solid #e8b4b4; }
+    .alert-success { background: #E2EAE5; color: #2A6B4A; border: 1px solid #A8CEBC; }
+
+    .divider { height: 1px; background: #E2EAE5; margin: 22px 0; }
+    .back-link { text-align: center; font-size: .82rem; color: #7A8C80; }
+    .back-link a { color: #3D8C62; text-decoration: none; font-weight: 700; }
+    .back-link a:hover { text-decoration: underline; }
+
+    /* FOOTER NOTE */
+    .secure-note {
+      text-align: center;
+      margin-top: 18px;
+      font-size: .75rem;
+      color: rgba(255,255,255,.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
   </style>
+  <link rel="stylesheet" href="../css/public-nav.css" />
+  <script src="../js/public-theme.js" defer></script>
 </head>
-<body>
-<div class="login-card">
-  <div class="login-logo">
-    <div class="badge-big">SK-FDMS</div>
-    <h2>Barangay Bagtic Admin</h2>
-    <p>Balilihan, Bohol &middot; SK Officials Only</p>
+<body class="public-home" data-default-theme="dark">
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-brand">
+      <span class="brand-logos" aria-hidden="true">
+        <img class="brand-logo" src="../images/cLogo.jpg" alt="" />
+        <img class="brand-logo" src="../images/favicon.png" alt="" />
+      </span>
+      <span class="brand-title">
+        <span class="brand-kabataan">Sangguniang Kabataan</span>
+        <span class="brand-rule"></span>
+        <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
+      </span>
+    </a>
+    <div class="navbar-links">
+      <a href="../index.html">Home</a>
+      <a href="documents.html">Documents</a>
+      <a href="transparency.html">Transparency</a>
+      <a href="community.html">Community</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About</a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
+      <a href="login.html" class="btn-admin">Login</a>
+    </div>
+  </div>
+</nav>
+
+<main class="login-page-main">
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <!-- LOGOS + JURISDICTION -->
+    <div class="login-logo">
+      <div class="login-logos">
+        <img src="../images/cLogo.jpg" alt="City/Municipal Logo" />
+        <img src="../images/favicon.png" alt="SK-FDMS Logo" />
+      </div>
+      <div class="login-jurisdiction">Sangguniang Kabataan</div>
+      <p class="login-jurisdiction sub">Municipality of Catigbian, Bohol</p>
+      <h2>Authorized Users Login</h2>
+      
+    </div>
+
+    <div id="alertBox"></div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="emailInput" placeholder="Enter your email" />
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input type="password" id="passwordInput" placeholder="Enter your password" />
+        <button class="show-pass" id="showPassBtn" type="button" aria-label="Show password">
+          <!-- Simple eye icon, never changes -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-login" id="loginBtn"> Log In</button>
+
+    <div class="divider"></div>
+    <div class="back-link">
+      <a href="/">&larr; Back to public site</a>
+    </div>
   </div>
 
-  <div id="alertBox"></div>
-
-  <div class="form-group">
-    <label>Email Address</label>
-    <input type="email" id="emailInput" placeholder="admin@skbagtic.gov.ph" />
-  </div>
-  <div class="form-group">
-    <label>Password</label>
-    <input type="password" id="passwordInput" placeholder="your password" />
-  </div>
-
-  <button class="btn-login" id="loginBtn">&#128273; Log In</button>
-
-  <div class="divider"></div>
-  <div class="back-link">
-    <a href="/">&larr; Back to public site</a>
-  </div>
+  <div class="secure-note"><span class="ui-icon ui-icon-lock" aria-hidden="true"></span> Security : <i>Authorized Users Allowed</i></div>
 </div>
+</main>
 
 <script>
-  // Uses same port as the page — works whether on 3000 or 5500
+  function toggleDark() {
+    document.body.classList.toggle('dark');
+    var isDark = document.body.classList.contains('dark');
+    localStorage.setItem('sk-dark', isDark ? '1' : '0');
+    var icon = document.querySelector('.dark-toggle');
+    if (icon) icon.innerHTML = isDark ? '<span class="ui-icon ui-icon-sun" aria-hidden="true"></span>' : '<span class="ui-icon ui-icon-moon" aria-hidden="true"></span>';
+  }
+
+  if (localStorage.getItem('sk-dark') === '1') {
+    document.body.classList.add('dark');
+    var icon = document.querySelector('.dark-toggle');
+    if (icon) icon.innerHTML = '<span class="ui-icon ui-icon-sun" aria-hidden="true"></span>';
+  }
+
   var API = window.location.origin + '/api';
+
+  // ---------- PEEK BEHAVIOUR: show password only while button is pressed ----------
+  (function() {
+    var btn = document.getElementById('showPassBtn');
+    var input = document.getElementById('passwordInput');
+
+    // Show password when mouse is held down or finger is pressed
+    btn.addEventListener('mousedown', function(e) {
+      e.preventDefault();   // prevent focus ring / text selection
+      input.type = 'text';
+    });
+
+    btn.addEventListener('mouseup', function() {
+      input.type = 'password';
+    });
+
+    btn.addEventListener('mouseleave', function() {
+      // In case the cursor leaves the button while pressing, hide password
+      input.type = 'password';
+    });
+
+    // Touch support for mobile
+    btn.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      input.type = 'text';
+    });
+
+    btn.addEventListener('touchend', function() {
+      input.type = 'password';
+    });
+
+    btn.addEventListener('touchcancel', function() {
+      input.type = 'password';
+    });
+  })();
 
   function showAlert(msg, type) {
     var el = document.getElementById('alertBox');
     el.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
   }
 
-  document.getElementById('loginBtn').addEventListener('click', doLogin);
-  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('loginBtn').addEventListener('click', doLogin);
+    document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doLogin();
+    });
   });
 
   async function doLogin() {
@@ -120,34 +319,49 @@
         method:      'POST',
         credentials: 'include',
         headers:     { 'Content-Type': 'application/json' },
-        body:        JSON.stringify({ email: email, password: password })
+        body:        JSON.stringify({
+          email:    email,
+          password: password
+        })
       });
 
       var data = await response.json();
 
       if (response.ok && data.success) {
+        sessionStorage.setItem('skfdms_current_user', JSON.stringify({
+          user: data.user,
+          cached_at: Date.now()
+        }));
         showAlert('Welcome, ' + data.user.name + '! Redirecting...', 'success');
         setTimeout(function() {
-          window.location.href = '/pages/admin/dashboard.html';
+          var memberRoles = ['treasurer', 'secretary', 'councilor'];
+          window.location.href = memberRoles.includes(data.user.role) ? '/pages/admin/documents' : '/pages/admin/dashboard';
         }, 800);
       } else {
         showAlert(data.message || 'Invalid email or password.', 'danger');
         btn.disabled    = false;
-        btn.textContent = '&#128273; Log In';
+        btn.innerHTML = '<span class="ui-icon ui-icon-key" aria-hidden="true"></span> Log In';
       }
 
     } catch (err) {
-      showAlert('Cannot connect to server. Make sure CMD is running npm run dev.', 'danger');
+      showAlert('Cannot connect to server. Make sure the server is running (npm run dev).', 'danger');
       btn.disabled    = false;
-      btn.textContent = '&#128273; Log In';
+      btn.innerHTML = '<span class="ui-icon ui-icon-key" aria-hidden="true"></span> Log In';
     }
   }
 
-  // If already logged in redirect straight to dashboard
+  // If already logged in, redirect
   fetch(API + '/auth/me', { credentials: 'include' })
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      if (d.success) window.location.href = '/pages/admin/dashboard.html';
+      if (d.success) {
+        sessionStorage.setItem('skfdms_current_user', JSON.stringify({
+          user: d.user,
+          cached_at: Date.now()
+        }));
+        var memberRoles = ['treasurer', 'secretary', 'councilor'];
+        window.location.href = memberRoles.includes(d.user.role) ? '/pages/admin/documents' : '/pages/admin/dashboard';
+      }
     })
     .catch(function() {});
 </script>

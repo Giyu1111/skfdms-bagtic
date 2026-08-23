@@ -31,12 +31,18 @@ CREATE TABLE IF NOT EXISTS users (
   name          VARCHAR(150) NOT NULL,
   email         VARCHAR(150) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  role          ENUM('chairperson','treasurer','secretary','admin') NOT NULL,
+  role          ENUM('chairperson','treasurer','secretary','councilor','admin') NOT NULL,
   is_active     TINYINT(1) DEFAULT 1,
+  approval_status ENUM('pending','approved','declined') NOT NULL DEFAULT 'approved',
+  requested_by  INT NULL,
+  reviewed_by   INT NULL,
+  reviewed_at   TIMESTAMP NULL,
   last_login    TIMESTAMP NULL,
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (barangay_id) REFERENCES barangays(id) ON DELETE CASCADE
+  FOREIGN KEY (barangay_id) REFERENCES barangays(id) ON DELETE CASCADE,
+  FOREIGN KEY (requested_by) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- ─────────────────────────────────────────────────────────

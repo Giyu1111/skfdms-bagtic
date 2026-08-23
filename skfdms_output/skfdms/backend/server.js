@@ -1,7 +1,7 @@
 // ============================================================
 // backend/server.js
 // SK-FDMS Express Server — Barangay Bagtic
-// Ready for Railway Deployment 🚀
+// Ready for Deployment
 // ============================================================
 
 require('dotenv').config();
@@ -11,11 +11,13 @@ const helmet    = require('helmet');
 const cors      = require('cors');
 const rateLimit = require('express-rate-limit');
 const path      = require('path');
+const fs        = require('fs');
 
 const apiRoutes = require('./routes/api');
 
 const app  = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
+const MAX_PORT_RETRIES = process.env.NODE_ENV === 'production' ? 0 : 10;
 
 // ── Security headers ─────────────────────────────────────────
 app.use(helmet({
@@ -31,17 +33,21 @@ app.use(cors({
 // ── Rate limiting ────────────────────────────────────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
-  message: { success: false, message: 'Too many requests.' },
+  max: Number.parseInt(process.env.API_RATE_LIMIT_MAX, 10) || 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.path === '/auth/login',
+  message: { success: false, message: 'Too many requests. Please wait a moment and try again.' },
 });
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { success: false, message: 'Too many login attempts.' },
+  max: Number.parseInt(process.env.LOGIN_RATE_LIMIT_MAX, 10) || 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many login attempts. Please wait before trying again.' },
 });
 
-app.use('/api/', limiter);
 app.use('/api/auth/login', loginLimiter);
 
 // ── Body parsers ─────────────────────────────────────────────
@@ -70,15 +76,55 @@ app.use('/api', apiRoutes);
 // ── Health check ─────────────────────────────────────────────
 app.get('/health', (req, res) => {
   res.json({
-    status:   'ok',
+    status:   'GOOD',
     system:   'SK-FDMS',
-    barangay: 'Bagtic, Balilihan, Bohol',
+    barangay: 'CATIGBIAN, BOHOL',
     time:     new Date().toISOString(),
   });
 });
 
 // ── Serve Frontend (UPDATED for build) ───────────────────────
 const frontendPath = path.join(__dirname, '..', 'frontend');
+
+function cleanFrontendPath(requestPath) {
+  let cleanPath = requestPath.replace(/\/+$/, '') || '/';
+
+  if (cleanPath === '/index.html' || cleanPath === '/index') return '/';
+  if (cleanPath.endsWith('/index.html')) return cleanPath.slice(0, -'/index.html'.length) || '/';
+  if (cleanPath.endsWith('.html')) return cleanPath.slice(0, -'.html'.length) || '/';
+  return cleanPath;
+}
+
+function hasFileExtension(requestPath) {
+  return path.extname(requestPath) !== '';
+}
+
+function frontendHtmlFile(requestPath) {
+  if (requestPath.startsWith('/api') || requestPath.startsWith('/uploads')) return null;
+  if (hasFileExtension(requestPath) && !requestPath.endsWith('.html')) return null;
+
+  const cleanPath = cleanFrontendPath(requestPath);
+  const htmlPath = cleanPath === '/' ? '/index.html' : `${cleanPath}.html`;
+  const filePath = path.normalize(path.join(frontendPath, htmlPath));
+  const frontendRoot = path.normalize(frontendPath + path.sep);
+
+  if (!filePath.startsWith(frontendRoot)) return null;
+  return fs.existsSync(filePath) ? filePath : null;
+}
+
+app.get('*', (req, res, next) => {
+  if (!req.path.endsWith('.html')) return next();
+
+  const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+  res.redirect(301, cleanFrontendPath(req.path) + query);
+});
+
+app.get('*', (req, res, next) => {
+  const filePath = frontendHtmlFile(req.path);
+  if (!filePath) return next();
+  res.sendFile(filePath);
+});
+
 app.use(express.static(frontendPath));
 
 // Fallback — serve index.html
@@ -104,11 +150,38 @@ app.use((err, req, res, next) => {
 });
 
 // ── Start server ─────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🏛️  SK-FDMS — Barangay Bagtic`);
-  console.log(`✅  Server running on port ${PORT}`);
-  console.log(`🌐  Deployment ready`);
-  console.log(`📁  Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+function logStartup(port) {
+  console.log(`\nSK-FDMS — Barangay Bagtic`);
+  console.log(`[OK] Server running on port ${port}`);
+  console.log(`Deployment ready`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}\n`);
+}
+
+function startServer(port, retriesLeft = MAX_PORT_RETRIES) {
+  const server = app.listen(port, () => logStartup(port));
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && retriesLeft > 0) {
+      const nextPort = port + 1;
+      console.warn(`Port ${port} is already in use. Trying port ${nextPort}...`);
+      startServer(nextPort, retriesLeft - 1);
+      return;
+    }
+
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${port} is already in use. Stop the other server or set PORT to another value.`);
+    } else {
+      console.error('Failed to start server:', err);
+    }
+
+    process.exit(1);
+  });
+
+  return server;
+}
+
+if (require.main === module) {
+  startServer(PORT);
+}
 
 module.exports = app;

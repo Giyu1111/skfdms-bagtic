@@ -3,185 +3,443 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Users — SK-FDMS Admin</title>
+  <title>Users-Admin</title>
   <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="icon" type="image/png" href="../images/favicon.png">
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;}
+    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;color:#143225;}
     .admin-layout{display:flex;flex:1;}
-    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
-    .sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
-    .sidebar-logo .sk-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
-    .sidebar-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sidebar{width:252px;background:#1A4530;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:24px 22px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.55rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.84rem;color:rgba(255,255,255,.62);margin-top:6px;}
     .sidebar-nav{padding:12px 0;flex:1;}
-    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);font-size:.88rem;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:13px 22px;color:rgba(255,255,255,.78);font-size:1rem;font-weight:600;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
     .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
-    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;font-weight:600;}
-    .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);}
-    .sidebar-user .uname{font-weight:700;font-size:.85rem;color:#fff;}
-    .sidebar-user .urole{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;}
+    .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;min-width:22px;flex-shrink:0;font-size:1rem;line-height:1;color:transparent;position:relative;overflow:hidden;}
+    .nav-icon::before{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .sidebar-user{padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.96rem;color:#fff;}
+    .sidebar-user .urole{font-size:.8rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:4px;}
     .admin-main{flex:1;overflow-y:auto;}
-    .topbar{background:#fff;padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
-    .topbar h2{font-size:1rem;color:#0D2B55;font-weight:700;}
-    .content{padding:24px;}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
-    .btn-primary{background:#2E86C1;color:#fff;} .btn-primary:hover{background:#1A5276;}
-    .btn-success{background:#1E8449;color:#fff;} .btn-success:hover{background:#145A32;}
-    .btn-danger{background:#C0392B;color:#fff;} .btn-danger:hover{background:#922B21;}
-    .btn-sm{padding:5px 11px;font-size:.75rem;}
-    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;}
-    .two-col{display:grid;grid-template-columns:1fr 360px;gap:22px;}
-    .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;}
-    .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;}
-    .card-header h3{font-size:.9rem;color:#0D2B55;font-weight:700;}
-    .card-body{padding:22px;}
-    .form-group{margin-bottom:16px;}
-    .form-label{display:block;font-weight:600;font-size:.8rem;color:#555;margin-bottom:5px;}
-    .form-control{width:100%;padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:.88rem;outline:none;box-sizing:border-box;font-family:inherit;transition:border-color .18s;}
-    .form-control:focus{border-color:#2E86C1;box-shadow:0 0 0 3px rgba(46,134,193,.1);}
-    .alert{padding:10px 15px;border-radius:8px;margin-bottom:14px;font-size:.84rem;}
-    .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
-    .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
-    .user-card{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f5f5f5;}
-    .user-card:last-child{border-bottom:none;}
-    .avatar{width:42px;height:42px;border-radius:50%;background:#2E86C1;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;}
-    .user-info{flex:1;}
-    .user-info .name{font-weight:700;font-size:.9rem;color:#0D2B55;}
-    .user-info .meta{font-size:.75rem;color:#888;margin-top:2px;}
-    .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700;}
-    .badge-active{background:#D5F5E3;color:#1E8449;}
-    .badge-inactive{background:#FDEDEC;color:#C0392B;}
-    .badge-role{background:#F4ECF7;color:#7D3C98;}
-    .empty{text-align:center;padding:40px;color:#bbb;}
-    @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+    .topbar{background:#fff;padding:0 30px;height:66px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E2E8F0;box-shadow:0 1px 3px rgba(15,23,42,.05);position:sticky;top:0;z-index:50;}
+    .topbar-left{display:flex;align-items:center;gap:15px;}
+    .topbar-left h2{font-size:1.2rem;color:#0F2A1E;font-weight:900;}
+    .barangay-select{padding:9px 12px;border-radius:8px;border:1px solid #CBD5E1;font-size:.95rem;font-weight:700;color:#0F2A1E;background-color:#F8FAFC;outline:none;}
+    .content{padding:28px;}
+    .hero-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px;padding:18px 20px;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,.06);}
+    .hero-strip h1{font-size:1.28rem;line-height:1.25;color:#0F2A1E;font-weight:900;letter-spacing:0;}
+    .hero-strip p{margin-top:5px;color:#64748B;font-size:.94rem;max-width:720px;}
+    .stat-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+    .stat-pill{min-width:104px;padding:10px 12px;border-radius:8px;background:#F8FAFC;border:1px solid #E2E8F0;}
+    .stat-pill strong{display:block;font-size:1.05rem;color:#0F2A1E;}
+    .stat-pill span{display:block;font-size:.76rem;color:#64748B;font-weight:800;text-transform:uppercase;margin-top:2px;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 14px;border-radius:8px;font-size:.88rem;font-weight:800;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;white-space:nowrap;}
+    .btn-primary{background:#1A4530;color:#fff;} .btn-primary:hover{background:#0F2A1E;}
+    .btn-success{background:#16803D;color:#fff;} .btn-success:hover{background:#0E5C2B;}
+    .btn-danger{background:#B42318;color:#fff;} .btn-danger:hover{background:#8F1D15;}
+    .btn-warning{background:#D4AC0D;color:#0F2A1E;} .btn-warning:hover{background:#B7950B;}
+    .btn-muted{background:#EEF2F7;color:#334155;} .btn-muted:hover{background:#E2E8F0;}
+    .btn-sm{padding:7px 10px;font-size:.78rem;}
+    .btn-logout{background:#F1F5F9;color:#334155;border:none;padding:9px 16px;border-radius:8px;font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;}
+    .two-col{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:22px;align-items:start;}
+    .card{background:#fff;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,.06);border:1px solid #E2E8F0;overflow:hidden;}
+    .card-header{padding:16px 20px;border-bottom:1px solid #E2E8F0;display:flex;justify-content:space-between;align-items:center;gap:14px;}
+    .card-header h3{font-size:1rem;color:#0F2A1E;font-weight:900;}
+    .card-header small{display:block;margin-top:3px;color:#64748B;font-weight:600;}
+    .card-body{padding:20px;}
+    .form-grid{display:grid;gap:15px;}
+    .form-group{display:grid;gap:7px;}
+    .form-label{font-weight:800;font-size:.84rem;color:#334155;}
+    .required{color:#B42318;}
+    .form-control{width:100%;padding:12px 13px;border:1.5px solid #CBD5E1;border-radius:8px;font-size:.96rem;outline:none;box-sizing:border-box;font-family:inherit;transition:border-color .18s,box-shadow .18s;background:#fff;color:#0F172A;}
+    .form-control:focus{border-color:#1A4530;box-shadow:0 0 0 4px rgba(26,69,48,.11);}
+    .form-hint{font-size:.78rem;color:#64748B;line-height:1.4;}
+    .form-note{padding:12px;border-radius:8px;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;font-size:.84rem;line-height:1.45;}
+    .alert{padding:12px 14px;border-radius:8px;margin-bottom:16px;font-size:.92rem;font-weight:700;border:1px solid transparent;}
+    .alert-success{background:#ECFDF3;color:#067647;border-color:#ABEFC6;}
+    .alert-danger{background:#FEF3F2;color:#B42318;border-color:#FECDCA;}
+    .alert-info{background:#EFF8FF;color:#175CD3;border-color:#B2DDFF;}
+    .user-list{display:grid;gap:12px;}
+    .user-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;}
+    .avatar{width:44px;height:44px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+    .user-info{min-width:0;}
+    .user-info .name{font-weight:900;font-size:1rem;color:#0F2A1E;overflow-wrap:anywhere;}
+    .user-info .meta{font-size:.84rem;color:#64748B;margin-top:3px;overflow-wrap:anywhere;}
+    .badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+    .badge{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:capitalize;}
+    .badge-active{background:#DCFCE7;color:#166534;}
+    .badge-inactive{background:#FEE2E2;color:#991B1B;}
+    .badge-role{background:#EEF2FF;color:#3730A3;}
+    .action-stack{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+    .empty{text-align:center;padding:44px 16px;color:#94A3B8;font-weight:700;}
+    @media(max-width:980px){
+      .two-col{grid-template-columns:1fr;}
+      .hero-strip{align-items:flex-start;flex-direction:column;}
+      .stat-row{justify-content:flex-start;}
+    }
+    @media(max-width:700px){
+      .admin-layout{display:block;}
+      .sidebar{width:100%;min-height:auto;position:relative;}
+      .topbar{padding:0 16px;}
+      .content{padding:18px;}
+      .user-card{grid-template-columns:auto 1fr;}
+      .action-stack{grid-column:1/-1;justify-content:flex-start;}
+    }
   </style>
+  <link rel="stylesheet" href="../../css/admin-shell.css"/>
+  <script src="../../js/public-theme.js" defer></script>
 </head>
 <body>
 <div class="admin-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="sk-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
-    <nav class="sidebar-nav">
-      <a href="dashboard.html">🏠 Dashboard</a>
-      <a href="documents.html">📁 Documents</a>
-      <a href="upload.html">⬆ Upload</a>
-      <a href="announcements.html">📢 Announcements</a>
-      <a href="users.html" class="active">👥 Users</a>
-      <a href="activity-log.html">📋 Activity Log</a>
-      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    <div class="sidebar-logo">
+      <div class="admin-brand">
+        <span class="admin-brand-logos" aria-hidden="true">
+          <img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" />
+          <img class="admin-brand-logo" src="../../images/favicon.png" alt="" />
+        </span>
+        <span class="admin-brand-title">
+          <span class="admin-brand-kabataan">Sangguniang Kabataan</span>
+          <span class="admin-brand-rule"></span>
+          <span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span>
+        </span>
+      </div>
+      <p id="sidebarCaption">ADMIN</p>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
+      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
+      <a href="users.html" class="active" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="/" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
     </nav>
-    <div class="sidebar-user"><div class="uname" id="sName">…</div><div class="urole" id="sRole"></div></div>
+    <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
   </aside>
 
   <div class="admin-main">
     <div class="topbar">
-      <h2>👥 User Management</h2>
+      <div class="topbar-left">
+        <h2>User Management</h2>
+        <select id="barangaySelector" class="barangay-select"></select>
+      </div>
       <button class="btn-logout" onclick="doLogout()">Log Out</button>
     </div>
-    <div class="content">
+    <main class="content">
+      <div class="hero-strip">
+        <div>
+          <h1 id="pageTitle">Official Credentials</h1>
+          <p id="pageSub">Create SK chairperson credentials for the selected barangay.</p>
+        </div>
+        <div class="stat-row">
+          <div class="stat-pill"><strong id="totalCount">0</strong><span>Total</span></div>
+          <div class="stat-pill"><strong id="inactiveCount">0</strong><span>Inactive</span></div>
+          <div class="stat-pill"><strong id="activeCount">0</strong><span>Active</span></div>
+        </div>
+      </div>
+
       <div id="alertBox"></div>
       <div class="two-col">
-
-        <!-- Users List -->
-        <div class="card">
+        <section class="card">
           <div class="card-header">
-            <h3>SK Officials — Barangay Bagtic</h3>
-            <span style="font-size:.78rem;color:#888;" id="userCount">0 users</span>
+            <div>
+              <h3>SK Officials</h3>
+              <small id="listSub">Current SK official credentials</small>
+            </div>
+            <span style="font-size:.84rem;color:#64748B;font-weight:800;" id="userCount">0 users</span>
           </div>
-          <div class="card-body" id="userList"><div class="empty">Loading…</div></div>
-        </div>
+          <div class="card-body">
+            <div class="user-list" id="userList"><div class="empty">Loading...</div></div>
+          </div>
+        </section>
 
-        <!-- Add User -->
-        <div style="align-self:start;">
-          <div class="card">
-            <div class="card-header"><h3>➕ Add New SK Official</h3></div>
-            <div class="card-body">
+        <aside class="card">
+          <div class="card-header">
+            <div>
+              <h3 id="formTitle">Add New SK Official</h3>
+              <small id="formSub">Input credentials for the account.</small>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="form-note" id="roleNote"></div>
+            <div class="form-grid" style="margin-top:16px;">
               <div class="form-group">
-                <label class="form-label">Full Name <span style="color:#e74c3c;">*</span></label>
-                <input type="text" class="form-control" id="nName" placeholder="e.g. Juan Dela Cruz"/>
+                <label class="form-label" for="nName">Full Name <span class="required">*</span></label>
+                <input type="text" class="form-control" id="nName" placeholder="e.g. Juan Dela Cruz" autocomplete="name"/>
               </div>
               <div class="form-group">
-                <label class="form-label">Email Address <span style="color:#e74c3c;">*</span></label>
-                <input type="email" class="form-control" id="nEmail" placeholder="juan@skbagtic.gov.ph"/>
+                <label class="form-label" for="nEmail">Email Address <span class="required">*</span></label>
+                <input type="email" class="form-control" id="nEmail" placeholder="juan@skbagtic.gov.ph" autocomplete="email"/>
               </div>
               <div class="form-group">
-                <label class="form-label">Role <span style="color:#e74c3c;">*</span></label>
-                <select class="form-control" id="nRole">
-                  <option value="secretary">Secretary</option>
-                  <option value="treasurer">Treasurer</option>
-                  <option value="chairperson">Chairperson</option>
-                  <option value="admin">Admin</option>
-                </select>
+                <label class="form-label" for="nRole">Role <span class="required">*</span></label>
+                <select class="form-control" id="nRole"></select>
               </div>
               <div class="form-group">
-                <label class="form-label">Password <span style="color:#e74c3c;">*</span></label>
-                <input type="password" class="form-control" id="nPass" placeholder="Min. 6 characters"/>
+                <label class="form-label" for="nPass" id="passwordLabel">Temporary Password <span class="required">*</span></label>
+                <input type="password" class="form-control" id="nPass" placeholder="At least 8 characters" autocomplete="new-password"/>
+                <div class="form-hint" id="passwordHint">Share this password privately with the new official.</div>
               </div>
-              <button class="btn btn-primary" id="addBtn" onclick="addUser()" style="width:100%;justify-content:center;">
-                ➕ Add User
+              <div class="form-group">
+                <label class="form-label" for="nPassConfirm" id="confirmPasswordLabel">Confirm Password <span class="required">*</span></label>
+                <input type="password" class="form-control" id="nPassConfirm" placeholder="Re-type the password" autocomplete="new-password"/>
+                <div class="form-hint" id="confirmPasswordHint">Must match the password above.</div>
+              </div>
+              <button class="btn btn-primary" id="addBtn" onclick="addUser()" style="width:100%;">
+                Add User
               </button>
             </div>
           </div>
-        </div>
-
+        </aside>
       </div>
-    </div>
+    </main>
   </div>
 </div>
 
+<script src="../../js/barangay-context.js"></script>
 <script>
   var API = window.location.origin + '/api';
   var currentUserId = null;
+  var currentUser = null;
+  var allUsers = [];
+  var editingUserId = null;
+  var editingBarangayId = null;
 
   function fmt(d){ if(!d)return'Never'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
-  function showAlert(msg,type){ var e=document.getElementById('alertBox'); e.innerHTML='<div class="alert alert-'+type+'">'+msg+'</div>'; if(type==='success')setTimeout(function(){e.innerHTML='';},4000); }
+  function escapeHtml(value){
+    return String(value == null ? '' : value).replace(/[&<>"']/g,function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+  function roleLabel(role){
+    return ({admin:'SK Federated',chairperson:'SK Chairperson',treasurer:'Treasurer',secretary:'Secretary',councilor:'SK Councilor'})[role] || role;
+  }
+  function showAlert(msg,type){
+    var e=document.getElementById('alertBox');
+    e.innerHTML='<div class="alert alert-'+type+'">'+escapeHtml(msg)+'</div>';
+    if(type==='success'||type==='info')setTimeout(function(){e.innerHTML='';},4500);
+  }
+
+  function validatePasswordFields(requirePassword){
+    var pass=document.getElementById('nPass').value;
+    var confirmPass=document.getElementById('nPassConfirm').value;
+    if(requirePassword && (!pass || !confirmPass)){
+      showAlert('Password and confirm password are required.','danger');
+      return false;
+    }
+    if(confirmPass && !pass){
+      showAlert('Enter a new password before confirming it.','danger');
+      return false;
+    }
+    if(pass && pass.length<8){
+      showAlert('Password must be at least 8 characters.','danger');
+      return false;
+    }
+    if(pass !== confirmPass){
+      showAlert('Passwords do not match.','danger');
+      return false;
+    }
+    return true;
+  }
 
   window.addEventListener('load', async function(){
     var r=await fetch(API+'/auth/me',{credentials:'include'});
     var d=await r.json();
-    if(!d.success){window.location.href='/pages/login.html';return;}
-    if(d.user.role!=='admin'){alert('Admin access required.');window.location.href='dashboard.html';return;}
-    currentUserId=d.user.id;
+    if(!d.success){window.location.href='/pages/login';return;}
+    if(d.user.role !== 'admin'){
+      window.location.href='dashboard';
+      return;
+    }
+
+    currentUser = d.user;
+    currentUserId = d.user.id;
     document.getElementById('sName').textContent=d.user.name;
-    document.getElementById('sRole').textContent=d.user.role;
+    document.getElementById('sRole').textContent=roleLabel(d.user.role);
+    document.getElementById('sidebarCaption').textContent=d.user.role==='admin' ? 'SK Federated Admin' : 'Barangay '+(d.user.barangay || '')+' Admin';
+
+    await window.SkBarangay.init(currentUser);
+    window.SkBarangay.populateDropdown(document.getElementById('barangaySelector'));
+    document.getElementById('barangaySelector').addEventListener('change', function() {
+      window.SkBarangay.setSelectedBarangayId(this.value);
+      loadUsers();
+    });
+
+    setupRoleOptions();
+    applyRoleVisibility();
     loadUsers();
   });
 
-  async function loadUsers(){
-    var r=await fetch(API+'/admin/users',{credentials:'include'});
-    var d=await r.json();
-    var container=document.getElementById('userList');
-    if(!d.success||!d.data.length){
-      container.innerHTML='<div class="empty">No users found.</div>';
-      document.getElementById('userCount').textContent='0 users';
-      return;
-    }
-    document.getElementById('userCount').textContent=d.data.length+' user(s)';
-    container.innerHTML=d.data.map(function(u){
-      var colors={'admin':'#7D3C98','chairperson':'#1A5276','treasurer':'#1E8449','secretary':'#B7950B'};
-      var bgColor=colors[u.role]||'#2E86C1';
-      var isSelf=(u.id===currentUserId);
-      return '<div class="user-card" id="uc-'+u.id+'">'
-        +'<div class="avatar" style="background:'+bgColor+';">'+u.name.charAt(0).toUpperCase()+'</div>'
-        +'<div class="user-info">'
-          +'<div class="name">'+u.name+(isSelf?' <span style="font-size:.68rem;color:#2E86C1;">(You)</span>':'')+'</div>'
-          +'<div class="meta">'+u.email+'</div>'
-          +'<div class="meta" style="margin-top:3px;">'
-            +'<span class="badge badge-role" style="margin-right:5px;">'+u.role+'</span>'
-            +'<span class="badge '+(u.is_active?'badge-active':'badge-inactive')+'">'+(u.is_active?'Active':'Inactive')+'</span>'
-          +'</div>'
-          +'<div class="meta" style="margin-top:3px;">Last login: '+fmt(u.last_login)+'</div>'
-        +'</div>'
-        +(!isSelf?'<button class="btn '+(u.is_active?'btn-danger':'btn-success')+' btn-sm" onclick="toggleUser('+u.id+','+u.is_active+',\''+u.name+'\')">'+(u.is_active?'Deactivate':'Activate')+'</button>':'')
-      +'</div>';
-    }).join('');
+  function setupRoleOptions(){
+    var roleSelect=document.getElementById('nRole');
+    var options=[
+      {value:'chairperson',label:'SK Chairperson'}
+    ];
+    roleSelect.innerHTML=options.map(function(o){return '<option value="'+o.value+'">'+o.label+'</option>';}).join('');
+
+    document.getElementById('pageTitle').textContent='Official Credentials';
+    document.getElementById('pageSub').textContent='Create SK chairperson credentials for the selected barangay.';
+    document.getElementById('formTitle').textContent='Add SK Chairperson';
+    document.getElementById('formSub').textContent='Input credentials for the selected barangay.';
+    document.getElementById('addBtn').textContent='Add User';
   }
 
-  async function toggleUser(id, isActive, name){
-    if(!confirm((isActive?'Deactivate':'Activate')+' user "'+name+'"?'))return;
-    var r=await fetch(API+'/admin/users/'+id+'/toggle',{method:'PATCH',credentials:'include'});
+  function userQuery(){
+    var id=window.SkBarangay.getSelectedBarangayId();
+    return currentUser.role==='admin' && id ? '?barangay_id='+encodeURIComponent(id) : '';
+  }
+
+  function userActionQuery(barangayId){
+    return currentUser.role==='admin' && barangayId ? '?barangay_id='+encodeURIComponent(barangayId) : '';
+  }
+
+  function selectedCreateBarangayId(){
+    var id=window.SkBarangay.getSelectedBarangayId();
+    return id && id !== 'all' ? id : null;
+  }
+
+  async function loadUsers(){
+    var r=await fetch(API+'/admin/users'+userQuery(),{credentials:'include'});
+    var d=await r.json();
+    var container=document.getElementById('userList');
+    if(!d.success){
+      container.innerHTML='<div class="empty">'+escapeHtml(d.message || 'Unable to load users.')+'</div>';
+      return;
+    }
+
+    var users=d.data || [];
+    var inactive=users.filter(function(u){return !u.is_active;}).length;
+    var active=users.filter(function(u){return u.is_active;}).length;
+    document.getElementById('totalCount').textContent=users.length;
+    document.getElementById('inactiveCount').textContent=inactive;
+    document.getElementById('activeCount').textContent=active;
+    document.getElementById('userCount').textContent=users.length+' user(s)';
+
+    if(!users.length){
+      container.innerHTML='<div class="empty">No users found.</div>';
+      return;
+    }
+
+    container.innerHTML=users.map(renderUser).join('');
+  }
+
+  function renderUser(u){
+    var colors={admin:'#7D3C98',chairperson:'#1A5276',treasurer:'#16803D',secretary:'#B7950B',councilor:'#2563EB'};
+    var bgColor=colors[u.role]||'#2E86C1';
+    var isSelf=(u.id===currentUserId);
+    var activeLabel=u.is_active ? 'Active' : 'Inactive';
+    var actions='';
+
+    if(currentUser.role==='admin' && !isSelf){
+      actions='<div class="action-stack">'
+        +'<button class="btn btn-warning btn-sm" onclick="editUser('+u.id+',\''+escapeHtml(u.name).replace(/'/g,"&#39;")+'\',\''+escapeHtml(u.email).replace(/'/g,"&#39;")+'\',\''+u.role+'\',\''+u.barangay_id+'\')">Edit</button>'
+        +'<button class="btn '+(u.is_active?'btn-danger':'btn-success')+' btn-sm" onclick="toggleUser('+u.id+','+u.is_active+',\''+u.barangay_id+'\')">'+(u.is_active?'Deactivate':'Activate')+'</button>'
+        +'<button class="btn btn-danger btn-sm" onclick="deleteUser('+u.id+',\''+escapeHtml(u.name).replace(/'/g,"&#39;")+'\',\''+u.barangay_id+'\')">Delete</button>'
+      +'</div>';
+    }
+
+    return '<div class="user-card" id="uc-'+u.id+'">'
+      +'<div class="avatar" style="background:'+bgColor+';">'+escapeHtml((u.name || '?').charAt(0).toUpperCase())+'</div>'
+      +'<div class="user-info">'
+        +'<div class="name">'+escapeHtml(u.name)+(isSelf?' <span style="font-size:.72rem;color:#175CD3;">(You)</span>':'')+'</div>'
+        +'<div class="meta">'+escapeHtml(u.email)+'</div>'
+        +'<div class="badge-row">'
+          +'<span class="badge badge-role">'+escapeHtml(roleLabel(u.role))+'</span>'
+          +'<span class="badge '+(u.is_active?'badge-active':'badge-inactive')+'">'+activeLabel+'</span>'
+        +'</div>'
+        +'<div class="meta">Last login: '+fmt(u.last_login)+'</div>'
+      +'</div>'
+      +actions
+    +'</div>';
+  }
+
+  async function toggleUser(id, isActive, barangayId){
+    if(!confirm((isActive?'Deactivate':'Activate')+' this user?'))return;
+    var r=await fetch(API+'/admin/users/'+id+'/toggle'+userActionQuery(barangayId),{method:'PATCH',credentials:'include'});
     var d=await r.json();
     if(r.ok&&d.success){showAlert(d.message,'success');loadUsers();}
     else{showAlert(d.message||'Failed.','danger');}
+  }
+
+  async function editUser(id, name, email, role, barangayId){
+    document.getElementById('nName').value=name;
+    document.getElementById('nEmail').value=email;
+    document.getElementById('nRole').value=role;
+    document.getElementById('nPass').value='';
+    document.getElementById('nPassConfirm').value='';
+    document.getElementById('passwordLabel').innerHTML='New Password <span style="font-size:.78rem;color:#94A3B8;">(optional)</span>';
+    document.getElementById('passwordHint').textContent='Leave blank to keep the current password.';
+    document.getElementById('confirmPasswordLabel').innerHTML='Confirm New Password <span style="font-size:.78rem;color:#94A3B8;">(optional)</span>';
+    document.getElementById('confirmPasswordHint').textContent='Only required if you enter a new password.';
+    document.getElementById('addBtn').textContent='Update User';
+    document.getElementById('addBtn').onclick=function(){updateUser(id);};
+    editingUserId=id;
+    editingBarangayId=barangayId;
+    document.querySelector('aside.card').scrollIntoView({behavior:'smooth'});
+  }
+
+  async function updateUser(id){
+    var name=document.getElementById('nName').value.trim();
+    var email=document.getElementById('nEmail').value.trim();
+    var role=document.getElementById('nRole').value;
+    var pass=document.getElementById('nPass').value;
+    if(!name||!email||!role){showAlert('Name, email, and role are required.','danger');return;}
+    if(!validatePasswordFields(false))return;
+
+    var btn=document.getElementById('addBtn');
+    btn.disabled=true;
+    var payload={name:name,email:email,role:role};
+    if(editingBarangayId)payload.barangay_id=editingBarangayId;
+    if(pass)payload.password=pass;
+    var r=await fetch(API+'/admin/users/'+id+userActionQuery(editingBarangayId),{
+      method:'PUT',
+      credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    var d=await r.json();
+    btn.disabled=false;
+    if(r.ok&&d.success){
+      showAlert(d.message||'User updated successfully.','success');
+      cancelEdit();
+      loadUsers();
+    } else {
+      showAlert(d.message||'Failed to update user.','danger');
+    }
+  }
+
+  function cancelEdit(){
+    editingUserId=null;
+    editingBarangayId=null;
+    document.getElementById('nName').value='';
+    document.getElementById('nEmail').value='';
+    document.getElementById('nPass').value='';
+    document.getElementById('nPassConfirm').value='';
+    document.getElementById('passwordLabel').innerHTML='Temporary Password <span class="required">*</span>';
+    document.getElementById('passwordHint').textContent='Share this password privately with the new official.';
+    document.getElementById('confirmPasswordLabel').innerHTML='Confirm Password <span class="required">*</span>';
+    document.getElementById('confirmPasswordHint').textContent='Must match the password above.';
+    document.getElementById('addBtn').textContent='Add User';
+    document.getElementById('addBtn').onclick=function(){addUser();};
+  }
+
+  async function deleteUser(id, name, barangayId){
+    if(!confirm('Delete user "'+name+'"? This cannot be undone.'))return;
+    var r=await fetch(API+'/admin/users/'+id+userActionQuery(barangayId),{
+      method:'DELETE',
+      credentials:'include'
+    });
+    var d=await r.json();
+    if(r.ok&&d.success){
+      showAlert(d.message||'User deleted successfully.','success');
+      loadUsers();
+    } else {
+      showAlert(d.message||'Failed to delete user.','danger');
+    }
   }
 
   async function addUser(){
@@ -189,26 +447,77 @@
     var email=document.getElementById('nEmail').value.trim();
     var role=document.getElementById('nRole').value;
     var pass=document.getElementById('nPass').value;
-    if(!name||!email||!pass){showAlert('All fields are required.','danger');return;}
-    if(pass.length<6){showAlert('Password must be at least 6 characters.','danger');return;}
+    var barangayId=selectedCreateBarangayId();
+    if(!name||!email||!role){showAlert('Name, email, and role are required.','danger');return;}
+    if(!barangayId){showAlert('Please select a barangay before adding a user.','danger');return;}
+    if(!validatePasswordFields(true))return;
+
     var btn=document.getElementById('addBtn');
-    btn.disabled=true; btn.textContent='Adding…';
-    var r=await fetch(API+'/admin/users',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email,role:role,password:pass})});
+    var originalText=btn.textContent;
+    btn.disabled=true; btn.textContent='Adding...';
+    var r=await fetch(API+'/admin/users',{
+      method:'POST',
+      credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:name,
+        email:email,
+        role:role,
+        password:pass,
+        barangay_id: barangayId
+      })
+    });
     var d=await r.json();
-    btn.disabled=false; btn.textContent='➕ Add User';
+    btn.disabled=false; btn.textContent=originalText;
     if(r.ok&&d.success){
-      showAlert('✅ User "'+name+'" added successfully!','success');
+      showAlert(d.message || 'User saved successfully.','success');
       document.getElementById('nName').value='';
       document.getElementById('nEmail').value='';
       document.getElementById('nPass').value='';
+      document.getElementById('nPassConfirm').value='';
       loadUsers();
-    } else { showAlert(d.message||'Failed to add user.','danger'); }
+    } else {
+      showAlert(d.message||'Failed to save user.','danger');
+    }
   }
+
+
 
   async function doLogout(){
     if(!confirm('Are you sure you want to log out?'))return;
     await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
     window.location.href='/';
+  }
+
+  function applyRoleVisibility() {
+    var role = currentUser?.role;
+    if (!role) return;
+    var links = document.querySelectorAll('#sidebarNav a[data-role]');
+    links.forEach(function(link) {
+      var allowed = link.getAttribute('data-role').split(',');
+      if (!allowed.includes(role)) {
+        link.style.display = 'none';
+      }
+    });
+    updateSidebarLinks(role);
+  }
+  function updateSidebarLinks(role) {
+    var links = document.querySelectorAll('#sidebarNav a[data-role]');
+    links.forEach(function(link) {
+      var span = link.querySelector('span:last-child');
+      if (!span) return;
+      var href = link.getAttribute('href');
+      if (role === 'chairperson') {
+        if (href === 'upload.html') link.style.display = 'none';
+        if (href === 'documents.html') span.textContent = 'My Documents';
+        if (href === 'transparency.html') span.textContent = 'My Accomplishments';
+        if (href === 'announcements.html') span.textContent = 'Post Announcements';
+      } else if (role === 'admin') {
+        if (href === 'documents.html') span.textContent = 'Manage Documents';
+        if (href === 'transparency.html') span.textContent = 'Manage Accomplishments';
+        if (href === 'upload.html') link.style.display = 'none';
+      }
+    });
   }
 </script>
 </body>

@@ -1,0 +1,1037 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fund Proofs-Admin</title>
+  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;color:#2f3b33;}
+    .admin-layout{display:flex;flex:1;}
+    .sidebar{width:252px;background:#1A4530;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:24px 22px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.55rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.84rem;color:rgba(255,255,255,.62);margin-top:6px;}
+    .sidebar-nav{padding:12px 0;flex:1;}
+    .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:13px 22px;color:rgba(255,255,255,.78);font-size:1rem;font-weight:600;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;}
+    .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;min-width:22px;flex-shrink:0;font-size:1rem;line-height:1;color:transparent;position:relative;overflow:hidden;}
+    .nav-icon::before{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .sidebar-user{padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.96rem;color:#fff;}
+    .sidebar-user .urole{font-size:.8rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:4px;}
+    .admin-main{flex:1;min-width:0;}
+    .topbar{background:#fff;padding:0 30px;height:66px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
+    .topbar-left{display:flex;align-items:center;gap:15px;min-width:0;}
+    .topbar h2{font-size:1.2rem;color:#1A4530;font-weight:800;}
+    .barangay-select{padding:9px 12px;border-radius:8px;border:1px solid #ccc;font-size:.95rem;font-weight:600;color:#1A4530;background:#F8FBFE;outline:none;}
+    .content{padding:28px;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.9rem;font-weight:700;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;white-space:nowrap;}
+    .btn-primary{background:#3D8C62;color:#fff;}
+    .btn-primary:hover{background:#1A4530;}
+    .btn-success{background:#1E8449;color:#fff;}
+    .btn-success:hover{background:#0F2A1E;}
+    .btn-secondary{background:#f0f0f0;color:#444;}
+    .btn-secondary:hover{background:#ddd;}
+    .btn-warning{background:#D4AC0D;color:#1A4530;}
+    .btn-danger{background:#C0392B;color:#fff;}
+    .btn-sm{padding:6px 11px;font-size:.82rem;}
+    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:9px 16px;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:inherit;}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:20px;}
+    .stat-card{background:#fff;border:1px solid #e6ece8;border-left:4px solid #3D8C62;border-radius:13px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+    .stat-card.gold{border-left-color:#D4AC0D;}
+    .stat-card.red{border-left-color:#C0392B;}
+    .stat-num{font-size:2rem;font-weight:900;color:#1A4530;line-height:1;}
+    .stat-label{font-size:.82rem;color:#7d8780;font-weight:700;margin-top:7px;}
+    .grid{display:grid;grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr);gap:20px;align-items:start;}
+    .grid.read-only{grid-template-columns:1fr;}
+    .card{background:#fff;border:1px solid #e6ece8;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);overflow:hidden;margin-bottom:20px;}
+    .card-header{padding:15px 20px;border-bottom:1px solid #edf2ee;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .card-header h3{font-size:1rem;color:#1A4530;font-weight:900;}
+    .card-sub{font-size:.8rem;color:#8b938e;margin-top:3px;}
+    .card-body{padding:20px;}
+    .form-group{margin-bottom:14px;}
+    .form-section{margin-bottom:20px;}
+    .section-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#3D8C62;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #edf2ee;}
+    .req{color:#C0392B;}
+    .form-divider{height:1px;background:#ecf0ed;margin:22px 0;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-row.three{grid-template-columns:1fr 1fr 1fr;}
+    label{display:block;font-size:.78rem;color:#5d6861;font-weight:800;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px;}
+    input,select,textarea{width:100%;border:1.5px solid #dce5df;border-radius:9px;padding:10px 12px;font-family:inherit;font-size:.92rem;line-height:1.4;outline:none;background:#fff;box-sizing:border-box;}
+    .money-field{position:relative;}
+    .money-field .peso-prefix{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:900;color:#1A4530;pointer-events:none;}
+    .money-field input{padding-left:34px;}
+    textarea{resize:vertical;min-height:92px;}
+    input[type=date]{-webkit-appearance:none;-moz-appearance:none;appearance:none;padding:10px 12px;}
+    input[type=number]{-webkit-appearance:textfield;margin:0;}
+    input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+    input:focus,select:focus,textarea:focus{border-color:#3D8C62;box-shadow:0 0 0 3px rgba(61,140,98,.1);}
+    .hint{font-size:.78rem;color:#8a948d;margin-top:5px;line-height:1.45;}
+    .file-input-wrapper{position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .file-label{display:inline-flex;align-items:center;gap:6px;background:#f8fbf9;border:1.5px solid #dce5df;border-radius:9px;padding:10px 16px;font-size:.92rem;font-weight:600;color:#1A4530;cursor:pointer;transition:background .2s ease,border-color .2s ease;}
+    .file-label:hover{background:#e8f5eb;border-color:#3D8C62;}
+    .file-input-wrapper input[type=file]{display:none;}
+    .file-selected{font-size:.82rem;color:#7d8780;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;table-layout:fixed;}
+    col.col-details{width:26%;}
+    col.col-amount{width:16%;}
+    col.col-proof{width:18%;}
+    col.col-status{width:14%;}
+    col.col-actions{width:26%;}
+    th{background:#1A4530;color:white;text-align:left;font-size:.8rem;padding:11px 10px;white-space:nowrap;}
+    td{padding:12px 10px;border-bottom:1px solid #edf2ee;font-size:.88rem;color:#46524a;vertical-align:middle;}
+    .badge{display:inline-flex;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800;}
+    .badge-ok{background:#D5F5E3;color:#1E8449;}
+    .badge-draft{background:#FEF9E7;color:#B7950B;}
+    .proof-title{font-weight:900;color:#1A4530;margin-bottom:0;line-height:1.3;}
+    .proof-desc{font-size:.78rem;color:#7d8780;line-height:1.45;max-width:320px;}
+    .proof-files{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+    .proof-file-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid #dce5df;background:#f8fbf9;color:#1A4530;border-radius:999px;padding:4px 9px;font-size:.74rem;font-weight:800;}
+    .file-count{font-size:.76rem;color:#7d8780;font-weight:700;}
+    .amount{font-weight:900;color:#1A4530;white-space:nowrap;}
+    .action-row{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;}
+    .action-row .btn-sm{padding-left:10px!important;padding-right:10px!important;}
+    .icon-delete{width:28px!important;min-width:28px!important;height:32px!important;min-height:32px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#C0392B!important;font-size:1.35rem!important;font-weight:900!important;line-height:1!important;align-items:center!important;justify-content:center!important;}
+    .icon-delete:hover{background:transparent!important;color:#922B21!important;transform:none!important;}
+    .alert{padding:11px 15px;border-radius:8px;margin-bottom:14px;font-size:.92rem;}
+    .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
+    .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
+    .empty{text-align:center;padding:34px;color:#9aa39d;}
+    @media(max-width:1050px){.grid{grid-template-columns:1fr;}.sidebar{width:220px;}}
+    @media(max-width:780px){.admin-layout{display:block;}.sidebar{position:static;width:100%;min-height:auto;}.topbar{position:static;height:auto;padding:16px;align-items:flex-start;gap:12px;flex-direction:column;}.content{padding:18px;}.form-row,.form-row.three{grid-template-columns:1fr;}}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:200;}
+    .modal-backdrop.show{display:flex;}
+    .modal{width:min(100%,600px);background:#fff;border-radius:12px;border:1px solid #dfe7df;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden;}
+    .modal-header{padding:18px 22px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .modal-header h3{font-size:1.05rem;color:#1A4530;margin:0;font-weight:800;}
+    .modal-close{width:34px;height:34px;border:none;border-radius:8px;background:#f1f4f1;color:#1A4530;font-size:1.35rem;line-height:1;cursor:pointer;}
+    .modal-body{padding:20px 22px;}
+    .album-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px;}
+    .album-item{border:1px solid #dce5df;border-radius:10px;background:#f8fbf9;overflow:hidden;min-height:120px;display:flex;align-items:center;justify-content:center;color:#1A4530;font-weight:900;text-decoration:none;}
+    .album-item img{width:100%;height:150px;object-fit:cover;display:block;}
+    .album-file{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px;text-align:center;}
+    .album-details{border-top:1px solid #edf2ee;padding-top:16px;color:#46524a;line-height:1.6;}
+    .album-details h4{color:#1A4530;font-size:1rem;margin-bottom:6px;}
+    .album-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px;font-size:.84rem;}
+    .album-meta div{background:#f8fbf9;border:1px solid #edf2ee;border-radius:8px;padding:9px 10px;}
+    .modal-actions{padding:16px 22px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;background:#fafafa;}
+    .proof-preview-modal{width:min(100%,1180px);height:min(92vh,820px);max-width:none;display:flex;flex-direction:column;background:#252525;border-color:#3b3b3b;}
+    .proof-preview-modal .modal-header{background:#333;border-bottom-color:#454545;color:#fff;}
+    .proof-preview-modal .modal-header h3{color:#fff;max-width:760px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .proof-preview-modal .modal-close{background:#444;color:#fff;}
+    .proof-preview-body{padding:0;flex:1;min-height:0;background:#252525;}
+    .proof-viewer-shell{height:100%;display:grid;grid-template-columns:190px minmax(0,1fr);background:#252525;color:#fff;}
+    .proof-viewer-sidebar{border-right:1px solid #4a4a4a;background:#2b2b2b;padding:14px 12px;overflow-y:auto;}
+    .proof-viewer-thumb{width:100%;border:2px solid transparent;border-radius:3px;background:#f5f5f5;color:#333;margin-bottom:14px;padding:8px;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-family:inherit;}
+    .proof-viewer-thumb.active{border-color:#8ab4f8;}
+    .proof-thumb-img{width:100%;height:96px;object-fit:cover;background:#fff;}
+    .proof-thumb-file{height:96px;display:flex;align-items:center;justify-content:center;color:#1A4530;font-weight:900;}
+    .proof-thumb-label{font-size:.78rem;color:#fff;text-align:center;word-break:break-word;}
+    .proof-viewer-main{display:flex;flex-direction:column;min-width:0;min-height:0;}
+    .proof-viewer-toolbar{height:48px;background:#3b3b3b;border-bottom:1px solid #4a4a4a;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;color:#fff;}
+    .proof-viewer-toolbar strong{font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .proof-viewer-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+    .proof-viewer-actions .btn{background:#4b4b4b;color:#fff;border:1px solid #5a5a5a;}
+    .proof-viewer-frame-wrap{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;background:#252525;overflow:hidden;}
+    .proof-viewer-frame{width:100%;height:100%;border:0;background:#252525;}
+    .proof-viewer-image{max-width:100%;max-height:100%;object-fit:contain;margin:auto;display:block;}
+    .proof-viewer-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#e8eaed;padding:26px;}
+    .doc-select-tools{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:12px;}
+    .doc-filter-toggle{display:inline-flex;border:1px solid #dce5df;border-radius:9px;overflow:hidden;background:#f8fbf9;}
+    .doc-filter-toggle button{border:0;background:transparent;padding:9px 12px;font-family:inherit;font-size:.82rem;font-weight:800;color:#53605a;cursor:pointer;}
+    .doc-filter-toggle button.active{background:#1A4530;color:#fff;}
+    .doc-select-bulk{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .doc-select-summary{font-size:.82rem;font-weight:800;color:#1A4530;}
+    .doc-select-list{display:grid;gap:8px;max-height:420px;overflow-y:auto;}
+    .doc-select-item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:flex-start;border:1px solid #dce5df;border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .18s;background:#fff;}
+    .doc-select-item input{width:18px;height:18px;margin-top:2px;accent-color:#3D8C62;cursor:pointer;}
+    .doc-select-item:hover{border-color:#3D8C62;background:#f0faf7;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+    .doc-select-item.selected{border-color:#3D8C62;background:#e8f5eb;}
+    .doc-select-title{display:block;font-weight:800;color:#1A4530;font-size:.92rem;margin-bottom:3px;}
+    .doc-select-meta{display:block;font-size:.78rem;color:#7d8780;}
+    .doc-select-empty{text-align:center;padding:26px;color:#8a948d;background:#f8fbf9;border:1px dashed #dce5df;border-radius:9px;}
+    .proof-doc-ref{font-size:.74rem;color:#7d8780;margin-top:2px;display:inline-flex;align-items:center;gap:4px;}
+  </style>
+  <link rel="stylesheet" href="../../css/admin-shell.css"/>
+  <script src="../../js/public-theme.js" defer></script>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="admin-brand">
+        <span class="admin-brand-logos" aria-hidden="true">
+          <img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" />
+          <img class="admin-brand-logo" src="../../images/favicon.png" alt="" />
+        </span>
+        <span class="admin-brand-title">
+          <span class="admin-brand-kabataan">Sangguniang Kabataan</span>
+          <span class="admin-brand-rule"></span>
+          <span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span>
+        </span>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
+      <a href="transparency.html" class="active" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Manage Accomplishments</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
+      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="../../index.html#fund-usage" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Fund View</span></a>
+    </nav>
+    <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2>Manage</h2>
+        <select id="barangaySelector" class="barangay-select"></select>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-secondary btn-sm" id="archiveToggleBtn" onclick="toggleArchiveView()" style="display:none;">Archives</button>
+        
+        <button class="btn-logout" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+
+    <main class="content">
+      <div id="alertBox"></div>
+
+      <section class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total proof records</div></div>
+        <div class="stat-card"><div class="stat-num" id="statPublished">0</div><div class="stat-label">Visible on homepage</div></div>
+        <div class="stat-card gold"><div class="stat-num" id="statDraft">0</div><div class="stat-label">Draft proof records</div></div>
+        <div class="stat-card red"><div class="stat-num" id="statAmount">₱0</div><div class="stat-label">Published amount with proof</div></div>
+      </section>
+
+      <section class="grid">
+        <div class="card" id="uploadCard">
+          <div class="card-header">
+            <div><h3>Submit Accomplishment</h3><div class="card-sub">Upload a receipt, photos, or documents as one proof album</div></div>
+          </div>
+          <div class="card-body">
+            <form id="proofForm">
+              <div class="form-section">
+                <div class="section-title">Basic Information</div>
+                <div class="form-group">
+                  <label>Expense Title <span class="req">*</span></label>
+                  <input id="title" name="title" placeholder="Example: Basketball equipment for youth league" required>
+                </div>
+                <div class="form-group">
+                  <label>Purpose / Where It Goes <span class="req">*</span></label>
+                  <textarea id="purpose" name="purpose" placeholder="Explain what this spending was used for and who benefited." required></textarea>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="section-title">Financial Details</div>
+                <div class="form-row three">
+                  <div class="form-group">
+                    <label>Amount Spent <span class="req">*</span></label>
+                    <div class="money-field">
+                      <span class="peso-prefix">₱</span>
+                      <input id="amountDisplay" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" required>
+                    </div>
+                    <input id="amount" name="amount" type="hidden">
+                  </div>
+                  <div class="form-group">
+                    <label>Fiscal Year <span class="req">*</span></label>
+                    <input id="fiscal_year" name="fiscal_year" type="number" min="2000" max="2100" step="1" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Date Spent <span class="req">*</span></label>
+                    <input id="spent_at" name="spent_at" type="date" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Expense Category <span class="req">*</span></label>
+                  <select id="expense_category" name="expense_category" required>
+                    <option value="">Select category</option>
+                    <option>Sports Development</option>
+                    <option>Education / Training</option>
+                    <option>Health</option>
+                    <option>Environment</option>
+                    <option>Livelihood</option>
+                    <option>Supplies / Materials</option>
+                    <option>Other SK Project</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Connected Document</label>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <button type="button" class="btn btn-secondary btn-sm" id="selectDocumentBtn" onclick="openDocumentSelector()" style="min-width:110px;">Select File</button>
+                    <input type="hidden" id="selected_document_id" name="document_id" value="">
+                    <input type="hidden" id="selected_document_ids" name="document_ids" value="[]">
+                    <span id="selectedDocInfo" style="font-size:.85rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;">No document selected</span>
+                  </div>
+                  <div class="hint">Connect this budget to one or more published documents. Click to choose from your published documents.</div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="section-title">Documentation</div>
+                <div class="form-group">
+                  <label>Proof File <span class="req">*</span></label>
+                  <div class="file-input-wrapper">
+                    <label for="file" class="file-label">
+                      <span class="ui-icon ui-icon-file" aria-hidden="true"></span>
+                      Choose files
+                    </label>
+                    <span class="file-selected" id="fileSelected">No file chosen</span>
+                    <input id="file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple required>
+                  </div>
+                  <div class="hint">Select up to 5 proof files. Allowed: image, PDF, DOC/DOCX receipt or supporting file.</div>
+                </div>
+              </div>
+
+              <div class="form-divider"></div>
+              <button class="btn btn-primary" id="submitBtn" type="submit">Upload Proof</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div><h3 id="proofTableTitle">Manage Proofs</h3><div class="card-sub" id="proofTableSub">Publish records to make them visible on the homepage</div></div>
+            <span id="proofCount" style="font-size:.84rem;color:#7d8780;"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <colgroup><col class="col-details"><col class="col-amount"><col class="col-proof"><col class="col-status"><col class="col-actions"></colgroup>
+              <thead><tr><th>Expense Details</th><th>Amount</th><th>Proof Album</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="proofRows"><tr><td colspan="5" class="empty">Loading proof records...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proof Preview Modal -->
+      <div class="modal-backdrop" id="proofPreviewModal" aria-hidden="true">
+        <div class="modal proof-preview-modal">
+          <div class="modal-header">
+            <h3 id="proofPreviewTitle">Proof Preview</h3>
+            <button type="button" class="modal-close" onclick="closeProofPreview()" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body proof-preview-body" id="proofPreviewBody">
+            <div style="text-align:center;padding:20px;color:#aaa;">Loading preview…</div>
+          </div>
+        </div>
+      </div>
+
+  <!-- Document Selector Modal -->
+  <div class="modal-backdrop" id="docSelectModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="docSelectModalTitle">
+      <div class="modal-header">
+        <h3 id="docSelectModalTitle">Select Document</h3>
+        <button type="button" class="modal-close" onclick="closeDocSelectModal()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="docSelectBody">
+        <div style="text-align:center;padding:20px;color:#aaa;">Loading...</div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" onclick="applyDocumentSelection()">Apply Selection</button>
+        <button type="button" class="btn btn-secondary" onclick="closeDocSelectModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</main>
+  </div>
+</div>
+
+<script src="../../js/api.js"></script>
+<script src="../../js/barangay-context.js"></script>
+<script>
+var API = window.location.origin + '/api';
+var currentUser = null;
+var proofs = [];
+var showingArchived = false;
+
+function money(value) {
+  return '₱' + Number(value || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function fmt(value) {
+  if (!value) return '-';
+  return new Date(value).toLocaleDateString('en-PH', {year:'numeric', month:'short', day:'numeric'});
+}
+function fileTypeLabel(file) {
+  return String((file && file.type) || 'file').toUpperCase();
+}
+function proofFiles(item) {
+  if (Array.isArray(item.files) && item.files.length) return item.files;
+  return [{
+    index: 0,
+    name: item.file_name || 'Proof file',
+    type: item.file_type || 'file',
+    size_kb: item.file_size_kb || 0,
+    is_image: item.is_image
+  }];
+}
+function showAlert(message, type) {
+  var el = document.getElementById('alertBox');
+  el.innerHTML = '<div class="alert alert-' + type + '">' + escapeHtml(message) + '</div>';
+  setTimeout(function(){ el.innerHTML = ''; }, 4500);
+}
+function toBool(value) {
+  return value === true || value === 1 || value === '1' || value === 'true';
+}
+function normalizeMoneyInput(value) {
+  var cleaned = String(value || '').replace(/[^\d.]/g, '');
+  var parts = cleaned.split('.');
+  if (parts.length > 2) cleaned = parts.shift() + '.' + parts.join('');
+  var amount = Number(cleaned || 0);
+  return Number.isFinite(amount) ? amount : 0;
+}
+function formatMoneyInput(value) {
+  var cleaned = String(value || '').replace(/[^\d.]/g, '');
+  var parts = cleaned.split('.');
+  var whole = parts[0] || '';
+  var decimals = parts.length > 1 ? parts.slice(1).join('').slice(0, 2) : '';
+  whole = whole.replace(/^0+(?=\d)/, '');
+  var formattedWhole = whole ? Number(whole).toLocaleString('en-PH') : '';
+  return parts.length > 1 ? formattedWhole + '.' + decimals : formattedWhole;
+}
+function syncAmountField() {
+  var display = document.getElementById('amountDisplay');
+  var hidden = document.getElementById('amount');
+  if (!display || !hidden) return;
+  var amount = normalizeMoneyInput(display.value);
+  hidden.value = display.value.trim() ? amount.toFixed(2) : '';
+  display.value = formatMoneyInput(display.value);
+}
+function initAmountInput() {
+  var display = document.getElementById('amountDisplay');
+  if (!display) return;
+  display.addEventListener('input', syncAmountField);
+  display.addEventListener('blur', function() {
+    syncAmountField();
+    if (display.value.trim()) {
+      display.value = normalizeMoneyInput(display.value).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  });
+}
+function initFiscalYear() {
+  var field = document.getElementById('fiscal_year');
+  if (field && !field.value) field.value = new Date().getFullYear();
+}
+function initFileInput() {
+  var input = document.getElementById('file');
+  var label = document.getElementById('fileSelected');
+  if (!input || !label) return;
+  input.addEventListener('change', function() {
+    var files = input.files;
+    if (files && files.length) {
+      label.textContent = files.length === 1 ? files[0].name : files.length + ' files selected';
+    } else {
+      label.textContent = 'No file chosen';
+    }
+  });
+}
+
+window.addEventListener('load', init);
+
+async function init() {
+  currentUser = await window.SkFDMS.requireLogin();
+  if (!currentUser) return;
+  document.getElementById('sName').textContent = currentUser.name;
+  document.getElementById('sRole').textContent = currentUser.role;
+  await window.SkBarangay.init(currentUser);
+  setBarangayUI();
+  initAmountInput();
+  initFiscalYear();
+  initFileInput();
+  applyRoleVisibility();
+  applyFundProofAccess();
+
+  if (currentUser.role === 'admin' || ['chairperson', 'treasurer'].includes(currentUser.role)) {
+    document.getElementById('archiveToggleBtn').style.display = 'inline-flex';
+  }
+  if (currentUser.role === 'admin') {
+    document.getElementById('barangaySelector').addEventListener('change', function() {
+      window.SkBarangay.setSelectedBarangayId(this.value);
+      setBarangayUI();
+      loadProofs();
+    });
+  }
+
+  if (canManageProofs()) {  
+    document.getElementById('proofForm').addEventListener('submit', uploadProof);
+  }
+
+  await loadProofs();
+}
+
+function setBarangayUI() {
+  var selector = document.getElementById('barangaySelector');
+  window.SkBarangay.populateDropdown(selector);
+  var selectedId = window.SkBarangay.getSelectedBarangayId();
+  var isAllBarangays = currentUser.role === 'admin' && selectedId === 'all';
+  var name = window.SkBarangay.getBarangayName(selectedId) || currentUser.barangay || 'Your Barangay';
+  var titleElem = document.querySelector('.topbar-left h2');
+  if (titleElem) {
+    titleElem.textContent = currentUser.role === 'admin'
+      ? (isAllBarangays ? 'Accomplishments' : 'Accomplishments - Brgy. ' + name)
+      : 'Accomplishment';
+  }
+
+  var proofTitle = document.getElementById('proofTableTitle');
+  var proofSub = document.getElementById('proofTableSub');
+  if (proofTitle && proofSub && currentUser.role === 'chairperson') {
+    if (showingArchived) {
+      proofTitle.textContent = 'My Archived Accomplishments';
+      proofSub.textContent = '';
+    } else {
+      proofTitle.textContent = 'My Submitted Accomplishments';
+      proofSub.textContent = 'Track proof albums and request publication to the SK Federated Admin.';
+    }
+  }
+  if (proofTitle && proofSub && currentUser.role === 'admin') {
+    proofTitle.textContent = showingArchived ? 'Archive Inventory' : (isAllBarangays ? 'All Barangay Accomplishments' : 'Barangay Accomplishments');
+    proofSub.textContent = showingArchived
+      ? ''
+      : (isAllBarangays
+        ? 'Review, publish, and archive accomplishments uploaded by every barangay.'
+        : 'Review, publish, and archive accomplishments uploaded by the selected barangay.');
+  }
+}
+
+function adminQs() {
+  return currentUser.role === 'admin' ? '?barangay_id=' + window.SkBarangay.getSelectedBarangayId() : '';
+}
+
+function canSubmitProofs() {
+  return currentUser.role === 'chairperson';
+}
+
+function canManageProofs() {
+  return ['admin','chairperson','treasurer'].includes(currentUser.role);
+}
+
+function applyFundProofAccess() {
+  if (canSubmitProofs()) return;
+
+  document.getElementById('uploadCard').style.display = 'none';
+  document.querySelector('.grid').classList.add('read-only');
+  if (currentUser.role === 'admin') {
+    setBarangayUI();
+  } else {
+    document.getElementById('proofTableTitle').textContent = 'Proof Records';
+    document.getElementById('proofTableSub').textContent = 'View and download available proof records.';
+  }
+}
+
+async function loadProofs() {
+  try {
+    var url = API + '/admin/fund-proofs';
+    var params = [];
+    if (currentUser.role === 'admin') {
+      params.push('barangay_id=' + encodeURIComponent(window.SkBarangay.getSelectedBarangayId()));
+    }
+    if (showingArchived) params.push('archived=true');
+    if (params.length) url += '?' + params.join('&');
+    var res = await fetch(url, { credentials:'include' });
+    var data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Failed to load fund proofs.');
+    proofs = data.data || [];
+    renderProofs();
+  } catch (err) {
+    console.error('Error loading proofs:', err);
+    showAlert(err.message || 'Failed to load fund proofs.', 'danger');
+  }
+}
+
+async function uploadProof(event) {
+  event.preventDefault();
+  if (!canSubmitProofs()) {
+    showAlert('Only the SK Chairperson can upload accomplishments.', 'danger');
+    return;
+  }
+  syncAmountField();
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Uploading...';
+
+  var selectedFiles = document.getElementById('file').files;
+  if (!selectedFiles.length || selectedFiles.length > 5) {
+    showAlert('Please select 1 to 5 proof files only.', 'danger');
+    btn.disabled = false;
+    btn.textContent = 'Upload Proof';
+    return;
+  }
+
+  var fd = new FormData(document.getElementById('proofForm'));
+  var url = API + '/admin/fund-proofs';
+  if (currentUser.role === 'admin') {
+    url += '?barangay_id=' + window.SkBarangay.getSelectedBarangayId();
+  }
+  try {
+    var res = await fetch(url, { method:'POST', credentials:'include', body:fd });
+    var data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Upload failed.');
+    showAlert(data.message, 'success');
+    document.getElementById('proofForm').reset();
+    document.getElementById('fileSelected').textContent = 'No file chosen';
+    document.getElementById('amount').value = '';
+    document.getElementById('selected_document_id').value = '';
+    document.getElementById('selected_document_ids').value = '[]';
+    document.getElementById('selectedDocInfo').textContent = 'No document selected';
+    initFiscalYear();
+    await loadProofs();
+  } catch (err) {
+    showAlert(err.message || 'Upload failed.', 'danger');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Upload Proof';
+}
+
+function renderProofs() {
+  var published = proofs.filter(function(item){ return toBool(item.is_published); });
+  var publishedAmount = published.reduce(function(sum, item){ return sum + Number(item.amount || 0); }, 0);
+  document.getElementById('statTotal').textContent = proofs.length;
+  document.getElementById('statPublished').textContent = published.length;
+  document.getElementById('statDraft').textContent = proofs.length - published.length;
+  document.getElementById('statAmount').textContent = money(publishedAmount);
+  document.getElementById('proofCount').textContent = proofs.length + ' record' + (proofs.length === 1 ? '' : 's');
+
+  if (!proofs.length) {
+    var emptyText = showingArchived
+      ? 'No archived records.'
+      : canSubmitProofs()
+      ? 'No proof records yet. Upload the first receipt or proof file.'
+      : (currentUser.role === 'admin' && window.SkBarangay.getSelectedBarangayId() === 'all'
+        ? 'No proof records uploaded by any barangay yet.'
+        : 'No proof records uploaded for this barangay yet.');
+    document.getElementById('proofRows').innerHTML = '<tr><td colspan="5" class="empty">' + emptyText + '</td></tr>';
+    return;
+  }
+
+  var canManage = canManageProofs();
+  var isAdmin = currentUser && currentUser.role === 'admin';
+  document.getElementById('proofRows').innerHTML = proofs.map(function(item) {
+    var isPublished = toBool(item.is_published);
+    var isRequested = toBool(item.publish_requested);
+    var files = proofFiles(item);
+    var fileChips = files.slice(0, 3).map(function(file) {
+      return '<span class="proof-file-chip">' + fileTypeLabel(file) + '</span>';
+    }).join('');
+    if (files.length > 3) fileChips += '<span class="file-count">+' + (files.length - 3) + ' more</span>';
+
+    var actions = '<button class="btn btn-secondary btn-sm" onclick="previewProof(' + item.id + ')">' + (showingArchived ? 'View' : 'Preview') + '</button>';
+    if (canManage) {
+      if (showingArchived) {
+        if (isAdmin || ['chairperson', 'treasurer'].includes(currentUser.role)) {
+          actions += '<button class="btn btn-success btn-sm" id="restore-proof-' + item.id + '" onclick="restoreProof(' + item.id + ')">Restore</button>';
+          actions += '<button class="icon-delete" id="delete-proof-' + item.id + '" title="Delete" aria-label="Delete proof" onclick="deleteProof(' + item.id + ',\'' + escapeHtml(item.title).replace(/'/g,'&#39;') + '\')">&times;</button>';
+        }
+      } else if (isAdmin) {
+        actions += '<button class="btn ' + (isPublished ? 'btn-warning' : 'btn-success') + ' btn-sm" id="pub-proof-' + item.id + '" onclick="togglePublish(' + item.id + ')">' + (isPublished ? 'Unpublish' : 'Publish') + '</button>';
+        actions += '<button class="btn btn-danger btn-sm" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ',\'' + escapeHtml(item.title).replace(/'/g,'&#39;') + '\')">Archive</button>';
+      } else {
+          if (!isPublished && !isRequested) {
+            actions += '<button class="btn btn-success btn-sm" id="pub-proof-'+item.id+'" onclick="requestPublish('+item.id+')">Request</button>';
+          }
+          if (['chairperson', 'treasurer'].includes(currentUser.role)) {
+            actions += '<button class="btn btn-danger btn-sm" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ',\'' + escapeHtml(item.title).replace(/'/g,'&#39;') + '\')">Archive</button>';
+          }
+        }
+    }
+    return '<tr>'
+      + '<td><div class="proof-title">' + escapeHtml(item.title) + '</div>' + connectedDocumentsHtml(item) + '</td>'
+      + '<td><span class="amount">' + money(item.amount) + '</span></td>'
+      + '<td><div class="proof-files">' + fileChips + '</div></td>'
+      + '<td><span class="badge ' + (showingArchived ? 'badge-draft' : (isPublished ? 'badge-ok' : 'badge-draft')) + '">' + (showingArchived ? 'Archived' : (isPublished ? 'Published' : (isRequested ? 'Requested' : 'Draft'))) + '</span></td>'
+      + '<td><div class="action-row">' + actions + '</div></td>'
+    + '</tr>';
+  }).join('');
+}
+function proofActionUrl(id, action) {
+  var url = API + '/admin/fund-proofs/' + id + (action || '');
+  if (currentUser.role === 'admin') {
+    var proof = proofs.find(function(item) { return Number(item.id) === Number(id); });
+    var barangayId = proof && proof.barangay_id ? proof.barangay_id : window.SkBarangay.getSelectedBarangayId();
+    url += '?barangay_id=' + encodeURIComponent(barangayId);
+  }
+  return url;
+}
+async function togglePublish(id) {
+  var btn = document.getElementById('pub-proof-' + id);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+    btn.className = 'btn btn-warning btn-sm';
+    btn.onclick = null;
+  }
+  var url = proofActionUrl(id, '/publish');
+  try {
+    var res = await fetch(url, { method:'PATCH', credentials:'include' });
+    var data = await res.json();
+    if (res.ok && data.success) {
+      showAlert(data.message || 'Publish status updated.', 'success');
+      await loadProofs();
+    } else {
+      showAlert(data.message || 'Unable to update publish status.', 'danger');
+      if (btn) { btn.disabled = false; }
+      renderProofs();
+    }
+  } catch (err) {
+    showAlert(err.message || 'Network error.', 'danger');
+    if (btn) { btn.disabled = false; }
+    renderProofs();
+  }
+}
+
+async function requestPublish(id) {
+  var url = proofActionUrl(id, '/publish');
+  var res = await fetch(url, { method:'PATCH', credentials:'include' });
+  var data = await res.json();
+  if (res.ok && data.success) {
+    showAlert(data.message || 'Publish request submitted.', 'success');
+    await loadProofs();
+  } else {
+    showAlert(data.message || 'Failed to submit publish request.', 'danger');
+  }
+}
+
+async function archiveProof(id, title) {
+  if (!confirm('Archive proof "' + title + '"? This will move it to Archive Inventory and remove it from the public site.')) return;
+  var btn = document.getElementById('archive-proof-' + id);
+  if (btn) { btn.disabled = true; btn.textContent = 'Archiving...'; }
+  var res = await fetch(proofActionUrl(id, '/archive'), { method:'PATCH', credentials:'include' });
+  var data = await res.json();
+  if (res.ok && data.success) {
+    showAlert(data.message || 'Proof archived successfully.', 'success');
+    await loadProofs();
+  } else {
+    showAlert(data.message || 'Unable to archive proof.', 'danger');
+    if (btn) { btn.disabled = false; btn.textContent = 'Archive'; }
+  }
+}
+
+async function restoreProof(id) {
+  var proof = proofs.find(function(item) { return Number(item.id) === Number(id); });
+  var title = proof ? proof.title : 'this proof';
+  if (!confirm('Restore proof "' + title + '" to the active list?')) return;
+  var btn = document.getElementById('restore-proof-' + id);
+  if (btn) { btn.disabled = true; btn.textContent = 'Restoring...'; }
+  var res = await fetch(proofActionUrl(id, '/restore'), { method:'PATCH', credentials:'include' });
+  var data = await res.json();
+  if (res.ok && data.success) {
+    showAlert(data.message || 'Proof restored successfully.', 'success');
+    await loadProofs();
+  } else {
+    showAlert(data.message || 'Unable to restore proof.', 'danger');
+    if (btn) { btn.disabled = false; btn.textContent = 'Restore'; }
+  }
+}
+
+async function deleteProof(id, title) {
+  if (!confirm('Permanently delete proof "' + title + '"? This cannot be undone.')) return;
+  var btn = document.getElementById('delete-proof-' + id);
+  if (btn) { btn.disabled = true; btn.innerHTML = '&times;'; }
+  var res = await fetch(proofActionUrl(id, ''), { method:'DELETE', credentials:'include' });
+  var data = await res.json();
+  if (res.ok && data.success) {
+    showAlert(data.message || 'Proof deleted successfully.', 'success');
+    await loadProofs();
+  } else {
+    showAlert(data.message || 'Unable to delete proof.', 'danger');
+    if (btn) { btn.disabled = false; btn.innerHTML = '&times;'; }
+  }
+}
+
+function updateArchiveViewUI() {
+  var btn = document.getElementById('archiveToggleBtn');
+  if (btn) btn.textContent = showingArchived ? 'Back to Proofs' : 'Archive Inventory';
+  setBarangayUI();
+}
+async function toggleArchiveView() {
+  showingArchived = !showingArchived;
+  updateArchiveViewUI();
+  await loadProofs();
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async function() {
+  if (!confirm('Are you sure you want to log out?')) return;
+  await window.SkFDMS.logoutAndRedirect('/');
+});
+
+function previewProof(id) {
+  var proof = proofs.find(function(p) { return p.id === id; });
+  if (!proof) { showAlert('Proof not found.', 'danger'); return; }
+
+  document.getElementById('proofPreviewTitle').textContent = proof.title || 'Proof Preview';
+  var body = document.getElementById('proofPreviewBody');
+  var files = proofFiles(proof);
+  body.innerHTML = buildProofViewerHtml(proof, files, 0);
+  document.getElementById('proofPreviewModal').classList.add('show');
+  document.getElementById('proofPreviewModal').setAttribute('aria-hidden', 'false');
+}
+
+function buildProofViewerHtml(proof, files, activeIndex) {
+  activeIndex = Math.max(0, Math.min(Number(activeIndex) || 0, files.length - 1));
+  var id = proof.id;
+  var activeFile = files[activeIndex] || {};
+  var activeExt = String(activeFile.type || '').toLowerCase();
+  var activePreviewUrl = API + '/fund-proofs/' + id + '/download?preview=1&file=' + encodeURIComponent(activeIndex);
+  var activeDownloadUrl = API + '/fund-proofs/' + id + '/download?file=' + encodeURIComponent(activeIndex);
+  var fileLabel = activeFile.name || ('File ' + (activeIndex + 1));
+
+  var thumbs = files.map(function(file, index) {
+    var ext = String(file.type || '').toLowerCase();
+    var previewUrl = API + '/fund-proofs/' + id + '/download?preview=1&file=' + encodeURIComponent(index);
+    if (file.is_image || ['jpg','jpeg','png','gif','webp','bmp'].includes(ext)) {
+      return '<button type="button" class="proof-viewer-thumb' + (index === activeIndex ? ' active' : '') + '" onclick="showProofFile(' + id + ',' + index + ')">'
+        + '<img class="proof-thumb-img" src="' + previewUrl + '" alt="' + escapeHtml(file.name || proof.title) + '">'
+        + '<span class="proof-thumb-label">' + (index + 1) + '</span>'
+      + '</button>';
+    }
+    return '<button type="button" class="proof-viewer-thumb' + (index === activeIndex ? ' active' : '') + '" onclick="showProofFile(' + id + ',' + index + ')">'
+      + '<span class="proof-thumb-file"><span class="ui-icon ui-icon-file ui-icon-xl" aria-hidden="true"></span></span>'
+      + '<span class="proof-thumb-label">' + (index + 1) + ' - ' + escapeHtml(fileTypeLabel(file)) + '</span>'
+    + '</button>';
+  }).join('');
+
+  var viewer = '';
+  if (activeFile.is_image || ['jpg','jpeg','png','gif','webp','bmp'].includes(activeExt)) {
+    viewer = '<img class="proof-viewer-image" src="' + activePreviewUrl + '" alt="' + escapeHtml(fileLabel) + '">';
+  } else if (activeExt === 'pdf') {
+    viewer = '<iframe class="proof-viewer-frame" src="' + activePreviewUrl + '" title="' + escapeHtml(fileLabel) + '"></iframe>';
+  } else {
+    viewer = '<div class="proof-viewer-empty">'
+      + '<span class="ui-icon ui-icon-file ui-icon-xl" aria-hidden="true"></span>'
+      + '<strong>' + escapeHtml(fileTypeLabel(activeFile)) + ' preview is not available in the browser.</strong>'
+      + '<span>Open or download the file to view it.</span>'
+    + '</div>';
+  }
+
+  return '<div class="proof-viewer-shell">'
+    + '<aside class="proof-viewer-sidebar">' + thumbs + '</aside>'
+    + '<section class="proof-viewer-main">'
+      + '<div class="proof-viewer-toolbar">'
+        + '<strong>' + escapeHtml(fileLabel) + '</strong>'
+        + '<div class="proof-viewer-actions">'
+          + '<a class="btn btn-sm" href="' + activePreviewUrl + '" target="_blank" rel="noopener">Open</a>'
+          + '<a class="btn btn-sm" href="' + activeDownloadUrl + '" target="_blank" rel="noopener" download>Download</a>'
+        + '</div>'
+      + '</div>'
+      + '<div class="proof-viewer-frame-wrap">' + viewer + '</div>'
+    + '</section>'
+  + '</div>';
+}
+
+function showProofFile(id, index) {
+  var proof = proofs.find(function(p) { return Number(p.id) === Number(id); });
+  if (!proof) return;
+  document.getElementById('proofPreviewBody').innerHTML = buildProofViewerHtml(proof, proofFiles(proof), index);
+}
+function closeProofPreview() {
+  var modal = document.getElementById('proofPreviewModal');
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden', 'true');
+  document.getElementById('proofPreviewBody').innerHTML = '';
+}
+
+function connectedDocumentsHtml(item) {
+  var docs = Array.isArray(item.connected_documents) ? item.connected_documents : [];
+  if (!docs.length && item.document_id) {
+    docs = [{ id: item.document_id, title: item.document_title || ('Document #' + item.document_id) }];
+  }
+  if (!docs.length) return '';
+  var label = docs.length === 1
+    ? (docs[0].title || ('Document #' + docs[0].id))
+    : docs.length + ' connected documents';
+  return '<div class="proof-doc-ref"><span class="ui-icon ui-icon-file" aria-hidden="true"></span> ' + escapeHtml(label) + '</div>';
+}
+
+function connectedDocumentsMetaHtml(item) {
+  var docs = Array.isArray(item.connected_documents) ? item.connected_documents : [];
+  if (!docs.length && item.document_id) {
+    docs = [{ id: item.document_id, title: item.document_title || ('Document #' + item.document_id) }];
+  }
+  if (!docs.length) return '';
+  return '<div><strong>Connected Documents</strong><br>' + escapeHtml(docs.map(function(doc) {
+    return doc.title || ('Document #' + doc.id);
+  }).join(', ')) + '</div>';
+}
+
+var allSelectableDocuments = [];
+var pendingSelectedDocIds = [];
+var docSelectorFilter = 'all';
+async function openDocumentSelector() {
+  pendingSelectedDocIds = getSelectedDocumentIds();
+  docSelectorFilter = 'all';
+  var modal = document.getElementById('docSelectModal');
+  var body = document.getElementById('docSelectBody');
+  body.innerHTML = '<div style="text-align:center;padding:20px;color:#aaa;">Loading documents...</div>';
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+  await loadPublishedDocuments();
+}
+
+async function loadPublishedDocuments() {
+  var body = document.getElementById('docSelectBody');
+  try {
+    var barangayId = window.SkBarangay.getSelectedBarangayId();
+    var r = await fetch(API + '/documents?barangay_id=' + encodeURIComponent(barangayId), { credentials: 'include' });
+    var d = await r.json();
+    allSelectableDocuments = d.success && Array.isArray(d.data) ? d.data : [];
+    if (!allSelectableDocuments.length) {
+      body.innerHTML = '<div style="text-align:center;padding:30px;color:#999;">No published documents found. Documents appear here once the SK Fed Admin has published them.</div>';
+      return;
+    }
+    renderDocumentSelector();
+  } catch (err) {
+    body.innerHTML = '<div style="text-align:center;padding:20px;color:#C0392B;">Error loading documents.</div>';
+  }
+}
+
+function getSelectedDocumentIds() {
+  var raw = document.getElementById('selected_document_ids').value || '[]';
+  try {
+    var parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.map(Number).filter(Boolean);
+  } catch (err) {}
+  var single = Number(document.getElementById('selected_document_id').value || 0);
+  return single ? [single] : [];
+}
+
+function renderDocumentSelector() {
+  var body = document.getElementById('docSelectBody');
+  var queryEl = document.getElementById('docSearchInput');
+  var query = queryEl ? queryEl.value.trim().toLowerCase() : '';
+  var docs = allSelectableDocuments.filter(function(doc) {
+    var matchesFilter = docSelectorFilter === 'all' || pendingSelectedDocIds.includes(Number(doc.id));
+    var haystack = [doc.title, doc.category_code, doc.category_name, doc.fiscal_year, doc.quarter].join(' ').toLowerCase();
+    return matchesFilter && (!query || haystack.includes(query));
+  });
+
+  body.innerHTML = ''
+    + '<div class="doc-select-tools">'
+      + '<input id="docSearchInput" type="search" placeholder="Search documents..." value="' + escapeHtml(queryEl ? queryEl.value : '') + '" oninput="renderDocumentSelector()">'
+      + '<div class="doc-filter-toggle" aria-label="Document list filter">'
+        + '<button type="button" class="' + (docSelectorFilter === 'all' ? 'active' : '') + '" onclick="setDocSelectorFilter(\'all\')">All</button>'
+        + '<button type="button" class="' + (docSelectorFilter === 'selected' ? 'active' : '') + '" onclick="setDocSelectorFilter(\'selected\')">Selected</button>'
+      + '</div>'
+    + '</div>'
+    + '<div class="doc-select-bulk">'
+      + '<div class="doc-select-summary">' + pendingSelectedDocIds.length + ' selected</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+        + '<button type="button" class="btn btn-secondary btn-sm" onclick="selectVisibleDocuments()">Select visible</button>'
+        + '<button type="button" class="btn btn-secondary btn-sm" onclick="deselectVisibleDocuments()">Deselect visible</button>'
+      + '</div>'
+    + '</div>'
+    + (docs.length
+      ? '<div class="doc-select-list">' + docs.map(function(doc) {
+          var id = Number(doc.id);
+          var isSel = pendingSelectedDocIds.includes(id);
+          return '<label class="doc-select-item' + (isSel ? ' selected' : '') + '">'
+            + '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleDocumentSelection(' + id + ', this.checked)">'
+            + '<span>'
+              + '<span class="doc-select-title">' + escapeHtml(doc.title || 'Untitled') + '</span>'
+              + '<span class="doc-select-meta">' + escapeHtml(doc.category_code || '-') + ' - FY ' + (doc.fiscal_year || '-') + ' (' + escapeHtml(doc.quarter || 'Annual') + ')</span>'
+            + '</span>'
+          + '</label>';
+        }).join('') + '</div>'
+      : '<div class="doc-select-empty">No documents match the current filter.</div>');
+
+  var refreshedSearch = document.getElementById('docSearchInput');
+  if (refreshedSearch) {
+    refreshedSearch.focus();
+    refreshedSearch.setSelectionRange(refreshedSearch.value.length, refreshedSearch.value.length);
+  }
+}
+
+function visibleDocumentIds() {
+  var queryEl = document.getElementById('docSearchInput');
+  var query = queryEl ? queryEl.value.trim().toLowerCase() : '';
+  return allSelectableDocuments.filter(function(doc) {
+    var matchesFilter = docSelectorFilter === 'all' || pendingSelectedDocIds.includes(Number(doc.id));
+    var haystack = [doc.title, doc.category_code, doc.category_name, doc.fiscal_year, doc.quarter].join(' ').toLowerCase();
+    return matchesFilter && (!query || haystack.includes(query));
+  }).map(function(doc) { return Number(doc.id); });
+}
+
+function setDocSelectorFilter(filter) {
+  docSelectorFilter = filter;
+  renderDocumentSelector();
+}
+
+function toggleDocumentSelection(id, checked) {
+  id = Number(id);
+  if (checked && !pendingSelectedDocIds.includes(id)) pendingSelectedDocIds.push(id);
+  if (!checked) pendingSelectedDocIds = pendingSelectedDocIds.filter(function(existingId) { return existingId !== id; });
+  renderDocumentSelector();
+}
+
+function selectVisibleDocuments() {
+  visibleDocumentIds().forEach(function(id) {
+    if (!pendingSelectedDocIds.includes(id)) pendingSelectedDocIds.push(id);
+  });
+  renderDocumentSelector();
+}
+
+function deselectVisibleDocuments() {
+  var visible = visibleDocumentIds();
+  pendingSelectedDocIds = pendingSelectedDocIds.filter(function(id) { return !visible.includes(id); });
+  renderDocumentSelector();
+}
+
+function applyDocumentSelection() {
+  var ids = pendingSelectedDocIds.slice();
+  var selectedDocs = ids.map(function(id) {
+    return allSelectableDocuments.find(function(doc) { return Number(doc.id) === Number(id); });
+  }).filter(Boolean);
+
+  document.getElementById('selected_document_id').value = ids[0] || '';
+  document.getElementById('selected_document_ids').value = JSON.stringify(ids);
+  document.getElementById('selectedDocInfo').textContent = selectedDocs.length
+    ? (selectedDocs.length === 1 ? selectedDocs[0].title : selectedDocs.length + ' documents selected')
+    : 'No document selected';
+  closeDocSelectModal();
+}
+
+function closeDocSelectModal() {
+  var modal = document.getElementById('docSelectModal');
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+function applyRoleVisibility() {
+   var role = currentUser && currentUser.role;
+   if (!role) return;
+   document.querySelectorAll('#sidebarNav a[data-role]').forEach(function(link) {
+     var allowed = link.getAttribute('data-role').split(',');
+     if (!allowed.includes(role)) link.style.display = 'none';
+   });
+   updateSidebarLinks(role);
+ }
+ function updateSidebarLinks(role) {
+   var links = document.querySelectorAll('#sidebarNav a[data-role]');
+   links.forEach(function(link) {
+     var span = link.querySelector('span:last-child');
+     if (!span) return;
+     var href = link.getAttribute('href');
+      if (role === 'chairperson') {
+        if (href === 'upload.html') link.style.display = 'none';
+        if (href === 'documents.html') span.textContent = 'My Documents';
+        if (href === 'transparency.html') span.textContent = 'My Accomplishments';
+        if (href === 'announcements.html') span.textContent = 'Post Announcements';
+      } else if (role === 'admin') {
+       if (href === 'documents.html') span.textContent = 'Manage Documents';
+       if (href === 'transparency.html') span.textContent = 'Manage Accomplishments';
+       if (href === 'upload.html') link.style.display = 'none';
+     }
+   });
+ }
+</script>
+</body>
+</html>

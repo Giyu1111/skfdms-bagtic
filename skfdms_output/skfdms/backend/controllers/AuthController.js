@@ -4,6 +4,7 @@
 // PostgreSQL (Supabase) version
 // ============================================================
 
+const bcrypt = require('bcryptjs');
 const db = require('../config/database');
 const { logActivity } = require('../utils/logger');
 
@@ -21,7 +22,7 @@ async function login(req, res) {
       `SELECT u.*, b.name AS barangay_name
          FROM users u
          JOIN barangays b ON b.id = u.barangay_id
-        WHERE u.email = $1 AND u.is_active = true
+        WHERE u.email = $1
         LIMIT 1`,
       [email.toLowerCase().trim()]
     );
@@ -32,12 +33,27 @@ async function login(req, res) {
 
     const user = rows[0];
 
-    // Plain text password comparison (Note: in production, use bcrypt)
-    const passwordMatch = (password === user.password_hash);
+    const looksHashed = typeof user.password_hash === 'string' && user.password_hash.startsWith('$2');
+    const passwordMatch = looksHashed
+      ? await bcrypt.compare(password, user.password_hash)
+      : password === user.password_hash;
 
     if (!passwordMatch) {
       await logActivity({ action: 'LOGIN_FAILED', details: `Failed login attempt for ${email}`, ip: req.ip });
       return res.status(401).json({ success: false, message: 'Invalid email or password.' });
+    }
+
+    if (user.approval_status && user.approval_status !== 'approved') {
+      return res.status(403).json({
+        success: false,
+        message: user.approval_status === 'pending'
+          ? 'Your account is still pending SK Federated approval.'
+          : 'Your account request was declined. Please contact SK Federated.',
+      });
+    }
+
+    if (!user.is_active) {
+      return res.status(403).json({ success: false, message: 'Your account is inactive. Please contact SK Federated.' });
     }
 
     // Store session

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    :root {
+      --navy: #1A4530;
+      --navy-dark: #0E2B1F;
+      --gold: #A0872A;
+      --sky: #3D8C62;
+      --gray-100: #E2EAE5;
+      --gray-200: #C8D8CE;
+      --gray-400: #7A8C80;
+      --gray-700: #3A4A3E;
+      --green: #2A6B4A;
+      --red: #943030;
+      --radius: 14px;
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); }
+    .page-header { background: linear-gradient(135deg, var(--navy-dark), var(--navy)); color: white; padding: 48px 24px 36px; }
+    .page-header .inner, .container { max-width: 1200px; margin: 0 auto; }
+    .page-header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; }
+    .page-header p { opacity: .78; font-size: .96rem; line-height: 1.7; max-width: 760px; }
+    .container { padding: 42px 24px 56px; }
+    .section-title { font-size: 1.5rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .section-sub { color: var(--gray-400); margin-bottom: 28px; font-size: .92rem; }
+    .contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 430px); gap: 28px; align-items: start; }
+    .form-card, .info-card, .official-card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid #eee;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    }
+    .form-card { padding: 28px; }
+    .form-title { font-size: 1.1rem; font-weight: 800; color: var(--navy); margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-label { display: block; font-weight: 700; font-size: .82rem; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .3px; }
+    .form-control { width: 100%; padding: 11px 14px; border: 1.5px solid #ddd; border-radius: 9px; font-size: .95rem; outline: none; font-family: var(--font); transition: border-color .2s; }
+    .form-control:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(61, 140, 98, .12); }
+    textarea.form-control { resize: vertical; }
+    .btn-submit { background: var(--sky); color: white; border: none; padding: 12px 28px; border-radius: 9px; font-weight: 800; font-size: .95rem; cursor: pointer; font-family: var(--font); width: 100%; margin-top: 6px; transition: background .2s; }
+    .btn-submit:hover { background: var(--navy); }
+    .alert { padding: 12px 15px; border-radius: 9px; font-size: .92rem; margin-top: 14px; }
+    .alert-success { background: var(--gray-100); color: var(--green); border: 1px solid #A8CEBC; }
+    .alert-error { background: #FADBD8; color: var(--red); border: 1px solid #F5B7B1; }
+    .officials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+    .official-card { padding: 20px; text-align: center; }
+    .official-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--sky); color: white; font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+    .official-name { font-weight: 700; color: var(--navy); margin-bottom: 4px; font-size: .95rem; }
+    .official-role { font-size: .78rem; color: var(--gray-400); margin-bottom: 10px; }
+    .official-email { font-size: .8rem; color: var(--sky); text-decoration: none; overflow-wrap: anywhere; }
+    .info-card { margin-top: 24px; padding: 20px; }
+    .info-card h3 { font-size: .98rem; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+    .info-card p, .info-card div { font-size: .9rem; color: var(--gray-700); line-height: 1.7; }
+    footer { background: var(--navy-dark); color: rgba(255, 255, 255, .6); padding: 32px 24px; text-align: center; }
+    .footer-brand { color: var(--gold); font-weight: 800; font-size: 1rem; margin-bottom: 8px; }
+    footer p { font-size: .82rem; }
+    body.dark { background: #0a120d; color: #d4e8da; --gray-100: #1e3325; --gray-700: #a8c4b0; --gray-400: #7aaa88; }
+    body.dark .page-header { background: linear-gradient(135deg, #060f09, #0E2B1F); }
+    body.dark .form-card, body.dark .info-card, body.dark .official-card { background: #111d14; border-color: #1e3325; }
+    body.dark .section-title, body.dark .form-title, body.dark .official-name, body.dark .info-card h3 { color: #c8e8d4; }
+    body.dark .section-sub, body.dark .form-label, body.dark .official-role, body.dark .info-card p, body.dark .info-card div { color: #7aaa88; }
+    body.dark .form-control { background: #0d1810; border-color: #1e3325; color: #d4e8da; }
+    body.dark footer { background: #060f09; }
+    @media (max-width: 860px) { .contact-grid, .form-row { grid-template-columns: 1fr; } }
+  </style>
+  <link rel="stylesheet" href="../css/public-nav.css" />
+  <script src="../js/public-theme.js" defer></script>
+</head>
+<body data-default-theme="dark">
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-brand">
+      <span class="brand-logos" aria-hidden="true">
+        <img class="brand-logo" src="../images/cLogo.jpg" alt="" />
+        <img class="brand-logo" src="../images/favicon.png" alt="" />
+      </span>
+      <span class="brand-title">
+        <span class="brand-kabataan">Sangguniang Kabataan</span>
+        <span class="brand-rule"></span>
+        <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
+      </span>
+    </a>
+    <div class="navbar-links">
+      <a href="../index.html">Home</a>
+      <a href="documents.html">Documents</a>
+      <a href="transparency.html">Transparency</a>
+      <a href="community.html">Community</a>
+      <a href="contact.html" class="active">Contact</a>
+      <a href="about.html">About</a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
+      <a href="login.html" class="btn-admin">Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="inner">
+    <h1>Contact SK Officials</h1>
+    <p>Send a message directly to the Sangguniang Kabataan. Choose your barangay so the right SK officials and federated admins can receive the concern.</p>
+  </div>
+</div>
+
+<main class="container">
+  <div class="contact-grid">
+    <section>
+      <div class="section-title">Send a Message</div>
+      <div class="section-sub">Required fields are marked with an asterisk.</div>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="ctFname">First Name *</label><input type="text" class="form-control" id="ctFname" placeholder="Juan" /></div>
+          <div class="form-group"><label class="form-label" for="ctLname">Last Name *</label><input type="text" class="form-control" id="ctLname" placeholder="Dela Cruz" /></div>
+        </div>
+        <div class="form-group"><label class="form-label" for="ctEmail">Email Address *</label><input type="email" class="form-control" id="ctEmail" placeholder="juan@email.com" /></div>
+        <div class="form-group"><label class="form-label" for="ctBarangay">Barangay *</label><select class="form-control" id="ctBarangay"><option value="">Loading barangays...</option></select></div>
+        <div class="form-group">
+          <label class="form-label" for="ctSubject">Subject *</label>
+          <select class="form-control" id="ctSubject">
+            <option value="">Select a topic...</option>
+            <option>General Inquiry</option>
+            <option>Document Request</option>
+            <option>Fund Concern</option>
+            <option>Program Suggestion</option>
+            <option>Report an Issue</option>
+            <option>Volunteer Offer</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label" for="ctMsg">Message *</label><textarea class="form-control" id="ctMsg" rows="6" placeholder="Type your message here..."></textarea></div>
+        <button class="btn-submit" type="button" onclick="submitContact()">Send Message</button>
+        <div id="ctAlert"></div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="form-title" id="officialsTitle">SK Officials</div>
+      <div class="officials-grid" id="officialsGrid">
+        <div class="official-card"><div class="official-name">Loading officials...</div></div>
+      </div>
+      <div class="info-card">
+        <h3>Municipal Address</h3>
+        <p>Municipality of Catigbian,<br />Province of Bohol, Region VII<br />Central Visayas, Philippines</p>
+        <div style="margin-top:12px;">Office Hours: Mon-Fri, 8AM-5PM</div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-brand">SK-FDMS &middot; Municipality of Catigbian</div>
+  <p>Municipality of Catigbian, Bohol &middot; DILG Full Disclosure Policy Compliant</p>
+</footer>
+
+<script>
+var CONTACT_FALLBACK_BARANGAYS = [
+  { id: 'Bagtic', name: 'Bagtic' },
+  { id: 'Bagacay', name: 'Bagacay' },
+  { id: 'Balili', name: 'Balili' },
+  { id: 'Bonbon', name: 'Bonbon' },
+  { id: 'Caluasan', name: 'Caluasan' },
+  { id: 'Can-uba', name: 'Can-uba' },
+  { id: 'Catigbian Poblacion', name: 'Catigbian Poblacion' },
+  { id: 'Guinsularan', name: 'Guinsularan' },
+  { id: 'Lomboy', name: 'Lomboy' },
+  { id: 'Looc', name: 'Looc' },
+  { id: 'Magcawas', name: 'Magcawas' },
+  { id: 'Matabao', name: 'Matabao' },
+  { id: 'Pangapasan', name: 'Pangapasan' },
+  { id: 'Poblacion 1', name: 'Poblacion 1' },
+  { id: 'Poblacion 2', name: 'Poblacion 2' },
+  { id: 'Poblacion 3', name: 'Poblacion 3' },
+  { id: 'Poblacion 4', name: 'Poblacion 4' },
+  { id: 'Poblacion 5', name: 'Poblacion 5' },
+  { id: 'Poblacion 6', name: 'Poblacion 6' },
+  { id: 'Poblacion 7', name: 'Poblacion 7' },
+  { id: 'Poblacion 8', name: 'Poblacion 8' },
+  { id: 'Poblacion Este', name: 'Poblacion Este' },
+  { id: 'Poblacion Weste', name: 'Poblacion Weste' }
+];
+
+function getPublicApiBase() {
+  if (window.location.protocol === 'file:') return null;
+  return window.location.origin + '/api';
+}
+
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function roleLabel(role) {
+  var labels = { chairperson: 'SK Chairperson' };
+  return labels[role] || role || 'SK Official';
+}
+
+function makeInitials(name) {
+  return String(name || 'SK').trim().split(/\s+/).slice(0, 2).map(function(part) {
+    return part.charAt(0).toUpperCase();
+  }).join('') || 'SK';
+}
+
+function slugifyBarangay(name) {
+  return String(name || 'barangay').toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 32) || 'barangay';
+}
+
+function fallbackOfficialsForBarangay(barangayName) {
+  var slug = slugifyBarangay(barangayName);
+  if (String(barangayName).toLowerCase() === 'bagtic') {
+    return [
+      { name: 'Juan Dela Cruz', role: 'chairperson', email: 'chair@skbagtic.gov.ph' }
+    ];
+  }
+  return [
+    { name: 'SK Chairperson - ' + barangayName, role: 'chairperson', email: 'chair@sk' + slug + '.gov.ph' }
+  ];
+}
+
+function selectedBarangayName() {
+  var select = document.getElementById('ctBarangay');
+  if (!select || select.selectedIndex < 0) return CONTACT_FALLBACK_BARANGAYS[0].name;
+  return select.options[select.selectedIndex].textContent;
+}
+
+function renderOfficialCards(officials, barangayName) {
+  var grid = document.getElementById('officialsGrid');
+  var title = document.getElementById('officialsTitle');
+  var colors = ['var(--navy)', 'var(--sky)', 'var(--green)', 'var(--gold)'];
+  if (!grid) return;
+  if (title) title.textContent = 'SK Officials - Brgy. ' + barangayName;
+  officials = officials.filter(function(official) { return official.role === 'chairperson'; });
+  grid.innerHTML = officials.map(function(official, index) {
+    var email = official.email || '';
+    var emailHtml = email ? '<a class="official-email" href="mailto:' + escapeHtml(email) + '">' + escapeHtml(email) + '</a>' : '<div class="official-email">No email listed</div>';
+    return '<div class="official-card">'
+      + '<div class="official-avatar" style="background:' + colors[index % colors.length] + ';">' + escapeHtml(makeInitials(official.name)) + '</div>'
+      + '<div class="official-name">' + escapeHtml(official.name) + '</div>'
+      + '<div class="official-role">' + escapeHtml(roleLabel(official.role)) + '</div>'
+      + emailHtml
+      + '</div>';
+  }).join('');
+}
+
+function populateContactBarangays(barangays) {
+  var select = document.getElementById('ctBarangay');
+  if (!select || !barangays.length) return;
+  select.innerHTML = barangays.map(function(barangay) {
+    return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+  }).join('');
+  select.selectedIndex = 0;
+}
+
+async function loadContactOfficials() {
+  var select = document.getElementById('ctBarangay');
+  if (!select || !select.value) return;
+  var barangayName = selectedBarangayName();
+  var apiBase = getPublicApiBase();
+
+  if (apiBase && /^\d+$/.test(String(select.value))) {
+    try {
+      var response = await fetch(apiBase + '/officials?barangay_id=' + encodeURIComponent(select.value));
+      var result = await response.json();
+      if (response.ok && result.success && Array.isArray(result.data) && result.data.length) {
+        renderOfficialCards(result.data, barangayName);
+        return;
+      }
+    } catch (error) {}
+  }
+
+  renderOfficialCards(fallbackOfficialsForBarangay(barangayName), barangayName);
+}
+
+async function initializeContactDirectory() {
+  var select = document.getElementById('ctBarangay');
+  var apiBase = getPublicApiBase();
+  var barangays = CONTACT_FALLBACK_BARANGAYS;
+  if (!select) return;
+
+  if (apiBase) {
+    try {
+      var response = await fetch(apiBase + '/barangays');
+      var result = await response.json();
+      if (response.ok && result.success && Array.isArray(result.data) && result.data.length) barangays = result.data;
+    } catch (error) {
+      barangays = CONTACT_FALLBACK_BARANGAYS;
+    }
+  }
+
+  populateContactBarangays(barangays);
+  select.addEventListener('change', loadContactOfficials);
+  loadContactOfficials();
+}
+
+async function submitContact() {
+  var fname = document.getElementById('ctFname').value.trim();
+  var lname = document.getElementById('ctLname').value.trim();
+  var email = document.getElementById('ctEmail').value.trim();
+  var subject = document.getElementById('ctSubject').value;
+  var msg = document.getElementById('ctMsg').value.trim();
+  var barangaySelect = document.getElementById('ctBarangay');
+  var alertEl = document.getElementById('ctAlert');
+  var apiBase = getPublicApiBase();
+
+  if (!fname || !email || !subject || !msg || !barangaySelect.value) {
+    alertEl.innerHTML = '<div class="alert alert-error">Please fill in all required fields.</div>';
+    return;
+  }
+
+  if (!apiBase || !/^\d+$/.test(String(barangaySelect.value))) {
+    alertEl.innerHTML = '<div class="alert alert-error">Messages can be sent when the website is connected to the server.</div>';
+    return;
+  }
+
+  alertEl.innerHTML = '<div class="alert alert-success">Sending your message...</div>';
+
+  try {
+    var response = await fetch(apiBase + '/contact-messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        first_name: fname,
+        last_name: lname,
+        email: email,
+        barangay_id: barangaySelect.value,
+        subject: subject,
+        message: msg
+      })
+    });
+    var result = await response.json().catch(function() { return {}; });
+    if (!response.ok || !result.success) throw new Error(result.message || 'Unable to send message.');
+  } catch (error) {
+    alertEl.innerHTML = '<div class="alert alert-error">' + escapeHtml(error.message || 'Unable to send message.') + '</div>';
+    return;
+  }
+
+  alertEl.innerHTML = '<div class="alert alert-success">Message sent! The SK and SK Federated admins have been notified.</div>';
+  document.getElementById('ctFname').value = '';
+  document.getElementById('ctLname').value = '';
+  document.getElementById('ctEmail').value = '';
+  document.getElementById('ctSubject').value = '';
+  document.getElementById('ctMsg').value = '';
+}
+
+initializeContactDirectory();
+</script>
+</body>
+</html>

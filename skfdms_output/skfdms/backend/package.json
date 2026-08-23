@@ -4,8 +4,8 @@
   "description": "SK Full Disclosure Management System - Barangay Bagtic Backend API",
   "main": "server.js",
   "scripts": {
-  "start": "node backend/server.js",
-  "dev": "nodemon backend/server.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "migrate": "node database/migrate.js",
     "seed": "node database/seed.js"
   },
@@ -20,6 +20,7 @@
     "helmet": "^7.1.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.6.5",
+    "pg": "^8.20.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

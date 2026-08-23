@@ -27,7 +27,7 @@ async function logActivity({ userId = null, action, entityType = null, entityId 
     );
   } catch (err) {
     // Non-fatal — log to console but don't crash the request
-    console.error('⚠️  Failed to write activity log:', err.message);
+    console.error('[WARN] Failed to write activity log:', err.message);
   }
 }
 

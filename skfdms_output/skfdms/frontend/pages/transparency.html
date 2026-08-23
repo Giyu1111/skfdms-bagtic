@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fund Proofs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    :root{--navy:#1A4530;--navy-dark:#0E2B1F;--gold:#A0872A;--sky:#3D8C62;--gray-50:#F2F5F3;--gray-100:#E2EAE5;--gray-400:#7A8C80;--gray-700:#3A4A3E;--radius:14px;--font:'Plus Jakarta Sans',system-ui,sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    .page-header{background:linear-gradient(135deg,var(--navy-dark),var(--navy));color:white;padding:48px 24px 36px;}
+    .page-header .inner,.container{max-width:1200px;margin:0 auto;}
+    .breadcrumb{display:flex;gap:8px;align-items:center;font-size:.82rem;opacity:.65;margin-bottom:14px;}
+    .breadcrumb a{color:rgba(255,255,255,.75);text-decoration:none;}
+    .page-header h1{font-size:2.2rem;font-weight:900;margin-bottom:8px;}
+    .page-header p{opacity:.78;font-size:.96rem;max-width:760px;line-height:1.7;}
+    .container{padding:28px 24px 56px;}
+    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:20px;}
+    .stat{background:white;border:1px solid #e7eee9;border-left:4px solid var(--sky);border-radius:var(--radius);padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+    .stat.gold{border-left-color:var(--gold);}
+    .stat-value{color:var(--navy);font-size:1.9rem;font-weight:900;line-height:1;}
+    .stat-label{color:var(--gray-400);font-size:.8rem;font-weight:800;margin-top:7px;}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+    .toolbar h2{font-size:1.15rem;color:var(--navy);}
+    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .barangay-select{width:min(100%,260px);border:1.5px solid #dce5df;border-radius:10px;padding:11px 13px;font-family:var(--font);font-size:.92rem;font-weight:700;color:var(--navy);background:white;outline:none;}
+    .search{width:min(100%,320px);border:1.5px solid #dce5df;border-radius:10px;padding:11px 13px;font-family:var(--font);font-size:.92rem;outline:none;}
+    .search:focus,.barangay-select:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(61,140,98,.1);}
+    .fund-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+    .fund-card{background:white;border:1px solid #e7eee9;border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;flex-direction:column;min-height:100%;}
+    .proof{height:190px;background:linear-gradient(135deg,var(--gray-100),#fff);display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:8px;border-bottom:1px solid #edf2ee;overflow:hidden;}
+    .proof-tile{border-radius:9px;background:#f8fbf9;border:1px solid #dce5df;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;overflow:hidden;min-width:0;}
+    .proof-tile img{width:100%;height:100%;object-fit:cover;}
+    .proof-tile.more{background:rgba(26,69,48,.9);color:#fff;font-size:1.1rem;}
+    .body{padding:18px;display:flex;flex-direction:column;flex:1;}
+    .meta{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px;}
+    .category{background:var(--gray-100);color:var(--sky);font-size:.72rem;font-weight:900;padding:3px 10px;border-radius:20px;}
+    .amount{color:var(--navy);font-size:1.15rem;font-weight:900;white-space:nowrap;}
+    .title{color:var(--navy);font-weight:900;font-size:.98rem;line-height:1.35;margin-bottom:7px;}
+    .purpose{color:var(--gray-700);font-size:.86rem;line-height:1.6;margin-bottom:14px;flex:1;}
+    .connected-docs{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 14px;}
+    .connected-doc-link{display:inline-flex;align-items:center;gap:5px;border:1px solid #dce5df;background:#f8fbf9;color:var(--navy);border-radius:999px;padding:5px 9px;font-size:.74rem;font-weight:900;text-decoration:none;max-width:100%;}
+    .connected-doc-link:hover{border-color:var(--sky);background:#e8f5eb;}
+    .connected-doc-link span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .footer{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--gray-400);font-size:.78rem;}
+    .link{background:var(--sky);color:white;border:0;border-radius:8px;padding:7px 12px;font-family:var(--font);font-size:.8rem;font-weight:900;text-decoration:none;white-space:nowrap;cursor:pointer;}
+    .link:hover{background:var(--navy);}
+    .empty{background:white;border:1px solid #e7eee9;border-radius:var(--radius);padding:44px;text-align:center;color:var(--gray-400);}
+    footer{background:var(--navy-dark);color:rgba(255,255,255,.6);padding:34px 24px;text-align:center;}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(8,20,13,.7);display:none;align-items:center;justify-content:center;padding:22px;z-index:300;}
+    .modal-backdrop.show{display:flex;}
+    .proof-modal{width:min(100%,860px);max-height:90vh;overflow:auto;background:white;border-radius:14px;border:1px solid #dce5df;box-shadow:0 24px 70px rgba(0,0,0,.32);}
+    .proof-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid #edf2ee;}
+    .proof-modal-head h3{font-size:1rem;color:var(--navy);font-weight:900;}
+    .modal-close{width:34px;height:34px;border:0;border-radius:8px;background:#f1f5f2;color:var(--navy);font-size:1.35rem;cursor:pointer;}
+    .proof-modal-body{padding:18px;}
+    .album-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px;}
+    .album-item{min-height:150px;border:1px solid #dce5df;border-radius:10px;background:#f8fbf9;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;text-decoration:none;overflow:hidden;}
+    .album-item img{width:100%;height:170px;object-fit:cover;}
+    .album-file{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+    .proof-details{border-top:1px solid #edf2ee;padding:16px 0;position:relative;color:var(--gray-700);line-height:1.65;}
+    .proof-details h4{color:var(--navy);font-size:1.05rem;margin-bottom:6px;}
+    .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px;}
+    .detail-grid div{background:#f8fbf9;border:1px solid #edf2ee;border-radius:8px;padding:9px 10px;font-size:.84rem;}
+    .modal-download-wrapper{text-align:right;margin-top:12px;}
+    .modal-download-btn{display:inline-flex;align-items:center;gap:4px;background:var(--sky);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.76rem;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+    .modal-download-btn:hover{background:var(--navy);transform:translateY(-1px);}
+    .modal-download-btn:focus{outline:2px solid var(--gold);outline-offset:2px;}
+    .footer-brand{color:var(--gold);font-weight:900;margin-bottom:8px;}
+    .footer-links{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:12px 0;}
+    .footer-links a{color:rgba(255,255,255,.58);text-decoration:none;font-size:.85rem;}
+    body.dark{background:#0a120d;color:#d4e8da;--gray-50:#0d1810;--gray-100:#1e3325;--gray-700:#a8c4b0;--gray-400:#6f9278;}
+    body.dark .page-header{background:linear-gradient(135deg,#060f09,#0E2B1F);}
+    body.dark .stat,body.dark .fund-card,body.dark .empty{background:#111d14;border-color:#1e3325;}
+    body.dark .proof{background:linear-gradient(135deg,#1e3325,#111d14);border-color:#1e3325;color:#c8e8d4;}
+    body.dark .stat-value,body.dark .toolbar h2,body.dark .amount,body.dark .title{color:#c8e8d4;}
+    body.dark .purpose{color:#a8c4b0;}
+    body.dark .category{background:#1e3325;color:#7acea8;}
+    body.dark .search,body.dark .barangay-select{background:#111d14;border-color:#1e3325;color:#d4e8da;}
+    body.dark .proof-modal{background:#111d14;border-color:#1e3325;}
+    body.dark .proof-modal-head{border-color:#1e3325;}
+    body.dark .proof-modal-head h3,body.dark .proof-details h4{color:#c8e8d4;}
+    body.dark .album-item,body.dark .detail-grid div{background:#1e3325;border-color:#2f4d39;color:#c8e8d4;}
+    body.dark .connected-doc-link{background:#1e3325;border-color:#2f4d39;color:#c8e8d4;}
+    body.dark .connected-doc-link:hover{background:#263f2f;border-color:#7acea8;}
+    body.dark footer{background:#060f09;}
+    @media(max-width:760px){.page-header h1{font-size:1.8rem;}}
+  </style>
+  <link rel="stylesheet" href="../css/public-nav.css"/>
+  <script src="../js/public-theme.js" defer></script>
+</head>
+<body data-default-theme="dark">
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-brand">
+      <span class="brand-logos" aria-hidden="true">
+        <img class="brand-logo" src="../images/cLogo.jpg" alt="" />
+        <img class="brand-logo" src="../images/favicon.png" alt="" />
+      </span>
+      <span class="brand-title">
+        <span class="brand-kabataan">Sangguniang Kabataan</span>
+        <span class="brand-rule"></span>
+        <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
+      </span>
+    </a>
+    <div class="navbar-links">
+      <a href="../index.html">Home</a>
+      <a href="documents.html">Documents</a>
+      <a href="transparency.html" class="active">Transparency</a>
+      <a href="community.html">Community</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About</a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
+      <a href="login.html" class="btn-admin">Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="inner">
+    <div class="breadcrumb"><a href="../index.html">Home</a><span>/</span><span>Fund Proofs</span></div>
+    <h1>Where SK Funds Went</h1>
+    <p>Published photos, documents, and supporting files from SK officials. Each record shows the amount spent, the purpose, and the file preview so residents can understand where the budget was used.</p>
+  </div>
+</div>
+
+<main class="container">
+  <section class="summary">
+    <div class="stat"><div class="stat-value" id="totalAmount">₱0</div><div class="stat-label">Total published expenses with proof</div></div>
+    <div class="stat gold"><div class="stat-value" id="proofCount">0</div><div class="stat-label">Published proof records</div></div>
+  </section>
+
+  <div class="toolbar">
+    <h2>Published Fund Usage Proofs</h2>
+    <div class="filters">
+      <select class="barangay-select" id="barangayFilter" onchange="loadProofs()">
+        <option value="all">All Barangays</option>
+      </select>
+      <input class="search" id="searchInput" placeholder="Search purpose, title, or category..." oninput="renderProofs()">
+    </div>
+  </div>
+
+  <section class="fund-grid" id="proofGrid">
+    <div class="empty">Loading fund proof records...</div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-brand">SK-FDMS · Fund Proofs</div>
+  <div class="footer-links"><a href="../index.html">Home</a><a href="documents.html">Documents</a><a href="transparency.html">Fund Proofs</a><a href="community.html">Community</a><a href="contact.html">Contact</a><a href="about.html">About</a></div>
+  <p>Municipality of Catigbian, Bohol · DILG Full Disclosure Policy Compliant</p>
+</footer>
+
+<div class="modal-backdrop" id="proofModal" aria-hidden="true">
+  <div class="proof-modal" role="dialog" aria-modal="true" aria-labelledby="proofModalTitle">
+    <div class="proof-modal-head">
+      <h3 id="proofModalTitle">Proof Album</h3>
+      <button class="modal-close" type="button" onclick="closeProofAlbum()" aria-label="Close">&times;</button>
+    </div>
+    <div class="proof-modal-body" id="proofModalBody"></div>
+  </div>
+</div>
+<script>
+var API = window.location.origin + '/api';
+var proofs = [];
+var selectedBarangayId = new URLSearchParams(window.location.search).get('barangay_id') || 'all';
+var sample = [
+  { id: 0, title: 'Sports equipment for youth league', purpose: 'Basketballs, nets, and basic materials used for the barangay youth sports program.', expense_category: 'Sports Development', amount: 8500, spent_at: '2026-03-12', proof_label: 'Preview', file_type: 'jpg', is_image: false },
+  { id: 0, title: 'Leadership seminar meals and supplies', purpose: 'Food, certificates, and printed materials for SK leadership training participants.', expense_category: 'Youth Training', amount: 6200, spent_at: '2026-02-18', proof_label: 'Preview', file_type: 'pdf', is_image: false },
+  { id: 0, title: 'Clean-up drive materials', purpose: 'Trash bags, gloves, and cleaning tools for youth-led community clean-up activity.', expense_category: 'Environment', amount: 3100, spent_at: '2026-01-28', proof_label: 'Preview', file_type: 'png', is_image: false }
+];
+
+function money(value) {
+  return '₱' + Number(value || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function formatDate(value) {
+  return value ? new Date(value).toLocaleDateString('en-PH', {year:'numeric', month:'short', day:'numeric'}) : 'No date';
+}
+function proofFiles(item) {
+  if (Array.isArray(item.files) && item.files.length) return item.files;
+  return [{ index: 0, name: item.file_name || 'Proof file', type: item.file_type || 'file', is_image: item.is_image }];
+}
+function fileTypeLabel(file) {
+  return String((file && file.type) || 'file').toUpperCase();
+}
+function fileIconHtml(file) {
+  var ext = String((file && file.type) || '').toLowerCase();
+  var iconClass = ['jpg','jpeg','png','gif','webp'].includes(ext) ? 'image' : (['doc','docx'].includes(ext) ? 'note' : 'file');
+  return '<span class="ui-icon ui-icon-' + iconClass + ' ui-icon-xl" aria-hidden="true"></span>';
+}
+function connectedDocuments(item) {
+  var docs = Array.isArray(item.connected_documents) ? item.connected_documents : [];
+  if (!docs.length && item.document_id) {
+    docs = [{ id: item.document_id, title: item.document_title || ('Document #' + item.document_id) }];
+  }
+  return docs.filter(function(doc) { return doc && doc.id; });
+}
+function connectedDocumentsHtml(item, limit) {
+  var docs = connectedDocuments(item);
+  if (!docs.length) return '';
+  var visible = limit ? docs.slice(0, limit) : docs;
+  var links = visible.map(function(doc) {
+    return '<a class="connected-doc-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download?preview=1" target="_blank" rel="noopener">'
+      + '<span class="ui-icon ui-icon-file" aria-hidden="true"></span><span>' + escapeHtml(doc.title || ('Document #' + doc.id)) + '</span>'
+    + '</a>';
+  }).join('');
+  if (limit && docs.length > limit) links += '<span class="connected-doc-link"><span>+' + (docs.length - limit) + ' more</span></span>';
+  return '<div class="connected-docs">' + links + '</div>';
+}
+function loadBarangays() {
+  return fetch(API + '/barangays')
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if (!data.success || !data.data) return;
+      var select = document.getElementById('barangayFilter');
+      select.innerHTML = '<option value="all">All Barangays</option>' + data.data.map(function(barangay) {
+        return '<option value="' + barangay.id + '">' + escapeHtml(barangay.name) + '</option>';
+      }).join('');
+      select.value = selectedBarangayId;
+      if (select.value !== selectedBarangayId) select.value = 'all';
+    })
+    .catch(function(){});
+}
+function loadProofs() {
+  var select = document.getElementById('barangayFilter');
+  selectedBarangayId = select.value || selectedBarangayId || 'all';
+  var url = API + '/fund-proofs?limit=50';
+  if (selectedBarangayId !== 'all') url += '&barangay_id=' + encodeURIComponent(selectedBarangayId);
+  fetch(url)
+    .then(function(res){ return res.json(); })
+    .then(function(data){ proofs = data.success ? (data.data || []) : sample; renderProofs(); })
+    .catch(function(){ proofs = sample; renderProofs(); });
+}
+function renderProofs() {
+  var q = document.getElementById('searchInput').value.trim().toLowerCase();
+  var items = proofs.filter(function(item) {
+    return !q || [item.title, item.purpose, item.expense_category, item.payee, item.barangay].join(' ').toLowerCase().includes(q);
+  });
+  var total = items.reduce(function(sum, item){ return sum + Number(item.amount || 0); }, 0);
+  document.getElementById('totalAmount').textContent = money(total);
+  document.getElementById('proofCount').textContent = items.length;
+
+  if (!items.length) {
+    document.getElementById('proofGrid').innerHTML = '<div class="empty">No published fund proofs found for the selected barangay or search.</div>';
+    return;
+  }
+
+  document.getElementById('proofGrid').innerHTML = items.map(function(item) {
+    var files = proofFiles(item);
+    var proof = files.slice(0, 4).map(function(file, index) {
+      var proofUrl = item.id ? API + '/fund-proofs/' + item.id + '/download?preview=1&file=' + encodeURIComponent(index) : '';
+      if (index === 3 && files.length > 4) return '<div class="proof-tile more">+' + (files.length - 3) + '</div>';
+      if (file.is_image && proofUrl) return '<div class="proof-tile"><img src="' + proofUrl + '" alt="Proof image"></div>';
+      return '<div class="proof-tile">' + fileIconHtml(file) + '</div>';
+    }).join('');
+    return '<article class="fund-card">'
+      + '<div class="proof">' + proof + '</div>'
+      + '<div class="body">'
+        + '<div class="meta"><span class="category">' + escapeHtml(item.expense_category || 'Expense') + '</span><span class="amount">' + money(item.amount) + '</span></div>'
+        + '<div class="title">' + escapeHtml(item.title) + '</div>'
+        + '<div class="purpose">' + escapeHtml(item.purpose || '') + '</div>'
+        + connectedDocumentsHtml(item, 2)
+        + '<div class="footer"><span>' + escapeHtml(item.barangay || 'Barangay') + ' - ' + formatDate(item.spent_at) + '</span><button class="link" type="button" onclick="openProofAlbum(' + item.id + ')">Preview</button></div>'
+      + '</div>'
+    + '</article>';
+  }).join('');
+}
+function openProofAlbum(id) {
+  var item = proofs.find(function(proof) { return Number(proof.id) === Number(id); });
+  if (!item) return;
+  var files = proofFiles(item);
+  document.getElementById('proofModalTitle').textContent = item.title || 'Proof Album';
+    document.getElementById('proofModalBody').innerHTML = '<div class="album-grid">' + files.map(function(file, index) {
+      var previewUrl = API + '/fund-proofs/' + item.id + '/download?preview=1&file=' + encodeURIComponent(index);
+      var downloadUrl = API + '/fund-proofs/' + item.id + '/download?file=' + encodeURIComponent(index);
+      if (file.is_image) return '<a class="album-item" href="' + downloadUrl + '" target="_blank" rel="noopener"><img src="' + previewUrl + '" alt="' + escapeHtml(file.name || item.title) + '"></a>';
+      return '<div class="album-item">' + fileIconHtml(file) + '</div>';
+    }).join('') + '</div>'
+      + '<div class="proof-details">'
+        + '<h4>' + escapeHtml(item.title || 'Expense details') + '</h4>'
+        + '<p>' + escapeHtml(item.purpose || '') + '</p>'
+        + '<div class="detail-grid">'
+          + '<div><strong>Category</strong><br>' + escapeHtml(item.expense_category || '-') + '</div>'
+          + '<div><strong>Amount</strong><br>' + money(item.amount) + '</div>'
+          + '<div><strong>Barangay</strong><br>' + escapeHtml(item.barangay || 'Barangay') + '</div>'
+          + '<div><strong>Date Spent</strong><br>' + formatDate(item.spent_at) + '</div>'
+        + '</div>'
+        + connectedDocumentsHtml(item)
+        + '<div class="modal-download-wrapper"><a href="' + API + '/fund-proofs/' + item.id + '/download?file=0" class="modal-download-btn" target="_blank" rel="noopener" download>⬇ Download</a></div>'
+      + '</div>';
+    document.getElementById('proofModal').classList.add('show');
+    document.getElementById('proofModal').setAttribute('aria-hidden','false');
+}
+function closeProofAlbum() {
+  document.getElementById('proofModal').classList.remove('show');
+  document.getElementById('proofModal').setAttribute('aria-hidden','true');
+}
+loadBarangays().then(loadProofs);
+</script>
+</body>
+</html>
+
+

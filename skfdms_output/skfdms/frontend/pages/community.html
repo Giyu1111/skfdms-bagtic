@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    :root {
+      --navy: #1A4530;
+      --navy-dark: #0E2B1F;
+      --navy-light: #2A6B4A;
+      --gold: #A0872A;
+      --gold-light: #C9A83C;
+      --gold-pale: #F8F4E6;
+      --sky: #3D8C62;
+      --sky-light: #A8CEBC;
+      --white: #fff;
+      --gray-50: #F2F5F3;
+      --gray-100: #E2EAE5;
+      --gray-200: #C8D8CE;
+      --gray-700: #3A4A3E;
+      --gray-400: #7A8C80;
+      --green: #2A6B4A;
+      --red: #943030;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(0,0,0,.10);
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    .navbar{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .navbar-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+    .navbar-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+    .logo-badge{background:var(--gold);color:var(--navy);font-weight:900;font-size:.85rem;padding:5px 10px;border-radius:7px;letter-spacing:1px;}
+    .brand-text{color:white;font-weight:700;font-size:1rem;}
+    .navbar-links{display:flex;align-items:center;gap:4px;}
+    .navbar-links a{color:rgba(255,255,255,.78);padding:8px 14px;border-radius:8px;font-size:.9rem;font-weight:600;text-decoration:none;transition:all .2s;}
+    .navbar-links a:hover{color:#fff;background:rgba(255,255,255,.1);}
+    .navbar-links a.active{color:#fff;background:rgba(255,255,255,.12);}
+    .navbar-links .btn-admin{background:var(--gold);color:var(--navy);font-weight:700;margin-left:8px;}
+    .dark-toggle{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);padding:8px 12px;border-radius:8px;cursor:pointer;font-size:1rem;}
+    .page-header{background:linear-gradient(135deg,var(--navy-dark),var(--navy));color:white;padding:48px 24px 36px;}
+    .page-header .inner{max-width:1200px;margin:0 auto;}
+    .page-header h1{font-size:2.2rem;font-weight:900;margin-bottom:8px;}
+    .page-header p{opacity:.75;font-size:.95rem;}
+    .container{max-width:1200px;margin:0 auto;padding:40px 24px;}
+    .section{padding:52px 24px;}
+    .section.alt{background:white;}
+    .sec-inner{max-width:1200px;margin:0 auto;}
+    .section-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:8px;}
+    .section-sub{color:var(--gray-400);margin-bottom:32px;font-size:.92rem;}
+    .card{background:white;border-radius:var(--radius);border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+
+    /* TABS */
+    .tab-nav{display:flex;gap:0;border-bottom:2px solid #eee;margin-bottom:32px;overflow-x:auto;}
+    .tab-btn{padding:12px 24px;font-size:.92rem;font-weight:700;color:var(--gray-400);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;font-family:var(--font);transition:all .2s;}
+    .tab-btn:hover{color:var(--navy);}
+    .tab-btn.active{color:var(--sky);border-bottom-color:var(--sky);}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+
+    /* FAQ */
+    .faq-list{display:flex;flex-direction:column;gap:10px;}
+    .faq-item{background:white;border-radius:12px;border:1px solid #eee;overflow:hidden;}
+    .faq-q{padding:18px 22px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.95rem;gap:12px;}
+    .faq-q:hover{background:var(--gray-50);}
+    .faq-icon{font-size:1.1rem;color:var(--sky);transition:transform .3s;flex-shrink:0;}
+    .faq-item.open .faq-icon{transform:rotate(45deg);}
+    .faq-a{display:none;padding:0 22px 18px;color:var(--gray-700);font-size:.9rem;line-height:1.75;border-top:1px solid #f5f5f5;margin-top:0;padding-top:14px;}
+    .faq-item.open .faq-a{display:block;}
+
+    /* FEEDBACK */
+    .feedback-list{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;}
+    .feedback-card{background:var(--gray-50);border-radius:12px;padding:18px 20px;border:1px solid #eee;}
+    .fb-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+    .fb-author{font-weight:700;font-size:.9rem;color:var(--navy);}
+    .fb-date{font-size:.78rem;color:var(--gray-400);}
+    .fb-text{font-size:.9rem;color:var(--gray-700);line-height:1.6;}
+    .fb-stars{color:var(--gold);font-size:.9rem;margin-top:8px;}
+    .fb-tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--gray-100);color:var(--sky);margin-left:8px;}
+
+    /* FORMS */
+    .form-card{background:white;border-radius:var(--radius);padding:28px;border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+    .form-title{font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:20px;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-weight:700;font-size:.82rem;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px;}
+    .form-control{width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:9px;font-size:.95rem;outline:none;font-family:var(--font);transition:border-color .2s;}
+    .form-control:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(61,140,98,.12);}
+    textarea.form-control{resize:vertical;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .btn-submit{background:var(--sky);color:white;border:none;padding:12px 28px;border-radius:9px;font-weight:800;font-size:.95rem;cursor:pointer;font-family:var(--font);width:100%;margin-top:6px;transition:background .2s;}
+    .btn-submit:hover{background:var(--navy);}
+    .alert{padding:12px 15px;border-radius:9px;font-size:.92rem;margin-top:14px;}
+    .alert-success{background:var(--gray-100);color:var(--green);border:1px solid var(--sky-light);}
+    .alert-error{background:#FADBD8;color:var(--red);border:1px solid #F5B7B1;}
+
+    /* EVENTS CALENDAR */
+    .month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .month-nav{display:flex;gap:8px;}
+    .month-btn{background:var(--gray-100);border:none;color:var(--navy);padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);}
+    .month-title{font-size:1.2rem;font-weight:800;color:var(--navy);}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;grid-auto-rows:60px;}
+    .cal-day-header{text-align:center;font-size:.72rem;font-weight:800;color:var(--gray-400);padding:8px 4px;text-transform:uppercase;letter-spacing:.5px;}
+    .cal-day{border-radius:8px;border:1px solid #eee;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.82rem;font-weight:600;cursor:default;transition:all .2s;padding:4px;height:100%;}
+    .cal-day.other-month{color:#ccc;background:var(--gray-50);}
+    .cal-day.today{background:var(--sky);color:white;font-weight:800;border-color:var(--sky);}
+    .cal-day.has-event{border-color:var(--gold);position:relative;}
+    .cal-day.has-event::after{content:'';width:5px;height:5px;background:var(--gold);border-radius:50%;position:absolute;bottom:4px;}
+    .event-list{margin-top:24px;display:flex;flex-direction:column;gap:12px;}
+    .event-row{display:flex;gap:14px;align-items:flex-start;background:white;border-radius:12px;padding:16px;border:1px solid #eee;}
+    .ev-date{background:var(--navy);color:white;border-radius:8px;min-width:50px;text-align:center;padding:8px 6px;flex-shrink:0;}
+    .ev-month{font-size:.62rem;text-transform:uppercase;letter-spacing:.5px;opacity:.7;}
+    .ev-day{font-size:1.4rem;font-weight:900;line-height:1;}
+    .ev-info h4{font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+    .ev-info p{font-size:.82rem;color:var(--gray-700);}
+    .ev-tag{display:inline-block;margin-top:6px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--gold-pale);color:var(--gold);}
+
+    /* OFFICIALS CONTACT */
+    .officials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+    .official-card{background:white;border-radius:12px;border:1px solid #eee;padding:20px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+    .official-avatar{width:60px;height:60px;border-radius:50%;background:var(--sky);color:white;font-size:1.5rem;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+    .official-name{font-weight:700;color:var(--navy);margin-bottom:4px;font-size:.95rem;}
+    .official-role{font-size:.78rem;color:var(--gray-400);margin-bottom:10px;}
+    .official-email{font-size:.8rem;color:var(--sky);text-decoration:none;}
+
+    footer{background:var(--navy-dark);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;margin-top:0;}
+    .footer-brand{color:var(--gold);font-weight:800;font-size:1rem;margin-bottom:8px;}
+    footer p{font-size:.82rem;}
+
+    @media(max-width:768px){.grid-2{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}.navbar-links a:not(.btn-admin){display:none;}}
+
+    /* ===================== DARK MODE ===================== */
+    body.dark {
+      background: #0a120d;
+      color: #d4e8da;
+      --white: #111d14;
+      --gray-50: #0d1810;
+      --gray-100: #1e3325;
+      --gray-200: #2a4030;
+      --gray-700: #a8c4b0;
+      --gray-400: #5a7a62;
+    }
+
+    /* Navbar */
+    body.dark .navbar { background: #0E2B1F; }
+
+    /* Page Header */
+    body.dark .page-header { background: linear-gradient(135deg, #060f09 0%, #0E2B1F 50%, #1A4530 100%); }
+
+    /* Section backgrounds */
+    body.dark .section { background: #0a120d; }
+    body.dark .section.alt { background: #060f09; }
+
+    /* Tabs */
+    body.dark .tab-nav { border-bottom-color: rgba(255,255,255,.1); }
+    body.dark .tab-btn { color: #a8c4b0; }
+    body.dark .tab-btn.active { color: var(--sky); border-bottom-color: var(--sky); }
+    body.dark .tab-btn:hover { color: var(--gold-pale); }
+
+    /* Section text */
+    body.dark .section-title, body.dark .faq-q, body.dark .form-title, body.dark .fb-author, body.dark .official-name { color: #c8e8d4; }
+    body.dark .section-sub, body.dark .faq-a, body.dark .form-label, body.dark .fb-text, body.dark .official-role, body.dark .month-title { color: #7aaa88; }
+
+    /* Cards */
+    body.dark .card, body.dark .form-card, body.dark .faq-item, body.dark .feedback-card, body.dark .official-card, body.dark .event-row { background: #111d14; border-color: #1e3325; }
+    
+    /* Forms */
+    body.dark .form-control { background: #0d1810; border-color: #1e3325; color: #d4e8da; }
+    body.dark .form-control:focus { border-color: #3D8C62; box-shadow: 0 0 0 3px rgba(61,140,98,.12); }
+    
+    /* FAQ */
+    body.dark .faq-q:hover { background: #172410; }
+    body.dark .faq-a { border-top-color: #1e3325; }
+
+    /* Calendar */
+    body.dark .cal-day { background: #111d14; border-color: #1e3325; }
+    body.dark .cal-day.other-month { background: #0d1810; color: #5a7a62; }
+    body.dark .cal-day.today { background: var(--sky); border-color: var(--sky); color: white; }
+    body.dark .month-btn { background: #1e3325; color: #d4e8da; }
+    body.dark .ev-date { background: #0E2B1F; color: #c8e8d4; }
+    body.dark .ev-info h4 { color: #c8e8d4; }
+    body.dark .ev-info p { color: #7aaa88; }
+
+    /* Tags */
+    body.dark .fb-tag { background: #1e3325; color: var(--sky); }
+
+    /* Div borders in dark mode */
+    body.dark div[style*="border:1px solid #eee"] { border-color: #1e3325 !important; background: #111d14 !important; }
+    body.dark div[style*="color:var(--navy)"] { color: #c8e8d4 !important; }
+    body.dark p[style*="color:var(--gray-700)"] { color: #7aaa88 !important; }
+
+    /* Footer */
+    body.dark footer { background: #060f09; }
+  </style>
+  <link rel="stylesheet" href="../css/public-nav.css"/>
+  <script src="../js/public-theme.js" defer></script>
+</head>
+
+<body data-default-theme="dark">
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="navbar-brand">
+      <span class="brand-logos" aria-hidden="true">
+        <img class="brand-logo" src="../images/cLogo.jpg" alt="" />
+        <img class="brand-logo" src="../images/favicon.png" alt="" />
+      </span>
+      <span class="brand-title">
+        <span class="brand-kabataan">Sangguniang Kabataan</span>
+        <span class="brand-rule"></span>
+        <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
+      </span>
+    </a>
+    <div class="navbar-links">
+      <a href="../index.html">Home</a>
+      <a href="documents.html">Documents</a>
+      <a href="transparency.html">Transparency</a>
+      <a href="community.html" class="active">Community</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About</a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
+      <a href="login.html" class="btn-admin">Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="inner">
+    <h1><span class="ui-icon ui-icon-community" aria-hidden="true"></span> Community</h1>
+    <p>Connect with your Barangay SK through FAQs, feedback, and upcoming events</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tab-nav" id="tabs">
+    <button class="tab-btn active" onclick="showTab('faq')"><span class="ui-icon ui-icon-help" aria-hidden="true"></span> FAQ</button>
+    <button class="tab-btn" onclick="showTab('feedback')"><span class="ui-icon ui-icon-message" aria-hidden="true"></span> Feedback</button>
+   
+    
+  </div>
+
+  <div class="tab-panel active" id="panel-faq">
+    <div class="section-title">Frequently Asked Questions</div>
+    <div class="section-sub">About SK funds, DILG policies, and the Full Disclosure System</div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What is the DILG Full Disclosure Policy (FDP)?</span><span class="faq-icon">+</span></div><div class="faq-a">The DILG Full Disclosure Policy requires all local government units, including Sangguniang Kabataan (SK) councils, to proactively disclose their financial and accountability documents online and in conspicuous public places within prescribed timelines. This includes budgets, expenditure reports, audit reports, and project accomplishment reports.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How much is the SK budget for Barangay Bagtic?</span><span class="faq-icon">+</span></div><div class="faq-a">The SK annual budget comes from 10% of the barangay's General Fund allocation plus other sources. For FY 2025, the SK Barangay Bagtic total fund is ₱182,500. All expenditures are documented and made available here in the Transparency Dashboard.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What are the required documents under the Full Disclosure Policy?</span><span class="faq-icon">+</span></div><div class="faq-a">Required SK documents include: Annual Investment Plan (AIP), Approved Budget (ABUD), Statement of Receipts and Expenditures (SRE), SK Resolutions (RES), Minutes of Meetings (MOM), Project Accomplishment Reports (PAR), Activity/Event Reports (ACT), Supplemental Budget (SUP), and Undisbursed AIP funds (UDAI).</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How can I download official SK documents?</span><span class="faq-icon">+</span></div><div class="faq-a">All published documents are freely available on the Documents page. Navigate to the Documents section, use the filters to find the document you need, and click the Download button. No registration or login is required for public access.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Who can be a member of the Sangguniang Kabataan?</span><span class="faq-icon">+</span></div><div class="faq-a">The SK is composed of Filipino citizens who are at least 18 but not more than 24 years of age on the day of election, registered voters of the katipunan ng kabataan of the barangay, and residents of the barangay for at least 6 months before the election.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I report a concern about SK fund usage?</span><span class="faq-icon">+</span></div><div class="faq-a">You can submit concerns through the Feedback tab on this page, or contact the SK officials directly through the Contact page. Concerns can also be raised during SK General Assembly meetings, which are open to all barangay residents.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>When are SK documents required to be published?</span><span class="faq-icon">+</span></div><div class="faq-a">Under the DILG FDP, most documents must be posted within 5 days of approval or completion. Quarterly financial reports (SRE) must be posted within 20 days after each quarter ends. Annual Investment Plans must be posted within 5 days of enactment.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I attend SK meetings?</span><span class="faq-icon">+</span></div><div class="faq-a">SK Regular Sessions are generally open to the public and all barangay residents are encouraged to attend and participate. Special sessions may be open or closed depending on the agenda. Check the Events Calendar for scheduled meeting dates.</div></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-feedback">
+    <div class="section-title">Community Feedback</div>
+    <div class="section-sub">Share your thoughts about SK programs and this transparency system</div>
+    <div class="grid-2">
+      <div>
+        <div id="feedbackCount" style="font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:14px;">Recent Feedback (3)</div>
+        <div class="feedback-list" id="feedbackList">
+          <div class="feedback-card"><div class="fb-head"><div><div class="fb-author">Maria Reyes <span class="fb-tag">Resident</span></div><div class="fb-date">Apr 10, 2026</div></div></div><div class="fb-text">Napakagaling ng transparency ng SK Bagtic! Nakikita ko na kung saan napupunta ang aming pondo. Sana ganito rin ang ibang barangay.</div><div class="fb-stars" aria-label="5 out of 5">★★★★★</div></div>
+          <div class="feedback-card"><div class="fb-head"><div><div class="fb-author">Anonymous</div><div class="fb-date">Mar 25, 2026</div></div></div><div class="fb-text">Maganda ang website. Request lang na mas maraming programs para sa mga kabataan na hindi nag-aaral. Maraming unemployed youth dito sa ating barangay.</div><div class="fb-stars" aria-label="4 out of 5">★★★★☆</div></div>
+          <div class="feedback-card"><div class="fb-head"><div><div class="fb-author">Jun Santos</div><div class="fb-date">Mar 15, 2026</div></div></div><div class="fb-text">Sana mabigyan ng livelihood program ang mga kabataang out-of-school youth. Ang sports festival ay masaya pero kailangan din ng practical skills training.</div><div class="fb-stars" aria-label="4 out of 5">★★★★☆</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="form-card">
+          <div class="form-title"><span class="ui-icon ui-icon-edit" aria-hidden="true"></span> Leave Your Feedback</div>
+          <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-control" id="fbName" placeholder="Juan Dela Cruz (or Anonymous)"/></div>
+          <div class="form-group"><label class="form-label">Rating</label>
+            <select class="form-control" id="fbRating"><option value="5">⭐⭐⭐⭐⭐ Excellent</option><option value="4">⭐⭐⭐⭐ Very Good</option><option value="3">⭐⭐⭐ Good</option><option value="2">⭐⭐ Fair</option><option value="1">⭐ Poor</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Your Feedback</label><textarea class="form-control" id="fbText" rows="5" placeholder="Share your thoughts about SK Bagtic programs, this website, or the transparency system..."></textarea></div>
+          <button class="btn-submit" onclick="submitFeedback()">Submit Feedback</button>
+          <div id="fbMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-events">
+    <div class="section-title">Events Calendar</div>
+    <div class="section-sub">Upcoming SK activities and meetings in Catigbian</div>
+    <div class="grid-2">
+      <div>
+       
+    
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">SK-FDMS · Municipality of Catigbian</div>
+  <p>Municipality of Catigbian, Bohol · DILG Full Disclosure Policy Compliant</p>
+</footer>
+
+<script>
+var calMonth = 4; // May (0-indexed)
+var calYear = 2026;
+var eventDays = { '2026-5-15': true, '2026-6-5': true, '2026-6-12': true };
+
+function renderCal() {
+   var titleEl = document.getElementById('calTitle');
+   var bodyEl = document.getElementById('calBody');
+   if (!titleEl || !bodyEl) return;
+   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+   titleEl.textContent = months[calMonth] + ' ' + calYear;
+   var first = new Date(calYear, calMonth, 1).getDay();
+   var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+   var today = new Date();
+   var html = '';
+   for (var i = 0; i < first; i++) html += '<div class="cal-day other-month"></div>';
+   for (var d = 1; d <= daysInMonth; d++) {
+     var isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d;
+     var key = calYear + '-' + (calMonth+1) + '-' + d;
+     var hasEv = eventDays[key];
+     html += '<div class="cal-day' + (isToday ? ' today' : '') + (hasEv ? ' has-event' : '') + '">' + d + '</div>';
+   }
+   // Fill remaining cells to complete the last row
+   var totalCells = 42; // 6 rows × 7 columns
+   var cellsGenerated = first + daysInMonth;
+   for (var i = cellsGenerated; i < totalCells; i++) {
+     html += '<div class="cal-day other-month"></div>';
+   }
+   bodyEl.innerHTML = html;
+ }
+
+function changeMonth(dir) { calMonth += dir; if (calMonth > 11) { calMonth = 0; calYear++; } if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
+renderCal();
+
+function showTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(function(b){ if (b.getAttribute('onclick').includes(id)) b.classList.add('active'); });
+}
+
+// Handle hash navigation
+if (window.location.hash === '#events') showTab('events');
+if (window.location.hash === '#faq') showTab('faq');
+
+function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+
+var FEEDBACK_STORAGE_KEY = 'skfdms_feedback_items';
+
+function getFeedbackApiUrl() {
+  if (window.location.protocol === 'file:') return null;
+  return window.location.origin + '/api/feedback';
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function getStoredFeedback() {
+  try {
+    return JSON.parse(localStorage.getItem(FEEDBACK_STORAGE_KEY)) || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveStoredFeedback(items) {
+  try {
+    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(items));
+  } catch (error) {
+    // Feedback still appears immediately even if browser storage is unavailable.
+  }
+}
+
+function formatFeedbackDate(dateValue) {
+  return new Date(dateValue).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
+
+function makeStars(rating) {
+  var score = Math.max(1, Math.min(5, Number(rating) || 5));
+  return '\u2605'.repeat(score) + '\u2606'.repeat(5 - score);
+}
+
+function createFeedbackCard(item) {
+  var card = document.createElement('div');
+  var text = item.text || item.message || '';
+  var date = item.date || item.created_at || new Date().toISOString();
+  card.className = 'feedback-card submitted-feedback';
+  card.innerHTML =
+    '<div class="fb-head"><div><div class="fb-author">' +
+    escapeHtml(item.name) +
+    '</div><div class="fb-date">' +
+    escapeHtml(formatFeedbackDate(date)) +
+    '</div></div></div><div class="fb-text">' +
+    escapeHtml(text) +
+    '</div><div class="fb-stars">' +
+    makeStars(item.rating) +
+    '</div>';
+  return card;
+}
+
+function updateFeedbackCount() {
+  var countEl = document.getElementById('feedbackCount');
+  var listEl = document.getElementById('feedbackList');
+  if (!countEl || !listEl) return;
+  countEl.textContent = 'Recent Feedback (' + listEl.children.length + ')';
+}
+
+function renderStoredFeedback() {
+  var listEl = document.getElementById('feedbackList');
+  if (!listEl) return;
+  var storedFeedback = getStoredFeedback();
+  for (var i = storedFeedback.length - 1; i >= 0; i--) {
+    listEl.insertBefore(createFeedbackCard(storedFeedback[i]), listEl.firstChild);
+  }
+  updateFeedbackCount();
+}
+
+async function loadServerFeedback() {
+  var apiUrl = getFeedbackApiUrl();
+  var listEl = document.getElementById('feedbackList');
+  if (!apiUrl || !listEl) return;
+
+  try {
+    var response = await fetch(apiUrl);
+    var result = await response.json();
+    if (!response.ok || !result.success || !Array.isArray(result.data)) return;
+
+    for (var i = result.data.length - 1; i >= 0; i--) {
+      listEl.insertBefore(createFeedbackCard(result.data[i]), listEl.firstChild);
+    }
+    updateFeedbackCount();
+  } catch (error) {
+    // The local fallback remains visible when the API is unavailable.
+  }
+}
+
+function initializeFeedback() {
+  renderStoredFeedback();
+  loadServerFeedback();
+}
+
+async function submitFeedback() {
+  var nameInput = document.getElementById('fbName');
+  var ratingInput = document.getElementById('fbRating');
+  var textInput = document.getElementById('fbText');
+  var msgEl = document.getElementById('fbMsg');
+  var listEl = document.getElementById('feedbackList');
+  var apiUrl = getFeedbackApiUrl();
+  var name = nameInput.value.trim() || 'Anonymous';
+  var text = textInput.value.trim();
+
+  if (!text) {
+    msgEl.innerHTML = '<div class="alert alert-error">Please write your feedback.</div>';
+    return;
+  }
+
+  if (text.length > 1000) {
+    msgEl.innerHTML = '<div class="alert alert-error">Feedback must be 1000 characters or less.</div>';
+    return;
+  }
+
+  var feedback = {
+    name: name,
+    rating: ratingInput.value,
+    text: text,
+    date: new Date().toISOString()
+  };
+
+  listEl.insertBefore(createFeedbackCard(feedback), listEl.firstChild);
+  updateFeedbackCount();
+
+  var savedToServer = false;
+  if (apiUrl) {
+    try {
+      var response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: feedback.name,
+          rating: feedback.rating,
+          text: feedback.text
+        })
+      });
+      var result = await response.json().catch(function() { return {}; });
+      savedToServer = response.ok && result.success;
+    } catch (error) {
+      savedToServer = false;
+    }
+  }
+
+  if (!savedToServer) {
+    var storedFeedback = getStoredFeedback();
+    storedFeedback.unshift(feedback);
+    saveStoredFeedback(storedFeedback);
+  }
+
+  msgEl.innerHTML = '<div class="alert alert-success">&#9989; Thank you, ' + escapeHtml(name) + '! Your feedback has been submitted.</div>';
+  nameInput.value = '';
+  textInput.value = '';
+  ratingInput.value = '5';
+}
+
+initializeFeedback();
+
+
+</script>
+</body>
+</html> 

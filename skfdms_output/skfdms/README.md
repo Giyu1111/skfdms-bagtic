@@ -6,7 +6,7 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 skfdms/
@@ -58,7 +58,7 @@ skfdms/
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - Node.js 18+
@@ -94,7 +94,7 @@ Open `frontend/index.html` using:
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Public (No Auth)
 | Method | Endpoint | Description |
@@ -129,17 +129,17 @@ Open `frontend/index.html` using:
 
 ---
 
-## 👤 Default Admin Credentials
+## Default Admin Credentials
 
 ```
 Email:    admin@skbagtic.gov.ph
 Password: Admin@Bagtic2024
 ```
-⚠️ **Change these immediately in production!**
+**Warning:** Change these immediately in production!
 
 ---
 
-## 🔐 Security Features
+## Security Features
 
 - bcrypt password hashing (12 rounds)
 - Helmet.js security headers
@@ -152,7 +152,7 @@ Password: Admin@Bagtic2024
 
 ---
 
-## 📋 DILG Full Disclosure Categories
+## DILG Full Disclosure Categories
 
 | Code | Name |
 |------|------|
@@ -168,7 +168,7 @@ Password: Admin@Bagtic2024
 
 ---
 
-## 📍 Barangay Information
+## Barangay Information
 
 - **Barangay:** Bagtic
 - **Municipality:** Balilihan

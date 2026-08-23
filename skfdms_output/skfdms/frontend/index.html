@@ -3,156 +3,1967 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SK-FDMS — Barangay Bagtic</title>
+  <title>FDTMS-SK Home</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    .announcements-section { background: var(--white); border-top: 1px solid var(--gray-100); }
-    .announcement-card { border-left: 4px solid var(--gold); padding: 18px 20px; background: var(--off-white); border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 16px; }
-    .announcement-card h4 { color: var(--navy); font-family: var(--font-display); margin-bottom: 6px; }
-    .doc-preview-card { display: flex; gap: 16px; align-items: flex-start; padding: 18px; border: 1px solid var(--gray-100); border-radius: var(--radius-lg); background: var(--white); box-shadow: var(--shadow-sm); transition: all var(--transition); }
-    .doc-preview-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-    .doc-icon { width: 44px; height: 44px; background: var(--sky-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
-    .doc-info h4 { color: var(--navy); font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
-    .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-    .compliance-item { background: var(--white); border: 1px solid var(--gray-100); border-radius: var(--radius); padding: 16px; display: flex; align-items: center; gap: 12px; }
-    .check { color: var(--success); font-size: 1.3rem; }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr minmax(300px, 400px);
+      gap: 32px;
+      align-items: center;
+      max-width: 1528px;
+    }
+    .hero-panel {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 24px;
+      padding: 32px;
+      min-width: 0;
+      box-shadow: 0 30px 80px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+    }
+    .hero-panel h2 {
+      color: #F9E79F;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .hero-panel p {
+      color: rgba(255,255,255,.85);
+      margin-bottom: 26px;
+      line-height: 1.7;
+    }
+    .doc-checklist {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+    .doc-checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      color: rgba(255,255,255,.9);
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.05);
+    }
+    .doc-checklist li::before {
+      content: '•';
+      color: var(--gold);
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(212,172,13,.18);
+      border: 1px solid rgba(212,172,13,.4);
+      color: var(--gold-light);
+      font-size: .8rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hero {
+      text-align: left;
+      padding: 112px clamp(32px, 5vw, 80px) 86px;
+    }
+    .hero h1 {
+      margin-bottom: 18px;
+      font-size: clamp(3rem, 5vw, 4.4rem);
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+    .hero p {
+      max-width: 640px;
+      margin: 0 0 30px;
+      font-size: 1.1rem;
+      opacity: .92;
+      line-height: 1.75;
+    }
+    .hero-actions { justify-content: flex-start; }
+    .faq-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .faq-header h2 {
+      color: #000;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      margin: 0;
+    }
+    .more-faqs {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .faq-list { display: grid; gap: 14px; }
+    .faq-item { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 18px; overflow: hidden; }
+    .faq-q {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #fff;
+      padding: 18px 22px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .faq-a {
+      display: none;
+      padding: 0 22px 18px;
+      color: rgba(255,255,255,.8);
+      line-height: 1.8;
+      font-size: .95rem;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-icon { font-size: 1.4rem; transition: transform .25s ease; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .announcements-section {
+      padding-top: 0;
+    }
+    .announcements-shell {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.82), rgba(232,242,236,.72));
+      border: 1px solid rgba(26, 69, 48, .14);
+      border-radius: 8px;
+      padding: clamp(22px, 4vw, 34px);
+      box-shadow: 0 24px 70px rgba(15, 42, 30, .14);
+      backdrop-filter: blur(18px) saturate(130%);
+    }
+    .announcements-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 18px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .announcements-header h2 {
+      color: #000;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      margin: 0 0 8px;
+    }
+    .announcements-header p {
+      margin: 0;
+      color: var(--gray-700);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+    .announcement-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px);
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .announcement-field label {
+      display: block;
+      color: var(--gray-700);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+    .announcement-search,
+    .announcement-select {
+      width: 100%;
+      max-width: 200px;
+      min-height: 46px;
+      border: 1px solid rgba(26, 69, 48, .16);
+      border-radius: 8px;
+      background: rgba(255,255,255,.78);
+      color: var(--navy);
+      font-weight: 700;
+      padding: 0 14px;
+      outline: none;
+    }
+    .announcement-search:focus,
+    .announcement-select:focus {
+      border-color: rgba(160, 135, 42, .55);
+      box-shadow: 0 0 0 4px rgba(160, 135, 42, .12);
+    }
+    .announcement-reset,
+    .announcement-nav {
+      min-height: 46px;
+      border: 1px solid rgba(26, 69, 48, .16);
+      border-radius: 8px;
+      background: rgba(255,255,255,.72);
+      color: var(--navy);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .announcement-reset {
+      padding: 0 18px;
+    }
+    .announcement-reset:hover,
+    .announcement-nav:hover {
+      transform: translateY(-1px);
+      border-color: rgba(160, 135, 42, .44);
+      background: rgba(255,255,255,.94);
+    }
+    .announcement-grid {
+      display: block;
+    }
+    .barangay-announcements {
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(26, 69, 48, .13);
+      border-radius: 8px;
+      padding: clamp(18px, 3vw, 28px);
+      min-height: 280px;
+      box-shadow: 0 10px 26px rgba(15, 42, 30, .08);
+    }
+    .barangay-announcements h3 {
+      color: var(--navy);
+      font-size: 1rem;
+      margin: 0 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(26, 69, 48, .12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .announcement-count {
+      background: rgba(160, 135, 42, .14);
+      border: 1px solid rgba(160, 135, 42, .2);
+      color: var(--gold);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+    .announcement-list { position: relative; min-height: 190px; }
+    .announcement-card {
+      background: rgba(255,255,255,.46);
+      border: 1px solid rgba(26, 69, 48, .1);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: clamp(18px, 4vw, 26px);
+      min-height: 190px;
+      display: none;
+      opacity: 0;
+      transform: translateX(12px);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+    .announcement-card.is-active {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .announcement-title {
+      color: var(--navy);
+      font-weight: 800;
+      font-size: clamp(1.18rem, 2vw, 1.55rem);
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+    .announcement-body {
+      color: var(--gray-700);
+      font-size: .98rem;
+      line-height: 1.65;
+      margin-bottom: 8px;
+    }
+    .announcement-meta {
+      color: var(--gray-400);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .announcement-empty {
+      background: rgba(255,255,255,.64);
+      border: 1px dashed rgba(26, 69, 48, .24);
+      border-radius: 8px;
+      padding: 30px;
+      color: var(--gray-700);
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+    .announcement-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .announcement-navs {
+      display: inline-flex;
+      gap: 8px;
+    }
+    .announcement-nav {
+      width: 46px;
+      padding: 0;
+      font-size: 1.2rem;
+    }
+    .announcement-dots {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .announcement-dot {
+      width: 9px;
+      height: 9px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(26, 69, 48, .24);
+      cursor: pointer;
+      padding: 0;
+    }
+    .announcement-dot.is-active {
+      width: 24px;
+      background: var(--gold);
+    }
+    .announcement-progress {
+      height: 3px;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(26, 69, 48, .12);
+      margin-top: 16px;
+    }
+    .announcement-progress span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      transform-origin: left center;
+      background: var(--gold);
+    }
+    .barangay-announcements.is-playing .announcement-progress span {
+      animation: announcementProgress 4.5s linear infinite;
+    }
+    @keyframes announcementProgress {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+    html { scroll-behavior: smooth; }
+    .scroll-section { scroll-margin-top: 112px; }
+    .linked-section {
+      background: rgba(255,255,255,.58);
+      border-top: 1px solid rgba(26, 69, 48, .1);
+    }
+    .linked-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .linked-header h2 {
+      color: #000;
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      margin: 0 0 8px;
+    }
+    .linked-header p {
+      margin: 0;
+      color: var(--gray-700);
+      max-width: 720px;
+      line-height: 1.7;
+    }
+    .home-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .home-field {
+      flex: 1 1 190px;
+    }
+    .home-field label {
+      display: block;
+      color: var(--gray-700);
+      font-weight: 800;
+      font-size: .82rem;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .home-input,
+    .home-select,
+    .form-control {
+      width: 100%;
+      min-height: 44px;
+      border: 1.5px solid rgba(26, 69, 48, .18);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-family: inherit;
+      font-size: .92rem;
+      outline: none;
+      background: rgba(255,255,255,.72);
+    }
+    .home-input:focus,
+    .home-select:focus,
+    .form-control:focus {
+      border-color: rgba(61, 140, 98, .70);
+      box-shadow: 0 0 0 3px rgba(61, 140, 98, .13);
+    }
+    .home-btn,
+    .btn-submit {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 18px;
+      background: #B89A2D;
+      color: #072313;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .home-btn.secondary {
+      background: rgba(255,255,255,.66);
+      color: var(--navy);
+      border: 1px solid rgba(26, 69, 48, .16);
+    }
+    .home-list,
+    .fund-grid,
+    .feedback-list,
+    .officials-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .doc-row,
+    .fund-card,
+    .feedback-card,
+    .form-card,
+    .official-card,
+    .info-block,
+    .info-card {
+      background: rgba(255,255,255,.74);
+      border: 1px solid rgba(26, 69, 48, .14);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 42, 30, .08);
+      backdrop-filter: blur(16px) saturate(125%);
+    }
+    .doc-row {
+      display: flex;
+      gap: 16px;
+      padding: 18px;
+    }
+    .doc-icon {
+      width: 52px;
+      height: 52px;
+      border: 1px solid rgba(26, 69, 48, .16);
+      border-radius: 8px;
+      background: rgba(245, 249, 246, .9);
+      color: var(--navy);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 52px;
+    }
+    .doc-icon svg {
+      display: block;
+    }
+    .doc-title,
+    .fund-title,
+    .official-name,
+    .form-title,
+    .info-block h4 {
+      color: var(--navy);
+      font-weight: 900;
+    }
+    .doc-meta,
+    .fund-purpose,
+    .feedback-text,
+    .official-role,
+    .info-block p {
+      color: var(--gray-700);
+      line-height: 1.65;
+      font-size: .9rem;
+    }
+    .doc-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      background: #B89A2D;
+      color: #072313;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: .82rem;
+      border: 0;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .fund-grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .fund-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .fund-proof {
+      min-height: 170px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      padding: 8px;
+      background: rgba(255,255,255,.42);
+      font-weight: 900;
+      color: var(--navy);
+    }
+    .fund-tile {
+      border-radius: 8px;
+      background: rgba(248,251,249,.8);
+      border: 1px solid rgba(26, 69, 48, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .fund-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .fund-tile.more {
+      background: rgba(26, 69, 48, .9);
+      color: #fff;
+      font-size: 1.1rem;
+    }
+    .fund-body {
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .connected-docs{display:flex;gap:6px;flex-wrap:wrap;}
+    .connected-doc-link{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(26,69,48,.14);background:#f8fbf9;color:var(--navy);border-radius:999px;padding:5px 9px;font-size:.74rem;font-weight:900;text-decoration:none;max-width:100%;}
+    .connected-doc-link:hover{border-color:#3D8C62;background:#e8f5eb;}
+    .connected-doc-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .fund-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--gray-700);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+    .proof-modal-backdrop{position:fixed;inset:0;background:rgba(8,20,13,.7);display:none;align-items:center;justify-content:center;padding:22px;z-index:400;}
+    .proof-modal-backdrop.show{display:flex;}
+    .proof-modal{width:min(100%,840px);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;border:1px solid rgba(26,69,48,.14);box-shadow:0 24px 70px rgba(0,0,0,.32);}
+    .proof-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(26,69,48,.12);}
+    .proof-modal-head h3{font-size:1rem;color:var(--navy);font-weight:900;}
+    .proof-modal-close{width:34px;height:34px;border:0;border-radius:8px;background:#f1f5f2;color:var(--navy);font-size:1.35rem;cursor:pointer;}
+    .proof-modal-body{padding:18px;}
+    .proof-preview-stack{display:grid;gap:14px;margin-bottom:18px;}
+    .proof-preview-panel{background:#f8fbf9;border:1px solid rgba(26,69,48,.14);border-radius:10px;overflow:hidden;}
+    .proof-preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid rgba(26,69,48,.12);color:var(--navy);font-size:.84rem;font-weight:900;}
+    .proof-preview-content{min-height:320px;display:flex;align-items:center;justify-content:center;padding:10px;background:#fff;}
+    .proof-preview-content img{max-width:100%;max-height:520px;object-fit:contain;border-radius:8px;}
+    .proof-preview-embed{width:100%;height:540px;border:1px solid #ddd;border-radius:8px;background:#fff;}
+    .proof-preview-placeholder{padding:34px;color:var(--gray-700);font-size:.95rem;text-align:center;}
+    .album-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px;}
+    .album-item{min-height:150px;border:1px solid rgba(26,69,48,.14);border-radius:10px;background:#f8fbf9;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;text-decoration:none;overflow:hidden;}
+    .album-item img{width:100%;height:170px;object-fit:cover;}
+    .album-file{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+    .proof-details{border-top:1px solid rgba(26,69,48,.12);padding:16px 0;position:relative;color:var(--gray-700);line-height:1.65;}
+    .proof-details h4{color:var(--navy);font-size:1.05rem;margin-bottom:6px;}
+    .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px;}
+    .detail-grid div{background:#f8fbf9;border:1px solid rgba(26,69,48,.12);border-radius:8px;padding:9px 10px;font-size:.84rem;}
+    .modal-download-wrapper{text-align:right;margin-top:12px;}
+    .modal-download-btn{display:inline-flex;align-items:center;gap:4px;background:#3D8C62;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.76rem;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+    .modal-download-btn:hover{background:#1A4530;transform:translateY(-1px);}
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+      gap: 28px;
+      align-items: start;
+    }
+    .form-card {
+      padding: 24px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 800;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    textarea.form-control { resize: vertical; }
+    .alert {
+      margin-top: 14px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-size: .9rem;
+    }
+    .alert-success {
+      color: #2A6B4A;
+      background: #E2EAE5;
+      border: 1px solid #A8CEBC;
+    }
+    .alert-error {
+      color: #943030;
+      background: #FADBD8;
+      border: 1px solid #F5B7B1;
+    }
+    .feedback-card {
+      padding: 18px;
+    }
+    .feedback-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .feedback-author {
+      color: var(--navy);
+      font-weight: 900;
+    }
+    .feedback-date,
+    .feedback-stars {
+      color: var(--gold);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+    .officials-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .official-card {
+      padding: 18px;
+      text-align: center;
+    }
+    .official-avatar {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: var(--sky);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .official-email {
+      color: var(--sky);
+      font-size: .8rem;
+      overflow-wrap: anywhere;
+      text-decoration: none;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    .info-block {
+      padding: 18px 20px;
+      border-left: 4px solid var(--sky);
+      margin-bottom: 14px;
+    }
+    .empty-state {
+      background: rgba(255,255,255,.74);
+      border: 1px dashed rgba(26, 69, 48, .22);
+      border-radius: 8px;
+      padding: 32px;
+      color: var(--gray-700);
+      text-align: center;
+    }
+    body.dark .announcements-shell {
+      background:
+        linear-gradient(135deg, rgba(8, 29, 16, .86), rgba(11, 42, 27, .72));
+      border-color: rgba(114, 226, 168, .14);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .32);
+    }
+    body.dark .announcements-header h2,
+    body.dark .barangay-announcements h3,
+    body.dark .announcement-title { color: #D9F7E3; }
+    body.dark .announcements-header p,
+    body.dark .announcement-field label,
+    body.dark .announcement-body,
+    body.dark .announcement-empty { color: rgba(216, 230, 220, .72); }
+    body.dark .announcement-meta { color: rgba(216, 230, 220, .58); }
+    body.dark .barangay-announcements {
+      background: rgba(8, 29, 16, .78);
+      border-color: rgba(114, 226, 168, .14);
+    }
+    body.dark .barangay-announcements h3 {
+      border-bottom-color: rgba(114, 226, 168, .12);
+    }
+    body.dark .announcement-card {
+      background: rgba(3, 16, 9, .34);
+      border-color: rgba(114, 226, 168, .12);
+      border-left-color: var(--gold);
+    }
+    body.dark .announcement-count {
+      background: rgba(184, 154, 45, .14);
+      border-color: rgba(184, 154, 45, .24);
+      color: #D8BB55;
+    }
+    body.dark .announcement-empty {
+      background: rgba(8, 29, 16, .6);
+      border-color: rgba(114, 226, 168, .2);
+    }
+    body.dark .announcement-search,
+    body.dark .announcement-select,
+    body.dark .announcement-reset,
+    body.dark .announcement-nav {
+      background: rgba(3, 16, 9, .78);
+      border-color: rgba(114, 226, 168, .18);
+      color: #E8F5EC;
+    }
+    body.dark .announcement-dot {
+      background: rgba(216, 230, 220, .24);
+    }
+    body.dark .announcement-dot.is-active {
+      background: #D8BB55;
+    }
+    body.dark .announcement-progress {
+      background: rgba(216, 230, 220, .14);
+    }
+    body.dark .linked-section {
+      background: rgba(7, 21, 13, .80) !important;
+      border-top-color: rgba(114, 226, 168, .12);
+    }
+    body.dark .linked-header h2,
+    body.dark .doc-title,
+    body.dark .fund-title,
+    body.dark .official-name,
+    body.dark .form-title,
+    body.dark .info-block h4,
+    body.dark .feedback-author {
+      color: #D9F7E3;
+    }
+    body.dark .linked-header p,
+    body.dark .home-field label,
+    body.dark .doc-meta,
+    body.dark .fund-purpose,
+    body.dark .feedback-text,
+    body.dark .official-role,
+    body.dark .info-block p,
+    body.dark .form-label {
+      color: rgba(216, 230, 220, .72);
+    }
+    body.dark .doc-row,
+    body.dark .fund-card,
+    body.dark .feedback-card,
+    body.dark .form-card,
+    body.dark .official-card,
+    body.dark .info-block,
+    body.dark .info-card,
+    body.dark .empty-state {
+      background: rgba(8, 29, 16, .78);
+      border-color: rgba(114, 226, 168, .14);
+      box-shadow: none;
+    }
+    body.dark .home-input,
+    body.dark .home-select,
+    body.dark .form-control {
+      background: rgba(3, 16, 9, .78);
+      border-color: rgba(114, 226, 168, .18);
+      color: #E8F5EC;
+    }
+    body.dark .fund-proof {
+      background: rgba(3, 16, 9, .34);
+      color: #D9F7E3;
+    }
+    body.dark .connected-doc-link{background:rgba(3,16,9,.78);border-color:rgba(114,226,168,.18);color:#D9F7E3;}
+    body.dark .connected-doc-link:hover{background:rgba(36,73,48,.72);border-color:rgba(114,226,168,.42);}
+    footer { margin-top: 80px; }
+    .scroll-hint{
+      position:fixed;bottom:40px;left:50%;transform:translateX(-50%);
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      font-size:.9rem;font-weight:600;
+      color:rgba(255,255,255,.85);
+      z-index:1000;opacity:1;transition:opacity .3s ease,transform .3s ease;
+      pointer-events:none;
+    }
+    .scroll-hint.hide{opacity:0;transform:translate(-50%,12px);}
+    .scroll-hint .scroll-arrow{
+      display:inline-block;font-size:1.1rem;color:var(--gold,#D4AC0D);
+      animation:scrollBounce 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollBounce{
+      0%,100%{transform:translateY(0);opacity:.4;}
+      50%{transform:translateY(6px);opacity:1;}
+    }
+    @media (max-width: 980px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero p { margin: 0 0 28px; }
+    }
+    @media (max-width: 640px) {
+      .hero-panel { padding: 24px; }
+      .announcements-shell { padding: 18px; }
+      .announcement-toolbar { grid-template-columns: 1fr; }
+      .form-row,
+      .two-col,
+      .about-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  
+  <link rel="stylesheet" href="css/public-nav.css" />
+  <style>
+    body.public-home .navbar-brand {
+      gap: 14px;
+    }
+
+    body.public-home .brand-logos {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    body.public-home .brand-logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #fff;
+      border: 2px solid rgba(255, 255, 255, .82);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .16);
+    }
+
+    body.public-home .brand-title {
+      display: grid;
+      gap: 5px;
+      color: #fff;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    body.public-home .brand-kabataan {
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #D8BB55;
+    }
+
+    body.public-home .brand-rule {
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, .44);
+    }
+
+    body.public-home .brand-text {
+      display: block;
+      font-size: 1.02rem;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1120px) {
+      body.public-home .brand-text {
+        display: block;
+      }
+    }
+
+    @media (max-width: 980px) {
+      body.public-home .navbar-inner {
+        justify-content: space-between;
+      }
+
+      body.public-home .navbar-brand {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body.public-home .brand-title {
+        display: none;
+      }
+
+      body.public-home .brand-logo {
+        width: 46px;
+        height: 46px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body.public-home .navbar-brand {
+        display: flex;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="public-home" data-default-theme="dark">
 
-<!-- ── NAVBAR ─────────────────────────────────────────────── -->
 <nav class="navbar">
   <div class="navbar-inner">
-    <a href="index.html" class="navbar-brand">
-      <span class="logo-badge">SK-FDMS</span>
-      <span>Barangay Bagtic</span>
-    </a>
+    <span class="navbar-brand">
+      <a href="index.html" class="brand-home" aria-label="Home">
+        <span class="brand-logos" aria-hidden="true">
+          <img class="brand-logo" src="images/cLogo.jpg" alt="" />
+          <img class="brand-logo" src="images/favicon.png" alt="" />
+        </span>
+      </a>
+      <span class="brand-title">
+        <a href="pages/login.html" class="brand-kabataan" style="text-decoration:none">Sangguniang Kabataan</a>
+        <span class="brand-rule"></span>
+        <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
+      </span>
+    </span>
     <div class="navbar-links">
-      <a href="index.html" class="active">Home</a>
-      <a href="pages/documents.html">Documents</a>
-      <a href="pages/about.html">About</a>
-      <a href="pages/login.html" class="btn-login"></a>
+      <a href="#home" class="active" data-scroll-nav="home">Home</a>
+      <a href="#documents" data-scroll-nav="documents">Documents</a>
+      <a href="#transparency" data-scroll-nav="transparency">Transparency</a>
+      <a href="#community" data-scroll-nav="community">Community</a>
+      <a href="#contact" data-scroll-nav="contact">Contact</a>
+      <a href="#about" data-scroll-nav="about">About</a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-sun" aria-hidden="true"></span></button>
     </div>
   </div>
 </nav>
 
-<!-- ── HERO ──────────────────────────────────────────────────── -->
-<div class="hero">
+<div class="hero scroll-section" id="home" data-scroll-section="home">
   <div class="hero-inner">
-    <div class="hero-badge">Barangay Bagtic · Catigbian · Bohol</div>
-    <h1>SK Full Disclosure<br>Management System</h1>
-    <p>Transparent. Accountable. Accessible.<br>
-       Sangguniang Kabataan official records available online for every resident of Barangay Bagtic.</p>
-    <div class="hero-actions">
-      <a href="pages/documents.html" class="btn btn-gold btn-lg">📄 Browse Documents</a>
-      <a href="pages/about.html" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,.6);color:white;">Learn More</a>
-    </div>
-  </div>
-</div>
-
-<!-- ── STATS BAR ───────────────────────────────────────────── -->
-<div class="container" style="margin-top:-30px;position:relative;z-index:10;">
-  <div class="stats-bar" id="statsBar">
-    <div class="stat-item"><div class="stat-number" id="statTotal">—</div><div class="stat-label">Published Documents</div></div>
-    <div class="stat-item"><div class="stat-number" id="statCategories">9</div><div class="stat-label">Disclosure Categories</div></div>
-    <div class="stat-item"><div class="stat-number">2024</div><div class="stat-label">Current Fiscal Year</div></div>
-    <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Free Public Access</div></div>
-  </div>
-</div>
-
-<!-- ── RECENT DOCUMENTS ────────────────────────────────────── -->
-<section class="section">
-  <div class="container">
-    <div class="flex-between mb-3">
-      <div>
-        <h2>Recent Disclosures</h2>
-        <p class="text-muted">Latest documents posted by SK Barangay Bagtic officials</p>
+    <div>
+      <span class="hero-badge">DILG FULL DISCLOSURE POLICY COMPLIANT</span>
+      <h1>FDTMS-SK <span class="gold">Full Disclosure and Transparency</span> Management System</h1>
+      <p>Transparency, accountability, and youth empowerment for Municipality of Catigbian, Bohol. All SK financial records and documents are freely accessible to the public.</p>
+      <div class="hero-actions">
+        <a href="pages/documents.html" class="btn btn-gold btn-lg"><span class="ui-icon ui-icon-file" aria-hidden="true"></span> View Documents</a>
       </div>
-      <a href="pages/documents.html" class="btn btn-secondary">View All →</a>
     </div>
-    <div class="grid-2" id="recentDocs">
-      <p class="text-muted">Loading documents…</p>
+
+    <div class="hero-panel">
+      <h2>DILG Required Documents</h2>
+      <p>Published SK documents for every resident, in compliance with DILG disclosure requirements.</p>
+      <ul class="doc-checklist">
+        <li>Annual Investment Plan (AIP)</li>
+        <li>Statement of Receipts & Expenditures</li>
+        <li>SK Resolutions (RES)</li>
+        <li>Minutes of Meetings (MOM)</li>
+        <li>Project Accomplishment Reports</li>
+        <li>Supplemental Budget (SUP)</li>
+      </ul>
     </div>
   </div>
-</section>
-
-<!-- ── ANNOUNCEMENTS ───────────────────────────────────────── -->
-<section class="section announcements-section">
-  <div class="container">
-    <h2 class="mb-3">Announcements</h2>
-    <div id="announcements"><p class="text-muted">Loading…</p></div>
+  <div class="scroll-hint" id="scrollHint">
+    <span class="scroll-arrow">▼</span>
+    <span>Scroll down</span>
   </div>
-</section>
+</div>
 
-<!-- ── DILG COMPLIANCE ─────────────────────────────────────── -->
 <section class="section">
-  <div class="container text-center">
-    <h2 class="mb-2">DILG Full Disclosure Policy Compliance</h2>
-    <p class="text-muted mb-3">Barangay Bagtic SK is committed to posting all required disclosures</p>
-    <div class="compliance-grid">
-      <div class="compliance-item"><span class="check">✔</span> Annual Investment Plan</div>
-      <div class="compliance-item"><span class="check">✔</span> Statement of Receipts & Expenditures</div>
-      <div class="compliance-item"><span class="check">✔</span> SK Resolutions & Ordinances</div>
-      <div class="compliance-item"><span class="check">✔</span> Project Accomplishment Reports</div>
-      <div class="compliance-item"><span class="check">✔</span> Minutes of Meetings</div>
-      <div class="compliance-item"><span class="check">✔</span> Approved SK Budget</div>
+  <div class="container">
+    <div class="faq-header">
+      <h2><span class="ui-icon ui-icon-help" aria-hidden="true"></span> Frequently Asked Questions</h2>
+      <a class="more-faqs" href="pages/community.html">More FAQs →</a>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)">What is the DILG Full Disclosure Policy?<span class="faq-icon">+</span></button>
+        <div class="faq-a">The DILG Full Disclosure Policy requires local government units, including SK councils, to publish financial records, budgets, receipts, and project documents so citizens can see how public funds were spent.</div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)">How can I access SK documents?<span class="faq-icon">+</span></button>
+        <div class="faq-a">All published SK documents are available on the Documents page without login. You can search by category, fiscal year, or keyword and download files directly.</div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)">What does SK-FDMS do?<span class="faq-icon">+</span></button>
+        <div class="faq-a">SK-FDMS provides an online portal for posting SK disclosures, announcements, community updates, and fund proof records from Barangay Catigbian.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ──────────────────────────────────────────────── -->
-<footer>
-  <div class="footer-brand">SK-FDMS · Barangay Bagtic</div>
-  <p>Sangguniang Kabataan Full Disclosure Management System</p>
-  <p class="mt-1">Barangay Bagtic, Catigbian, Bohol · In compliance with DILG Full Disclosure Policy</p>
-</footer>
-
-<script src="js/api.js"></script>
-<script>
-  const fileIcons = { pdf:'📄', jpg:'🖼️', jpeg:'🖼️', png:'🖼️', doc:'📝', docx:'📝' };
-
-  async function loadRecent() {
-    const { ok, data } = await window.SkFDMS.Documents.listPublic({ limit: 6 });
-    const container = document.getElementById('recentDocs');
-    if (!ok || !data.data?.length) {
-      container.innerHTML = '<p class="text-muted">No published documents yet.</p>';
-      document.getElementById('statTotal').textContent = '0';
-      return;
-    }
-    document.getElementById('statTotal').textContent = data.data.length + '+';
-    container.innerHTML = data.data.slice(0, 6).map(doc => `
-      <div class="doc-preview-card">
-        <div class="doc-icon">${fileIcons[doc.file_type] || '📄'}</div>
-        <div class="doc-info">
-          <h4>${doc.title}</h4>
-          <p class="text-muted">${doc.category_name} · ${doc.fiscal_year} · ${window.SkFDMS.formatFileSize(doc.file_size_kb)}</p>
-          <div class="mt-1" style="display:flex;gap:8px;flex-wrap:wrap;">
-            <span class="badge badge-category">${doc.category_code}</span>
-            <a href="${window.SkFDMS.Documents.downloadUrl(doc.id)}" class="btn btn-primary btn-sm">⬇ Download</a>
-          </div>
+<section class="section announcements-section" id="announcements">
+  <div class="container">
+    <div class="announcements-shell">
+      <div class="announcements-header">
+        <div>
+          <h2>Barangay Announcements</h2>
+          <p>Latest public notices from SK officials across the barangays of Catigbian.</p>
+        </div>
+        <a class="more-faqs" href="pages/community.html">Community page -&gt;</a>
+      </div>
+      <div class="announcement-toolbar">
+        <div class="announcement-field">
+          <label for="announcementSearch">Search Barangay</label>
+          <input class="announcement-search" id="announcementSearch" list="announcementBarangayList" placeholder="Type a barangay name..." oninput="handleAnnouncementSearch()" />
+          <datalist id="announcementBarangayList"></datalist>
+        </div>
+        <div class="announcement-field">
+          <label for="announcementBarangay">Barangay</label>
+          <select class="announcement-select" id="announcementBarangay" onchange="selectAnnouncementBarangay(this.value)">
+            <option value="all">All Barangays</option>
+          </select>
         </div>
       </div>
-    `).join('');
+      <div class="announcement-grid" id="announcementGrid">
+        <div class="announcement-empty">Loading announcements...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section linked-section scroll-section" id="documents" data-scroll-section="documents">
+  <div class="container">
+    <div class="linked-header">
+      <div>
+        <h2>Disclosure Documents</h2>
+        <p>Search, filter, preview, and download published SK disclosure documents without leaving the Home page.</p>
+      </div>
+      <a class="more-faqs" href="pages/documents.html">Open full page -&gt;</a>
+    </div>
+    <div class="home-toolbar">
+      <div class="home-field">
+        <label for="homeDocSearch">Search Documents</label>
+        <input class="home-input" id="homeDocSearch" placeholder="Type a document title..." oninput="renderHomeDocs()" />
+      </div>
+      <div class="home-field">
+        <label for="homeDocCategory">Category</label>
+        <select class="home-select" id="homeDocCategory" onchange="renderHomeDocs()"><option value="">All Categories</option></select>
+      </div>
+      <div class="home-field">
+        <label for="homeDocBarangay">Barangay</label>
+        <select class="home-select" id="homeDocBarangay" onchange="renderHomeDocs()"><option value="">All Barangays</option></select>
+      </div>
+      <button class="home-btn secondary" type="button" onclick="resetHomeDocs()">Reset</button>
+    </div>
+    <div class="home-list" id="homeDocList"><div class="empty-state">Loading documents...</div></div>
+  </div>
+</section>
+
+<section class="section linked-section scroll-section" id="transparency" data-scroll-section="transparency">
+  <div class="container">
+    <div class="linked-header">
+      <div>
+        <h2>Transparency</h2>
+        <p>Published fund usage proofs with the amount spent, purpose, barangay, date, and proof file.</p>
+      </div>
+      <a class="more-faqs" href="pages/transparency.html">Open full page -&gt;</a>
+    </div>
+    <div class="home-toolbar">
+      <div class="home-field">
+        <label for="homeProofBarangay">Barangay</label>
+        <select class="home-select" id="homeProofBarangay" onchange="loadHomeProofs()"><option value="all">All Barangays</option></select>
+      </div>
+      <div class="home-field">
+        <label for="homeProofSearch">Search Proofs</label>
+        <input class="home-input" id="homeProofSearch" placeholder="Search purpose, title, or category..." oninput="renderHomeProofs()" />
+      </div>
+    </div>
+    <div class="fund-grid" id="homeProofGrid"><div class="empty-state">Loading fund proof records...</div></div>
+  </div>
+</section>
+
+<section class="section linked-section scroll-section" id="community" data-scroll-section="community">
+  <div class="container">
+    <div class="linked-header">
+      <div>
+        <h2>Community</h2>
+        <p>Read common questions and send public feedback about SK programs and the transparency system.</p>
+      </div>
+      <a class="more-faqs" href="pages/community.html">Open full page -&gt;</a>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="faq-list">
+          <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)">What are the required documents under the Full Disclosure Policy?<span class="faq-icon">+</span></button><div class="faq-a">Required SK documents include the Annual Investment Plan, approved budget, receipt and expenditure reports, resolutions, meeting minutes, project accomplishment reports, and related disclosures.</div></div>
+          <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)">How do I report a concern about SK fund usage?<span class="faq-icon">+</span></button><div class="faq-a">You can submit community feedback here or send a direct concern through the Contact section below.</div></div>
+          <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)">Can I attend SK meetings?<span class="faq-icon">+</span></button><div class="faq-a">SK regular sessions are generally open to residents, and barangay youth are encouraged to participate in community activities.</div></div>
+        </div>
+        <div class="feedback-list" id="homeFeedbackList" style="margin-top:18px;"></div>
+      </div>
+      <div class="form-card">
+        <div class="form-title">Leave Your Feedback</div>
+        <div class="form-group"><label class="form-label" for="homeFbName">Your Name</label><input type="text" class="form-control" id="homeFbName" placeholder="Juan Dela Cruz (or Anonymous)" /></div>
+        <div class="form-group"><label class="form-label" for="homeFbRating">Rating</label><select class="form-control" id="homeFbRating"><option value="5">5 - Excellent</option><option value="4">4 - Very Good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select></div>
+        <div class="form-group"><label class="form-label" for="homeFbText">Your Feedback</label><textarea class="form-control" id="homeFbText" rows="5" placeholder="Share your thoughts..."></textarea></div>
+        <button class="btn-submit" type="button" onclick="submitHomeFeedback()">Submit Feedback</button>
+        <div id="homeFbMsg"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section linked-section scroll-section" id="contact" data-scroll-section="contact">
+  <div class="container">
+    <div class="linked-header">
+      <div>
+        <h2>Contact SK Officials</h2>
+        <p>Send a direct message to the selected barangay SK officials and federated admins.</p>
+      </div>
+      <a class="more-faqs" href="pages/contact.html">Open full page -&gt;</a>
+    </div>
+    <div class="two-col">
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label" for="ctFname">First Name *</label><input type="text" class="form-control" id="ctFname" placeholder="Juan" /></div>
+          <div class="form-group"><label class="form-label" for="ctLname">Last Name *</label><input type="text" class="form-control" id="ctLname" placeholder="Dela Cruz" /></div>
+        </div>
+        <div class="form-group"><label class="form-label" for="ctEmail">Email Address *</label><input type="email" class="form-control" id="ctEmail" placeholder="juan@email.com" /></div>
+        <div class="form-group"><label class="form-label" for="ctBarangay">Barangay *</label><select class="form-control" id="ctBarangay"><option value="">Loading barangays...</option></select></div>
+        <div class="form-group"><label class="form-label" for="ctSubject">Subject *</label><select class="form-control" id="ctSubject"><option value="">Select a topic...</option><option>General Inquiry</option><option>Document Request</option><option>Fund Concern</option><option>Program Suggestion</option><option>Report an Issue</option><option>Volunteer Offer</option></select></div>
+        <div class="form-group"><label class="form-label" for="ctMsg">Message *</label><textarea class="form-control" id="ctMsg" rows="6" placeholder="Type your message here..."></textarea></div>
+        <button class="btn-submit" type="button" onclick="submitContact()">Send Message</button>
+        <div id="ctAlert"></div>
+      </div>
+      <aside>
+        <div class="form-title" id="officialsTitle">SK Officials</div>
+        <div class="officials-grid" id="officialsGrid"><div class="official-card"><div class="official-name">Loading officials...</div></div></div>
+        <div class="info-card" style="padding:20px;margin-top:24px;">
+          <div class="form-title">Municipal Address</div>
+          <p style="color:var(--gray-700);line-height:1.7;">Municipality of Catigbian,<br>Province of Bohol, Region VII<br>Central Visayas, Philippines</p>
+          <p style="color:var(--gray-700);margin-top:12px;">Office Hours: Mon-Fri, 8AM-5PM</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section linked-section scroll-section" id="about" data-scroll-section="about">
+  <div class="container">
+    <div class="linked-header">
+      <div>
+        <h2>About SK-FDMS</h2>
+        <p>The Sangguniang Kabataan Full Disclosure Management System of Catigbian, Bohol promotes transparent, accountable, and accessible youth governance.</p>
+      </div>
+      <a class="more-faqs" href="pages/about.html">Open full page -&gt;</a>
+    </div>
+    <div class="about-grid">
+      <div>
+        <h3 class="form-title">What is SK-FDMS?</h3>
+        <p style="color:var(--gray-700);line-height:1.8;">SK-FDMS is a web-based platform that allows SK officials to upload, organize, publish, and maintain official documents online so residents can access disclosure records anytime.</p>
+        <p style="color:var(--gray-700);line-height:1.8;margin-top:12px;">The system supports the DILG Full Disclosure Policy by making budgets, reports, resolutions, meeting minutes, and project documents easier to find.</p>
+      </div>
+      <div>
+        <div class="info-block"><h4>Online Access</h4><p>No need to visit the barangay hall. Published SK documents are available online.</p></div>
+        <div class="info-block"><h4>Data Integrity</h4><p>Documents are stored centrally and can be reviewed through the public portal.</p></div>
+        <div class="info-block"><h4>DILG Compliant</h4><p>Covers disclosure categories expected from SK councils and local transparency efforts.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">FDTMS-SK · Municipality of Catigbian</div>
+  <p>Transparent. Accountable. Accessible.</p>
+  <p class="mt-1">Municipality of Catigbian, Bohol · DILG Full Disclosure Policy Compliant</p>
+</footer>
+
+<div class="proof-modal-backdrop" id="homeProofModal" aria-hidden="true">
+  <div class="proof-modal" role="dialog" aria-modal="true" aria-labelledby="homeProofModalTitle">
+    <div class="proof-modal-head">
+      <h3 id="homeProofModalTitle">Proof Album</h3>
+      <button class="proof-modal-close" type="button" onclick="closeHomeProofAlbum()" aria-label="Close">&times;</button>
+    </div>
+    <div class="proof-modal-body" id="homeProofModalBody"></div>
+  </div>
+</div>
+
+<script src="js/public-theme.js" defer></script>
+<script>
+  function toggleFaq(button) {
+    const item = button.closest('.faq-item');
+    if (!item) return;
+    item.classList.toggle('open');
   }
 
-  async function loadAnnouncements() {
-    const { ok, data } = await window.SkFDMS.Announcements.listPublic();
-    const container = document.getElementById('announcements');
-    if (!ok || !data.data?.length) {
-      container.innerHTML = '<p class="text-muted">No announcements at this time.</p>';
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatAnnouncementDate(value) {
+    if (!value) return 'Recently posted';
+    return new Date(value).toLocaleDateString('en-PH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  var allAnnouncements = [];
+  var announcementSlides = [];
+  var announcementIndex = 0;
+  var announcementTimer = null;
+  var announcementSearchTimer = null;
+  var ANNOUNCEMENT_SLIDE_MS = 4500;
+
+  function announcementBarangayName(item) {
+    return item.barangay_name || item.barangay || 'Barangay';
+  }
+
+  function normalizeBarangay(value) {
+    return String(value || '').toLowerCase().replace(/^brgy\.?\s*/, '').trim();
+  }
+
+  function findBarangayBySearch(value) {
+    var query = normalizeBarangay(value);
+    if (!query) return null;
+    return (homeBarangays.length ? homeBarangays : CONTACT_FALLBACK_BARANGAYS).find(function(barangay) {
+      return normalizeBarangay(barangay.name) === query;
+    }) || null;
+  }
+
+  function setAnnouncementLoading(message) {
+    var grid = document.getElementById('announcementGrid');
+    if (grid) grid.innerHTML = '<div class="announcement-empty">' + escapeHtml(message) + '</div>';
+  }
+
+  function stopAnnouncementSlideshow() {
+    if (announcementTimer) window.clearInterval(announcementTimer);
+    announcementTimer = null;
+  }
+
+  function startAnnouncementSlideshow() {
+    stopAnnouncementSlideshow();
+    if (announcementSlides.length < 2) return;
+    var shell = document.querySelector('.barangay-announcements');
+    if (shell) shell.classList.add('is-playing');
+    announcementTimer = window.setInterval(function() {
+      showAnnouncementSlide(announcementIndex + 1);
+    }, ANNOUNCEMENT_SLIDE_MS);
+  }
+
+  function pauseAnnouncementSlideshow() {
+    var shell = document.querySelector('.barangay-announcements');
+    if (shell) shell.classList.remove('is-playing');
+    stopAnnouncementSlideshow();
+  }
+
+  function setupAnnouncementSlideshowControls() {
+    var shell = document.querySelector('.barangay-announcements');
+    if (!shell || announcementSlides.length < 2) return;
+    shell.addEventListener('mouseenter', pauseAnnouncementSlideshow);
+    shell.addEventListener('mouseleave', startAnnouncementSlideshow);
+    shell.addEventListener('focusin', pauseAnnouncementSlideshow);
+    shell.addEventListener('focusout', startAnnouncementSlideshow);
+  }
+
+  function showAnnouncementSlide(nextIndex) {
+    if (!announcementSlides.length) return;
+    announcementIndex = (nextIndex + announcementSlides.length) % announcementSlides.length;
+    document.querySelectorAll('.announcement-card').forEach(function(card, index) {
+      card.classList.toggle('is-active', index === announcementIndex);
+    });
+    document.querySelectorAll('.announcement-dot').forEach(function(dot, index) {
+      dot.classList.toggle('is-active', index === announcementIndex);
+    });
+    var status = document.getElementById('announcementStatus');
+    if (status) status.textContent = (announcementIndex + 1) + ' of ' + announcementSlides.length;
+  }
+
+  function moveAnnouncementSlide(direction) {
+    showAnnouncementSlide(announcementIndex + direction);
+    startAnnouncementSlideshow();
+  }
+
+  function jumpAnnouncementSlide(index) {
+    showAnnouncementSlide(index);
+    startAnnouncementSlideshow();
+  }
+
+  function renderAnnouncements(items) {
+    var grid = document.getElementById('announcementGrid');
+    if (!grid) return;
+
+    if (!items.length) {
+      announcementSlides = [];
+      stopAnnouncementSlideshow();
+      grid.innerHTML = '<div class="announcement-empty">No public announcements found for the selected barangay.</div>';
       return;
     }
-    container.innerHTML = data.data.map(a => `
-      <div class="announcement-card">
-        <h4>${a.title}</h4>
-        <p>${a.body}</p>
-        <p class="text-muted mt-1">Posted by ${a.created_by} · ${window.SkFDMS.formatDate(a.created_at)}</p>
-      </div>
-    `).join('');
+
+    announcementSlides = items.slice(0, 24);
+    announcementIndex = Math.min(announcementIndex, announcementSlides.length - 1);
+    var selectedBarangay = currentAnnouncementBarangayLabel();
+    grid.innerHTML = '<article class="barangay-announcements">'
+        + '<h3><span>' + escapeHtml(selectedBarangay) + '</span><span class="announcement-count">' + announcementSlides.length + '</span></h3>'
+        + '<div class="announcement-list">'
+        + announcementSlides.map(function(item, index) {
+          return '<div class="announcement-card' + (index === announcementIndex ? ' is-active' : '') + '">'
+            + '<div class="announcement-title">' + escapeHtml(item.title) + '</div>'
+            + '<div class="announcement-body">' + escapeHtml(item.body) + '</div>'
+            + '<div class="announcement-meta">Brgy. ' + escapeHtml(announcementBarangayName(item)) + ' - ' + escapeHtml(item.created_by || 'SK Chairperson') + ' - ' + formatAnnouncementDate(item.created_at) + '</div>'
+            + '</div>';
+        }).join('')
+        + '</div>'
+        + '<div class="announcement-controls">'
+          + '<div class="announcement-navs">'
+            + '<button class="announcement-nav" type="button" onclick="moveAnnouncementSlide(-1)" aria-label="Previous announcement">&lsaquo;</button>'
+            + '<button class="announcement-nav" type="button" onclick="moveAnnouncementSlide(1)" aria-label="Next announcement">&rsaquo;</button>'
+          + '</div>'
+          + '<div class="announcement-dots">' + announcementSlides.map(function(_, index) {
+            return '<button class="announcement-dot' + (index === announcementIndex ? ' is-active' : '') + '" type="button" onclick="jumpAnnouncementSlide(' + index + ')" aria-label="Show announcement ' + (index + 1) + '"></button>';
+          }).join('') + '</div>'
+          + '<div class="announcement-meta" id="announcementStatus">' + (announcementIndex + 1) + ' of ' + announcementSlides.length + '</div>'
+        + '</div>'
+        + (announcementSlides.length > 1 ? '<div class="announcement-progress" aria-hidden="true"><span></span></div>' : '')
+        + '</article>';
+    setupAnnouncementSlideshowControls();
+    startAnnouncementSlideshow();
   }
 
-  loadRecent();
-  loadAnnouncements();
+  function currentAnnouncementBarangayLabel() {
+    var select = document.getElementById('announcementBarangay');
+    var search = document.getElementById('announcementSearch');
+    if (select && select.value !== 'all' && select.selectedIndex >= 0) {
+      return 'Brgy. ' + select.options[select.selectedIndex].textContent;
+    }
+    if (search && search.value.trim()) return 'Brgy. ' + search.value.trim();
+    return 'All Barangays';
+  }
+
+  function renderAnnouncementsFromSearch() {
+    var search = document.getElementById('announcementSearch');
+    var query = normalizeBarangay(search ? search.value : '');
+    var items = allAnnouncements.filter(function(item) {
+      return !query || normalizeBarangay(announcementBarangayName(item)).includes(query);
+    });
+    announcementIndex = 0;
+    renderAnnouncements(items);
+  }
+
+  async function selectAnnouncementBarangay(value) {
+    var search = document.getElementById('announcementSearch');
+    var select = document.getElementById('announcementBarangay');
+    announcementIndex = 0;
+    if (value === 'all') {
+      if (search) search.value = '';
+      renderAnnouncements(allAnnouncements);
+      return;
+    }
+    var selected = (homeBarangays.length ? homeBarangays : CONTACT_FALLBACK_BARANGAYS).find(function(barangay) {
+      return String(barangay.id) === String(value);
+    });
+    if (search && selected) search.value = selected.name;
+    if (select) select.value = value;
+    if (!/^\d+$/.test(String(value))) {
+      renderAnnouncementsFromSearch();
+      return;
+    }
+    await loadAnnouncements(value);
+  }
+
+  function handleAnnouncementSearch() {
+    if (announcementSearchTimer) window.clearTimeout(announcementSearchTimer);
+    announcementSearchTimer = window.setTimeout(async function() {
+      var search = document.getElementById('announcementSearch');
+      var select = document.getElementById('announcementBarangay');
+      var match = findBarangayBySearch(search ? search.value : '');
+      if (match && /^\d+$/.test(String(match.id))) {
+        if (select) select.value = match.id;
+        await loadAnnouncements(match.id);
+        return;
+      }
+      if (select) select.value = 'all';
+      renderAnnouncementsFromSearch();
+    }, 180);
+  }
+
+  function resetAnnouncementFilter() {
+    var search = document.getElementById('announcementSearch');
+    var select = document.getElementById('announcementBarangay');
+    if (search) search.value = '';
+    if (select) select.value = 'all';
+    announcementIndex = 0;
+    renderAnnouncements(allAnnouncements);
+  }
+
+  async function loadAnnouncements(barangayId) {
+    var url = window.location.origin + '/api/announcements';
+    if (barangayId && barangayId !== 'all') url += '?barangay_id=' + encodeURIComponent(barangayId);
+    try {
+      setAnnouncementLoading('Loading announcements...');
+      var response = await fetch(url);
+      var data = await response.json();
+      var items = data.success && Array.isArray(data.data) ? data.data : [];
+      if (!barangayId || barangayId === 'all') allAnnouncements = items;
+      renderAnnouncements(items);
+    } catch (error) {
+      var grid = document.getElementById('announcementGrid');
+      if (grid) grid.innerHTML = '<div class="announcement-empty">Announcements are unavailable right now.</div>';
+    }
+  }
+
+  var API = window.location.origin + '/api';
+  var homeDocs = [];
+  var homeProofs = [];
+  var homeBarangays = [];
+  var HOME_FEEDBACK_STORAGE_KEY = 'skfdms_feedback_items';
+  var CONTACT_FALLBACK_BARANGAYS = [
+    { id: 'Bagtic', name: 'Bagtic' },
+    { id: 'Bagacay', name: 'Bagacay' },
+    { id: 'Balili', name: 'Balili' },
+    { id: 'Bonbon', name: 'Bonbon' },
+    { id: 'Caluasan', name: 'Caluasan' },
+    { id: 'Can-uba', name: 'Can-uba' },
+    { id: 'Catigbian Poblacion', name: 'Catigbian Poblacion' },
+    { id: 'Guinsularan', name: 'Guinsularan' },
+    { id: 'Lomboy', name: 'Lomboy' },
+    { id: 'Looc', name: 'Looc' },
+    { id: 'Magcawas', name: 'Magcawas' },
+    { id: 'Matabao', name: 'Matabao' },
+    { id: 'Pangapasan', name: 'Pangapasan' },
+    { id: 'Poblacion 1', name: 'Poblacion 1' },
+    { id: 'Poblacion 2', name: 'Poblacion 2' },
+    { id: 'Poblacion 3', name: 'Poblacion 3' },
+    { id: 'Poblacion 4', name: 'Poblacion 4' },
+    { id: 'Poblacion 5', name: 'Poblacion 5' },
+    { id: 'Poblacion 6', name: 'Poblacion 6' },
+    { id: 'Poblacion 7', name: 'Poblacion 7' },
+    { id: 'Poblacion 8', name: 'Poblacion 8' },
+    { id: 'Poblacion Este', name: 'Poblacion Este' },
+    { id: 'Poblacion Weste', name: 'Poblacion Weste' }
+  ];
+
+  function money(value) {
+    return '₱' + Number(value || 0).toLocaleString('en-PH', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function formatDate(value) {
+    if (!value) return 'No date';
+    return new Date(value).toLocaleDateString('en-PH', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  function formatSize(kb) {
+    if (!kb) return '—';
+    if (kb < 1024) return kb + ' KB';
+    return (kb / 1024).toFixed(1) + ' MB';
+  }
+
+  function loadHomeBarangays() {
+    return fetch(API + '/barangays')
+      .then(function(response) { return response.json(); })
+      .then(function(result) {
+        homeBarangays = result.success && Array.isArray(result.data) ? result.data : [];
+        var barangays = homeBarangays.length ? homeBarangays : CONTACT_FALLBACK_BARANGAYS;
+        var docSelect = document.getElementById('homeDocBarangay');
+        var proofSelect = document.getElementById('homeProofBarangay');
+        var contactSelect = document.getElementById('ctBarangay');
+        var announcementSelect = document.getElementById('announcementBarangay');
+        var announcementList = document.getElementById('announcementBarangayList');
+        if (announcementSelect) announcementSelect.innerHTML = '<option value="all">All Barangays</option>' + barangays.map(function(barangay) {
+          return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+        }).join('');
+        if (announcementList) announcementList.innerHTML = barangays.map(function(barangay) {
+          return '<option value="' + escapeHtml(barangay.name) + '"></option>';
+        }).join('');
+        if (docSelect) docSelect.innerHTML = '<option value="">All Barangays</option>' + barangays.map(function(barangay) {
+          return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+        }).join('');
+        if (proofSelect) proofSelect.innerHTML = '<option value="all">All Barangays</option>' + barangays.map(function(barangay) {
+          return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+        }).join('');
+        if (contactSelect) {
+          contactSelect.innerHTML = barangays.map(function(barangay) {
+            return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+          }).join('');
+          contactSelect.selectedIndex = 0;
+          contactSelect.addEventListener('change', loadContactOfficials);
+          loadContactOfficials();
+        }
+      })
+      .catch(function() {
+        homeBarangays = [];
+        var announcementSelect = document.getElementById('announcementBarangay');
+        var announcementList = document.getElementById('announcementBarangayList');
+        var contactSelect = document.getElementById('ctBarangay');
+        if (announcementSelect) announcementSelect.innerHTML = '<option value="all">All Barangays</option>' + CONTACT_FALLBACK_BARANGAYS.map(function(barangay) {
+          return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+        }).join('');
+        if (announcementList) announcementList.innerHTML = CONTACT_FALLBACK_BARANGAYS.map(function(barangay) {
+          return '<option value="' + escapeHtml(barangay.name) + '"></option>';
+        }).join('');
+        if (contactSelect) {
+          contactSelect.innerHTML = CONTACT_FALLBACK_BARANGAYS.map(function(barangay) {
+            return '<option value="' + escapeHtml(barangay.id) + '">' + escapeHtml(barangay.name) + '</option>';
+          }).join('');
+          loadContactOfficials();
+        }
+      });
+  }
+
+  async function loadHomeCategories() {
+    try {
+      var response = await fetch(API + '/categories');
+      var result = await response.json();
+      var select = document.getElementById('homeDocCategory');
+      if (!select || !result.data) return;
+      select.innerHTML = '<option value="">All Categories</option>' + result.data.map(function(category) {
+        return '<option value="' + escapeHtml(category.id) + '">' + escapeHtml(category.code + ' - ' + category.name) + '</option>';
+      }).join('');
+    } catch (error) {}
+  }
+
+  async function loadHomeDocs() {
+    var list = document.getElementById('homeDocList');
+    try {
+      var response = await fetch(API + '/documents');
+      var result = await response.json();
+      homeDocs = result.data || [];
+      renderHomeDocs();
+    } catch (error) {
+      if (list) list.innerHTML = '<div class="empty-state">Documents are unavailable right now.</div>';
+    }
+  }
+
+  function renderHomeDocs() {
+    var list = document.getElementById('homeDocList');
+    if (!list) return;
+    var query = document.getElementById('homeDocSearch').value.trim().toLowerCase();
+    var category = document.getElementById('homeDocCategory').value;
+    var barangay = document.getElementById('homeDocBarangay').value;
+    var docs = homeDocs.filter(function(doc) {
+      var matchesQuery = !query || String(doc.title || '').toLowerCase().includes(query);
+      var matchesCategory = !category || String(doc.category_id) === String(category);
+      var matchesBarangay = !barangay || String(doc.barangay_id) === String(barangay);
+      return matchesQuery && matchesCategory && matchesBarangay;
+    });
+
+    if (!docs.length) {
+      list.innerHTML = '<div class="empty-state">No documents found.</div>';
+      return;
+    }
+
+    list.innerHTML = docs.slice(0, 12).map(function(doc) {
+      var ext = String(doc.file_type || 'pdf').toLowerCase();
+      var previewable = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext);
+      return '<article class="doc-row">'
+        + '<div class="doc-icon">' + fileIconHtml(ext) + '</div>'
+        + '<div>'
+          + '<div class="doc-title">' + escapeHtml(doc.title) + '</div>'
+          + '<div class="doc-meta">' + escapeHtml(doc.category_name || 'Document') + ' · FY ' + escapeHtml(doc.fiscal_year || '—') + ' · ' + escapeHtml(doc.quarter || '—') + ' · ' + formatSize(doc.file_size_kb) + ' · ' + formatDate(doc.published_at) + '</div>'
+          + '<div class="doc-actions">'
+            + (previewable ? '<a class="home-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download?preview=1" target="_blank" rel="noopener">Preview</a>' : '')
+            + '<a class="home-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download" target="_blank" rel="noopener">Download</a>'
+          + '</div>'
+        + '</div>'
+      + '</article>';
+    }).join('');
+  }
+
+  var fileTypeColors = {
+    pdf:'#DC2626', docx:'#2563EB', doc:'#2563EB', docm:'#2563EB',
+    xlsx:'#16A34A', xls:'#16A34A', xlsm:'#16A34A', xlt:'#16A34A', xltx:'#16A34A',
+    pptx:'#EA580C', ppt:'#EA580C', pptm:'#EA580C',
+    jpg:'#0EA5E9', jpeg:'#0EA5E9', png:'#0EA5E9', gif:'#0EA5E9', svg:'#0EA5E9', webp:'#0EA5E9', bmp:'#0EA5E9', tiff:'#0EA5E9', tif:'#0EA5E9',
+    txt:'#6B7280', rtf:'#6B7280', md:'#6B7280',
+    csv:'#16A34A',
+    zip:'#CA8A04', rar:'#CA8A04', '7z':'#CA8A04', tar:'#CA8A04', gz:'#CA8A04', tgz:'#CA8A04',
+    odt:'#2563EB', ods:'#16A34A', odp:'#EA580C'
+  };
+
+  function fileIconHtml(ext) {
+    ext = String(ext || 'pdf').toLowerCase().replace(/^\.+/, '').split('/')[0] || '';
+    var color = fileTypeColors[ext] || '#6B7280';
+    var label = ext ? (ext.length > 4 ? ext.slice(0, 4) : ext) : 'file';
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="46" viewBox="0 0 24 24" role="img" aria-label="' + label + ' file">'
+      + '<path d="M6 2C4.89 2 4 2.89 4 4v16c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8l-6-6H6z" fill="' + color + '"/>'
+      + '<text x="12" y="15.5" font-family="Arial, Helvetica, sans-serif" font-size="7" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">' + label.toUpperCase() + '</text>'
+      + '</svg>';
+  }
+  function proofFiles(item) {
+    if (Array.isArray(item.files) && item.files.length) return item.files;
+    return [{ index: 0, name: item.file_name || 'Proof file', type: item.file_type || 'file', is_image: item.is_image }];
+  }
+  function proofFileIconHtml(file) {
+    return fileIconHtml((file && file.type) || 'file');
+  }
+  function proofFileExtension(file) {
+    var type = String((file && (file.type || file.file_type)) || '').toLowerCase().replace(/^\.+/, '').split('/')[0];
+    if (type) return type;
+    var name = String((file && file.name) || '');
+    var parts = name.split('.');
+    return parts.length > 1 ? parts.pop().toLowerCase() : 'file';
+  }
+  function renderProofPreviewFile(item, file, index) {
+    var ext = proofFileExtension(file);
+    var title = file && file.name ? file.name : ('Proof file ' + (index + 1));
+    var previewUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=' + encodeURIComponent(index);
+    var downloadUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?file=' + encodeURIComponent(index);
+    var isImage = file && (file.is_image || ['jpg','jpeg','png','gif','webp','svg'].includes(ext));
+    var content = '';
+    if (isImage) {
+      content = '<img src="' + previewUrl + '" alt="' + escapeHtml(title) + '">';
+    } else if (ext === 'pdf') {
+      content = '<iframe class="proof-preview-embed" src="' + previewUrl + '" title="Preview of ' + escapeHtml(title) + '"></iframe>';
+    } else {
+      content = '<div class="proof-preview-placeholder">' + proofFileIconHtml(file) + '<p style="margin-top:10px;font-size:.85rem;">Preview not available for this file type.<br>Click Download to access the file.</p></div>';
+    }
+    return '<section class="proof-preview-panel">'
+      + '<div class="proof-preview-head"><span>' + escapeHtml(title) + '</span><a href="' + downloadUrl + '" class="modal-download-btn" target="_blank" rel="noopener" download>Download</a></div>'
+      + '<div class="proof-preview-content">' + content + '</div>'
+      + '</section>';
+  }
+  function fileTypeLabel(file) {
+    return String((file && file.type) || 'file').toUpperCase();
+  }
+  function connectedDocuments(item) {
+    var docs = Array.isArray(item.connected_documents) ? item.connected_documents : [];
+    if (!docs.length && item.document_id) {
+      docs = [{ id: item.document_id, title: item.document_title || ('Document #' + item.document_id) }];
+    }
+    return docs.filter(function(doc) { return doc && doc.id; });
+  }
+  function connectedDocumentsHtml(item, limit) {
+    var docs = connectedDocuments(item);
+    if (!docs.length) return '';
+    var visible = limit ? docs.slice(0, limit) : docs;
+    var links = visible.map(function(doc) {
+      return '<a class="connected-doc-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download?preview=1" target="_blank" rel="noopener">'
+        + '<span>' + escapeHtml(doc.title || ('Document #' + doc.id)) + '</span>'
+      + '</a>';
+    }).join('');
+    if (limit && docs.length > limit) links += '<span class="connected-doc-link"><span>+' + (docs.length - limit) + ' more</span></span>';
+    return '<div class="connected-docs">' + links + '</div>';
+  }
+
+  function resetHomeDocs() {
+    document.getElementById('homeDocSearch').value = '';
+    document.getElementById('homeDocCategory').value = '';
+    document.getElementById('homeDocBarangay').value = '';
+    renderHomeDocs();
+  }
+
+  async function loadHomeProofs() {
+    var select = document.getElementById('homeProofBarangay');
+    var barangayId = select ? select.value : 'all';
+    var url = API + '/fund-proofs?limit=50';
+    if (barangayId && barangayId !== 'all') url += '&barangay_id=' + encodeURIComponent(barangayId);
+    try {
+      var response = await fetch(url);
+      var result = await response.json();
+      homeProofs = result.success ? (result.data || []) : [];
+      renderHomeProofs();
+    } catch (error) {
+      document.getElementById('homeProofGrid').innerHTML = '<div class="empty-state">Fund proof records are unavailable right now.</div>';
+    }
+  }
+
+  function renderHomeProofs() {
+    var grid = document.getElementById('homeProofGrid');
+    if (!grid) return;
+    var query = document.getElementById('homeProofSearch').value.trim().toLowerCase();
+    var proofs = homeProofs.filter(function(item) {
+      return !query || [item.title, item.purpose, item.expense_category, item.payee, item.barangay].join(' ').toLowerCase().includes(query);
+    });
+    if (!proofs.length) {
+      grid.innerHTML = '<div class="empty-state">No published fund proofs found.</div>';
+      return;
+    }
+    grid.innerHTML = proofs.slice(0, 9).map(function(item) {
+      var files = proofFiles(item);
+      var firstPreviewUrl = item.id ? API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=0' : '';
+      var proof = files.slice(0, 4).map(function(file, index) {
+        var proofUrl = item.id ? API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=' + encodeURIComponent(index) : '';
+        if (index === 3 && files.length > 4) return '<div class="fund-tile more">+' + (files.length - 3) + '</div>';
+        if (file.is_image && proofUrl) return '<div class="fund-tile"><img src="' + proofUrl + '" alt="Proof image"></div>';
+        return '<div class="fund-tile">' + proofFileIconHtml(file) + '</div>';
+      }).join('');
+      return '<article class="fund-card">'
+        + '<div class="fund-proof">' + proof + '</div>'
+        + '<div class="fund-body">'
+          + '<div class="fund-meta"><span>' + escapeHtml(item.expense_category || 'Expense') + '</span><strong>' + money(item.amount) + '</strong></div>'
+          + '<div class="fund-title">' + escapeHtml(item.title || 'Fund proof') + '</div>'
+          + '<div class="fund-purpose">' + escapeHtml(item.purpose || '') + '</div>'
+          + connectedDocumentsHtml(item, 2)
+          + '<div class="fund-meta"><span>' + escapeHtml(item.barangay || 'Barangay') + ' - ' + formatDate(item.spent_at) + '</span>' + (firstPreviewUrl ? '<a class="home-link" href="' + firstPreviewUrl + '" target="_blank" rel="noopener">Preview</a>' : '') + '</div>'
+        + '</div>'
+      + '</article>';
+    }).join('');
+  }
+
+  function openHomeProofAlbum(id) {
+    var item = homeProofs.find(function(proof) { return Number(proof.id) === Number(id); });
+    if (!item) return;
+    var files = proofFiles(item);
+    document.getElementById('homeProofModalTitle').textContent = item.title || 'Proof Album';
+    document.getElementById('homeProofModalBody').innerHTML = '<div class="proof-preview-stack">' + files.map(function(file, index) {
+      return renderProofPreviewFile(item, file, index);
+    }).join('') + '</div>'
+      + '<div class="proof-details">'
+        + '<h4>' + escapeHtml(item.title || 'Expense details') + '</h4>'
+        + '<p>' + escapeHtml(item.purpose || '') + '</p>'
+        + '<div class="detail-grid">'
+          + '<div><strong>Category</strong><br>' + escapeHtml(item.expense_category || '-') + '</div>'
+          + '<div><strong>Amount</strong><br>' + money(item.amount) + '</div>'
+          + '<div><strong>Barangay</strong><br>' + escapeHtml(item.barangay || 'Barangay') + '</div>'
+          + '<div><strong>Date Spent</strong><br>' + formatDate(item.spent_at) + '</div>'
+        + '</div>'
+        + connectedDocumentsHtml(item)
+        + '<div class="modal-download-wrapper"><a href="' + API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?file=0" class="modal-download-btn" target="_blank" rel="noopener" download>Download First File</a></div>'
+      + '</div>';
+    document.getElementById('homeProofModal').classList.add('show');
+    document.getElementById('homeProofModal').setAttribute('aria-hidden','false');
+  }
+
+  function closeHomeProofAlbum() {
+    document.getElementById('homeProofModal').classList.remove('show');
+    document.getElementById('homeProofModal').setAttribute('aria-hidden','true');
+  }
+  function makeStars(rating) {
+    var score = Math.max(1, Math.min(5, Number(rating) || 5));
+    return '<span class="rating-dots" aria-label="' + score + ' out of 5">' + Array.from({ length: 5 }, function (_, index) { return '<span' + (index < score ? ' class="is-filled"' : '') + '></span>'; }).join('') + '</span>';
+  }
+
+  function createFeedbackHtml(item) {
+    return '<article class="feedback-card">'
+      + '<div class="feedback-head"><div><div class="feedback-author">' + escapeHtml(item.name || 'Anonymous') + '</div><div class="feedback-date">' + formatDate(item.created_at || item.date || new Date()) + '</div></div><div class="feedback-stars">' + makeStars(item.rating) + '</div></div>'
+      + '<div class="feedback-text">' + escapeHtml(item.text || item.message || '') + '</div>'
+    + '</article>';
+  }
+
+  function getStoredFeedback() {
+    try { return JSON.parse(localStorage.getItem(HOME_FEEDBACK_STORAGE_KEY)) || []; }
+    catch (error) { return []; }
+  }
+
+  function saveStoredFeedback(items) {
+    try { localStorage.setItem(HOME_FEEDBACK_STORAGE_KEY, JSON.stringify(items)); }
+    catch (error) {}
+  }
+
+  async function loadHomeFeedback() {
+    var list = document.getElementById('homeFeedbackList');
+    if (!list) return;
+    var fallback = [
+      { name: 'Maria Reyes', rating: 5, text: 'Napakagaling ng transparency ng SK Bagtic!', date: '2026-04-10' },
+      { name: 'Anonymous', rating: 4, text: 'Maganda ang website. Sana mas maraming youth programs.', date: '2026-03-25' }
+    ];
+    var items = getStoredFeedback().concat(fallback);
+    try {
+      var response = await fetch(API + '/feedback');
+      var result = await response.json();
+      if (response.ok && result.success && Array.isArray(result.data)) items = result.data.concat(items);
+    } catch (error) {}
+    list.innerHTML = items.slice(0, 5).map(createFeedbackHtml).join('');
+  }
+
+  async function submitHomeFeedback() {
+    var nameInput = document.getElementById('homeFbName');
+    var ratingInput = document.getElementById('homeFbRating');
+    var textInput = document.getElementById('homeFbText');
+    var msg = document.getElementById('homeFbMsg');
+    var name = nameInput.value.trim() || 'Anonymous';
+    var text = textInput.value.trim();
+    if (!text) {
+      msg.innerHTML = '<div class="alert alert-error">Please write your feedback.</div>';
+      return;
+    }
+    if (text.length > 1000) {
+      msg.innerHTML = '<div class="alert alert-error">Feedback must be 1000 characters or less.</div>';
+      return;
+    }
+    var feedback = { name: name, rating: ratingInput.value, text: text, date: new Date().toISOString() };
+    var savedToServer = false;
+    try {
+      var response = await fetch(API + '/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedback)
+      });
+      var result = await response.json().catch(function() { return {}; });
+      savedToServer = response.ok && result.success;
+    } catch (error) {}
+    if (!savedToServer) {
+      var stored = getStoredFeedback();
+      stored.unshift(feedback);
+      saveStoredFeedback(stored);
+    }
+    msg.innerHTML = '<div class="alert alert-success">Thank you, ' + escapeHtml(name) + '! Your feedback has been submitted.</div>';
+    nameInput.value = '';
+    textInput.value = '';
+    ratingInput.value = '5';
+    loadHomeFeedback();
+  }
+
+  function roleLabel(role) {
+    var labels = { chairperson: 'SK Chairperson' };
+    return labels[role] || role || 'SK Official';
+  }
+
+  function makeInitials(name) {
+    return String(name || 'SK').trim().split(/\s+/).slice(0, 2).map(function(part) {
+      return part.charAt(0).toUpperCase();
+    }).join('') || 'SK';
+  }
+
+  function slugifyBarangay(name) {
+    return String(name || 'barangay').toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 32) || 'barangay';
+  }
+
+  function fallbackOfficialsForBarangay(barangayName) {
+    var slug = slugifyBarangay(barangayName);
+    if (String(barangayName).toLowerCase() === 'bagtic') {
+      return [
+        { name: 'Juan Dela Cruz', role: 'chairperson', email: 'chair@skbagtic.gov.ph' }
+      ];
+    }
+    return [
+      { name: 'SK Chairperson - ' + barangayName, role: 'chairperson', email: 'chair@sk' + slug + '.gov.ph' }
+    ];
+  }
+
+  function selectedBarangayName() {
+    var select = document.getElementById('ctBarangay');
+    if (!select || select.selectedIndex < 0) return CONTACT_FALLBACK_BARANGAYS[0].name;
+    return select.options[select.selectedIndex].textContent;
+  }
+
+  function renderOfficialCards(officials, barangayName) {
+    var grid = document.getElementById('officialsGrid');
+    var title = document.getElementById('officialsTitle');
+    var colors = ['var(--navy)', 'var(--sky)', 'var(--green)', 'var(--gold)'];
+    if (!grid) return;
+    if (title) title.textContent = 'SK Officials - Brgy. ' + barangayName;
+    officials = officials.filter(function(official) { return official.role === 'chairperson'; });
+    grid.innerHTML = officials.map(function(official, index) {
+      var email = official.email || '';
+      var emailHtml = email ? '<a class="official-email" href="mailto:' + escapeHtml(email) + '">' + escapeHtml(email) + '</a>' : '<div class="official-email">No email listed</div>';
+      return '<div class="official-card">'
+        + '<div class="official-avatar" style="background:' + colors[index % colors.length] + ';">' + escapeHtml(makeInitials(official.name)) + '</div>'
+        + '<div class="official-name">' + escapeHtml(official.name) + '</div>'
+        + '<div class="official-role">' + escapeHtml(roleLabel(official.role)) + '</div>'
+        + emailHtml
+      + '</div>';
+    }).join('');
+  }
+
+  async function loadContactOfficials() {
+    var select = document.getElementById('ctBarangay');
+    if (!select || !select.value) return;
+    var barangayName = selectedBarangayName();
+    if (/^\d+$/.test(String(select.value))) {
+      try {
+        var response = await fetch(API + '/officials?barangay_id=' + encodeURIComponent(select.value));
+        var result = await response.json();
+        if (response.ok && result.success && Array.isArray(result.data) && result.data.length) {
+          renderOfficialCards(result.data, barangayName);
+          return;
+        }
+      } catch (error) {}
+    }
+    renderOfficialCards(fallbackOfficialsForBarangay(barangayName), barangayName);
+  }
+
+  async function submitContact() {
+    var fname = document.getElementById('ctFname').value.trim();
+    var lname = document.getElementById('ctLname').value.trim();
+    var email = document.getElementById('ctEmail').value.trim();
+    var subject = document.getElementById('ctSubject').value;
+    var msg = document.getElementById('ctMsg').value.trim();
+    var barangaySelect = document.getElementById('ctBarangay');
+    var alertEl = document.getElementById('ctAlert');
+    if (!fname || !email || !subject || !msg || !barangaySelect.value) {
+      alertEl.innerHTML = '<div class="alert alert-error">Please fill in all required fields.</div>';
+      return;
+    }
+    if (!/^\d+$/.test(String(barangaySelect.value))) {
+      alertEl.innerHTML = '<div class="alert alert-error">Messages can be sent when the website is connected to the server.</div>';
+      return;
+    }
+    alertEl.innerHTML = '<div class="alert alert-success">Sending your message...</div>';
+    try {
+      var response = await fetch(API + '/contact-messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: fname,
+          last_name: lname,
+          email: email,
+          barangay_id: barangaySelect.value,
+          subject: subject,
+          message: msg
+        })
+      });
+      var result = await response.json().catch(function() { return {}; });
+      if (!response.ok || !result.success) throw new Error(result.message || 'Unable to send message.');
+    } catch (error) {
+      alertEl.innerHTML = '<div class="alert alert-error">' + escapeHtml(error.message || 'Unable to send message.') + '</div>';
+      return;
+    }
+    alertEl.innerHTML = '<div class="alert alert-success">Message sent! The SK and SK Federated admins have been notified.</div>';
+    document.getElementById('ctFname').value = '';
+    document.getElementById('ctLname').value = '';
+    document.getElementById('ctEmail').value = '';
+    document.getElementById('ctSubject').value = '';
+    document.getElementById('ctMsg').value = '';
+  }
+
+  function initScrollHint(){
+    var hint=document.getElementById('scrollHint');
+    if(!hint)return;
+    function checkHint(){
+      var scrollable=document.documentElement.scrollHeight>window.innerHeight+2;
+      if(!scrollable||window.scrollY>80){hint.classList.add('hide');}else{hint.classList.remove('hide');}
+    }
+    window.addEventListener('scroll',checkHint);
+    window.addEventListener('resize',checkHint);
+    checkHint();
+  }
+
+  function setupScrollSpy() {
+    var sections = Array.from(document.querySelectorAll('[data-scroll-section]'));
+    var navLinks = Array.from(document.querySelectorAll('[data-scroll-nav]'));
+    if (!sections.length || !navLinks.length) return;
+    var observer = new IntersectionObserver(function(entries) {
+      var visible = entries
+        .filter(function(entry) { return entry.isIntersecting; })
+        .sort(function(a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
+      if (!visible) return;
+      var id = visible.target.getAttribute('data-scroll-section');
+      navLinks.forEach(function(link) {
+        link.classList.toggle('active', link.getAttribute('data-scroll-nav') === id);
+      });
+    }, { rootMargin: '-32% 0px -55% 0px', threshold: [0, .2, .5, .8] });
+    sections.forEach(function(section) { observer.observe(section); });
+  }
+
+  async function initializeConnectedHome() {
+    await loadHomeBarangays();
+    await loadAnnouncements();
+    loadHomeCategories();
+    loadHomeDocs();
+    loadHomeProofs();
+    loadHomeFeedback();
+    initScrollHint();
+    setupScrollSpy();
+  }
+
+  window.addEventListener('load', initializeConnectedHome);
 </script>
 </body>
 </html>

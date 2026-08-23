@@ -46,10 +46,35 @@ const Documents = {
     return apiFetch(`/admin/documents${qs ? '?' + qs : ''}`);
   },
   upload:        (formData) => apiFetch('/admin/documents',              { method: 'POST',   body: formData }),
+  update:        (id, data)  => apiFetch(`/admin/documents/${id}`,        { method: 'PATCH',  body: JSON.stringify(data) }),
   togglePublish: (id)       => apiFetch(`/admin/documents/${id}/publish`,{ method: 'PATCH' }),
   delete:        (id)       => apiFetch(`/admin/documents/${id}`,        { method: 'DELETE' }),
   downloadUrl:   (id)       => `${API_BASE}/documents/${id}/download`,
   stats:         ()         => apiFetch('/admin/stats'),
+};
+
+const FundProofs = {
+  listPublic: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/fund-proofs${qs ? '?' + qs : ''}`);
+  },
+  listAdmin: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/fund-proofs${qs ? '?' + qs : ''}`);
+  },
+  upload: (formData, params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/fund-proofs${qs ? '?' + qs : ''}`, { method: 'POST', body: formData });
+  },
+  togglePublish: (id, params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/fund-proofs/${id}/publish${qs ? '?' + qs : ''}`, { method: 'PATCH' });
+  },
+  delete: (id, params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiFetch(`/admin/fund-proofs/${id}${qs ? '?' + qs : ''}`, { method: 'DELETE' });
+  },
+  downloadUrl: (id) => `${API_BASE}/fund-proofs/${id}/download`,
 };
 
 const Categories = {
@@ -60,6 +85,7 @@ const Users = {
   list:         ()     => apiFetch('/admin/users'),
   create:       (data) => apiFetch('/admin/users',              { method: 'POST',  body: JSON.stringify(data) }),
   toggleActive: (id)   => apiFetch(`/admin/users/${id}/toggle`, { method: 'PATCH' }),
+  review:       (id, decision) => apiFetch(`/admin/users/${id}/approval`, { method: 'PATCH', body: JSON.stringify({ decision }) }),
 };
 
 const Announcements = {
@@ -76,11 +102,20 @@ const ActivityLogs = {
   },
 };
 
+const ContactMessages = {
+  create: (data) => apiFetch('/contact-messages', { method: 'POST', body: JSON.stringify(data) }),
+  listAdmin: () => apiFetch('/admin/contact-messages'),
+  unreadCount: () => apiFetch('/admin/contact-messages/unread-count'),
+  markRead: (id) => apiFetch(`/admin/contact-messages/${id}/read`, { method: 'PATCH' }),
+};
+
 function showAlert(containerId, message, type = 'info') {
   const el = document.getElementById(containerId);
   if (!el) return;
-  const icons = { success: '✅', danger: '❌', info: 'ℹ️' };
-  el.innerHTML = `<div class="alert alert-${type}">${icons[type] || ''} ${message}</div>`;
+  const icons = { success: 'check', danger: 'x', info: 'info' };
+  const iconName = icons[type];
+  const iconHtml = iconName ? '<span class="ui-icon ui-icon-' + iconName + '" aria-hidden="true"></span>' : '';
+  el.innerHTML = '<div class="alert alert-' + type + '">' + iconHtml + ' ' + message + '</div>';
   setTimeout(() => { if (el) el.innerHTML = ''; }, 5000);
 }
 
@@ -98,10 +133,36 @@ function formatFileSize(kb) {
 async function requireLogin() {
   const { ok, data } = await Auth.me();
   if (!ok || !data.success) {
-    window.location.href = '/pages/login.html';
+    sessionStorage.removeItem('skfdms_current_user');
+    window.location.href = '/pages/login';
     return null;
   }
+  sessionStorage.setItem('skfdms_current_user', JSON.stringify({
+    user: data.user,
+    cached_at: Date.now()
+  }));
+  window.dispatchEvent(new CustomEvent('skfdms:user', { detail: data.user }));
   return data.user;
 }
 
-window.SkFDMS = { Auth, Documents, Categories, Users, Announcements, ActivityLogs, showAlert, formatDate, formatFileSize, requireLogin };
+async function logoutAndRedirect(target = '/') {
+  await Auth.logout();
+  sessionStorage.removeItem('skfdms_current_user');
+  window.location.href = target;
+}
+
+window.SkFDMS = {
+  Auth,
+  Documents,
+  FundProofs,
+  Categories,
+  Users,
+  Announcements,
+  ActivityLogs,
+  ContactMessages,
+  showAlert,
+  formatDate,
+  formatFileSize,
+  requireLogin,
+  logoutAndRedirect,
+};

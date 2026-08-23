@@ -3,111 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard — SK-FDMS Bagtic Admin</title>
-  <link rel="stylesheet" href="../../css/style.css" />
+  <title>Dashboard</title>
+
+  <link rel="icon" type="image/png" href="../images/favicon.png">
   <style>
-    body { display: flex; flex-direction: column; min-height: 100vh; background: #F0F4F8; margin: 0; }
-    .admin-layout { display: flex; flex: 1; }
-
-    /* Sidebar */
-    .sidebar { width: 240px; background: #0D2B55; flex-shrink: 0; display: flex; flex-direction: column; }
-    .sidebar-logo { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
-    .sidebar-logo .sk-badge { font-size: 1.5rem; font-weight: 700; color: #D4AC0D; letter-spacing: 2px; }
-    .sidebar-logo p { font-size: .75rem; color: rgba(255,255,255,.55); margin-top: 4px; }
-    .sidebar-nav { padding: 16px 0; flex: 1; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 11px 20px; color: rgba(255,255,255,.72); font-size: .9rem; text-decoration: none; transition: all .2s; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,.1); color: #fff; }
-    .sidebar-user { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
-    .sidebar-user .uname { font-weight: 700; font-size: .88rem; color: #fff; }
-    .sidebar-user .urole { font-size: .72rem; color: rgba(255,255,255,.45); text-transform: capitalize; margin-top: 2px; }
-
-    /* Main */
-    .admin-main { flex: 1; overflow-y: auto; }
-    .admin-topbar { background: #fff; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,.06); position: sticky; top: 0; z-index: 50; }
-    .admin-topbar h2 { font-size: 1.05rem; color: #0D2B55; margin: 0; }
+    body { display: flex; flex-direction: column; min-height: 100vh; background: #F0F4F8; margin: 0; font-family: 'DM Sans', system-ui, sans-serif; }
+   .admin-layout{display:flex;flex:1;}
+    .sidebar{width:252px;background:#1A4530;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:24px 22px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.55rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.84rem;color:rgba(255,255,255,.62);margin-top:6px;}
+    .sidebar-nav{padding:12px 0;flex:1;}
+    .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:13px 22px;color:rgba(255,255,255,.78);font-size:1rem;font-weight:600;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;}
+    .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;min-width:22px;flex-shrink:0;font-size:1rem;line-height:1;color:transparent;position:relative;overflow:hidden;}
+    .nav-icon::before{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .sidebar-user{padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.96rem;color:#fff;}
+    .sidebar-user .urole{font-size:.8rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:4px;}
+    .admin-topbar { background: #fff; padding: 0 30px; height: 66px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,.06); position: sticky; top: 0; z-index: 50; }
+    .topbar-left { display: flex; align-items: center; gap: 15px; }
+    .topbar-left h2 { font-size: 1.2rem; color: #1A4530; margin: 0; font-weight: 800; }
+    .barangay-select { padding: 9px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: .95rem; font-weight: 600; color: #1A4530; background-color: #F8FBFE; outline: none; }
     .admin-content { padding: 28px; }
-
-    /* Stat cards */
     .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; margin-bottom: 28px; }
-    .stat-card { background: #fff; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; border-left: 4px solid #2E86C1; transition: transform .2s, box-shadow .2s; }
+    .stat-card { background: #fff; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; border-left: 4px solid #3D8C62; transition: transform .2s, box-shadow .2s; }
     .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
     .stat-card.green { border-left-color: #1E8449; }
-    .stat-card.gold  { border-left-color: #D4AC0D; }
-    .stat-card.red   { border-left-color: #C0392B; }
-    .stat-card.purple{ border-left-color: #7D3C98; }
-    .stat-num   { font-size: 2.4rem; font-weight: 800; color: #0D2B55; line-height: 1; }
-    .stat-label { font-size: .78rem; color: #888; margin-top: 6px; }
-    .stat-sub   { font-size: .72rem; color: #aaa; margin-top: 3px; }
-
-    /* Section card */
+    .stat-card.gold { border-left-color: #D4AC0D; }
+    .stat-card.red { border-left-color: #C0392B; }
+    .stat-num { font-size: 2.4rem; font-weight: 800; color: #1A4530; line-height: 1; }
+    .stat-label { font-size: .84rem; color: #888; margin-top: 6px; }
+    .stat-sub { font-size: .8rem; color: #aaa; margin-top: 3px; }
     .section-card { background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; overflow: hidden; margin-bottom: 24px; }
     .sc-header { padding: 16px 24px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-    .sc-header h3 { font-size: .95rem; color: #0D2B55; margin: 0; }
-    .sc-header .badge-count { background: #EBF5FB; color: #1A5276; font-size: .78rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-
-    /* Table */
+    .sc-header h3 { font-size: 1rem; color: #1A4530; margin: 0; font-weight: 800; }
+    .sc-header .badge-count { background: #D6F0E6; color: #1A4530; font-size: .82rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: #0D2B55; }
-    thead th { color: #fff; font-size: .78rem; font-weight: 600; padding: 11px 16px; text-align: left; white-space: nowrap; }
+    thead tr { background: #1A4530; }
+    thead th { color: #fff; font-size: .84rem; font-weight: 700; padding: 11px 16px; text-align: left; white-space: nowrap; }
     tbody tr { border-bottom: 1px solid #f0f0f0; transition: background .15s; }
     tbody tr:hover { background: #f8fbfe; }
-    tbody td { padding: 11px 16px; font-size: .85rem; color: #444; vertical-align: middle; }
-    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .72rem; font-weight: 700; }
-    .badge-pub   { background: #D5F5E3; color: #1E8449; }
+    tbody td { padding: 11px 16px; font-size: .92rem; color: #444; vertical-align: middle; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .76rem; font-weight: 700; }
+    .badge-pub { background: #D5F5E3; color: #1E8449; }
     .badge-draft { background: #FEF9E7; color: #B7950B; }
-    .badge-cat   { background: #EBF5FB; color: #1A5276; }
-
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: .82rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .2s; }
-    .btn-primary { background: #2E86C1; color: #fff; }
-    .btn-primary:hover { background: #1A5276; }
+    .badge-cat { background: #D6F0E6; color: #1A4530; }
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 24px; background: #fafcff; }
+    .profile-card { background: #fff; border: 1px solid #D6F0E6; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.04); transition: transform 0.2s; cursor: pointer; }
+    .profile-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .profile-avatar { width: 60px; height: 60px; border-radius: 50%; background: #3D8C62; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; flex-shrink: 0; overflow: hidden; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-avatar.federation { background: #D4AC0D; }
+    .profile-info h4 { margin: 0 0 4px 0; color: #1A4530; font-size: 1rem; }
+    .profile-info p { margin: 0; font-size: .9rem; color: #666; }
+    .profile-info .role-badge { display: inline-block; margin-top: 8px; padding: 3px 8px; background: #f0f4f8; border-radius: 6px; font-size: .78rem; font-weight: 600; color: #3D8C62; text-transform: capitalize; }
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 20px 24px; }
+    .cat-item { background: #F8FBFE; border: 1px solid #D6F0E6; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .cat-name { font-size: .9rem; color: #1A4530; font-weight: 600; }
+    .cat-count { font-size: 1.3rem; font-weight: 800; color: #1A4530; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: .92rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .2s; }
+    .btn-primary { background: #3D8C62; color: #fff; }
+    .btn-primary:hover { background: #1A4530; }
     .btn-secondary { background: #f0f0f0; color: #444; }
     .btn-secondary:hover { background: #ddd; }
-    .btn-sm { padding: 5px 12px; font-size: .78rem; }
-    .btn-logout { background: #f0f0f0; color: #444; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: .85rem; cursor: pointer; }
+    .btn-sm { padding: 6px 12px; font-size: .84rem; }
+    .btn-logout { background: #f0f0f0; color: #444; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; font-size: .92rem; cursor: pointer; }
     .btn-logout:hover { background: #e0e0e0; }
-
-    /* Category breakdown */
-    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 20px 24px; }
-    .cat-item { background: #F8FBFE; border: 1px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-    .cat-name { font-size: .82rem; color: #1A5276; font-weight: 600; }
-    .cat-count { font-size: 1.3rem; font-weight: 800; color: #0D2B55; }
-
     .empty-state { text-align: center; padding: 48px; color: #aaa; }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
   </style>
+  <link rel="stylesheet" href="../../css/admin-shell.css"/>
+  <script src="../../js/public-theme.js" defer></script>
 </head>
 <body>
 <div class="admin-layout">
-
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="sk-badge">SK-FDMS</div>
-      <p>Barangay Bagtic Admin</p>
+      <div class="admin-brand">
+        <span class="admin-brand-logos" aria-hidden="true">
+          <img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" />
+          <img class="admin-brand-logo" src="../../images/favicon.png" alt="" />
+        </span>
+        <span class="admin-brand-title">
+          <span class="admin-brand-kabataan">Sangguniang Kabataan</span>
+          <span class="admin-brand-rule"></span>
+          <span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span>
+        </span>
+      </div>
+      <p id="sidebarBarangayText">Admin Portal</p>
     </div>
-    <nav class="sidebar-nav">
-      <a href="dashboard.html" class="active">🏠 Dashboard</a>
-      <a href="documents.html">📁 Documents</a>
-      <a href="upload.html">⬆ Upload</a>
-      <a href="announcements.html">📢 Announcements</a>
-      <a href="users.html">👥 Users</a>
-      <a href="activity-log.html">📋 Activity Log</a>
-      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <a href="dashboard.html" class="active" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
+      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
+      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="/" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
     </nav>
     <div class="sidebar-user">
-      <div class="uname" id="sidebarName">Loading…</div>
-      <div class="urole" id="sidebarRole"></div>
+      <div class="uname" id="sidebarName">Administrator</div>
+      <div class="urole" id="sidebarRole">SK Official</div>
     </div>
   </aside>
 
-  <!-- Main -->
   <div class="admin-main">
     <div class="admin-topbar">
-      <h2>📊 Dashboard — <span id="barangayLabel" style="color:#888;font-weight:400;"></span></h2>
+      <div class="topbar-left">
+        <h2>Dashboard</h2>
+        <select id="barangaySelector" class="barangay-select"></select>
+      </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:.8rem;color:#aaa;" id="lastUpdated"></span>
+        <span style="font-size:.84rem;color:#aaa;" id="lastUpdated"></span>
         <button class="btn-logout" id="logoutBtn">Log Out</button>
       </div>
     </div>
@@ -115,43 +126,43 @@
     <div class="admin-content">
       <div id="alertBox"></div>
 
-      <!-- STAT CARDS -->
       <div class="stat-cards">
         <div class="stat-card">
-          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-num" id="statTotal">0</div>
           <div class="stat-label">Total Documents</div>
           <div class="stat-sub">All uploaded files</div>
         </div>
         <div class="stat-card green">
-          <div class="stat-num" id="statPublished">—</div>
+          <div class="stat-num" id="statPublished">0</div>
           <div class="stat-label">Published</div>
           <div class="stat-sub">Visible to public</div>
         </div>
         <div class="stat-card gold">
-          <div class="stat-num" id="statDraft">—</div>
+          <div class="stat-num" id="statDraft">0</div>
           <div class="stat-label">Drafts</div>
           <div class="stat-sub">Pending publish</div>
         </div>
         <div class="stat-card red">
-          <div class="stat-num" id="statCategories">—</div>
+          <div class="stat-num" id="statCategories">0</div>
           <div class="stat-label">Categories Used</div>
-          <div class="stat-sub">Out of 9 total</div>
-        </div>
-        <div class="stat-card purple">
-          <div class="stat-num" id="statUsers">—</div>
-          <div class="stat-label">SK Officials</div>
-          <div class="stat-sub">Active accounts</div>
+          <div class="stat-sub">Based on uploaded records</div>
         </div>
       </div>
 
-      <!-- RECENT UPLOADS TABLE -->
       <div class="section-card">
         <div class="sc-header">
-          <h3>📄 Recent Document Uploads</h3>
+          <h3>SK Officials Directory</h3>
+          <span class="badge-count" id="profileBrgyBadge">Loading...</span>
+        </div>
+        <div class="profile-grid" id="profilesContainer"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="sc-header">
+          <h3>Recent Document Uploads</h3>
           <div style="display:flex;gap:8px;align-items:center;">
-            <span class="badge-count" id="recentCount">0 docs</span>
+            <span class="badge-count" id="recentCount">Loading...</span>
             <a href="documents.html" class="btn btn-secondary btn-sm">View All</a>
-            <a href="upload.html" class="btn btn-primary btn-sm">⬆ Upload New</a>
           </div>
         </div>
         <div class="table-wrap">
@@ -169,134 +180,255 @@
               </tr>
             </thead>
             <tbody id="recentDocsBody">
-              <tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa;">Loading…</td></tr>
+              <tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa;">Loading live dashboard data...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- DOCUMENTS BY CATEGORY BREAKDOWN -->
       <div class="section-card">
         <div class="sc-header">
-          <h3>📊 Documents by Category</h3>
-          <span class="badge-count" id="catBreakdownTotal">0 total</span>
+          <h3>Documents by Category</h3>
+          <span class="badge-count" id="catBreakdownTotal">Loading...</span>
         </div>
         <div class="cat-grid" id="catBreakdown">
-          <p style="padding:20px;color:#aaa;">Loading…</p>
+          <p style="padding:20px;color:#aaa;">Loading category breakdown...</p>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
+<script src="../../js/api.js"></script>
+<script src="../../js/barangay-context.js"></script>
 <script>
-  var API = window.location.origin + '/api';
+  let currentUser = null;
+  let dashboardDocs = [];
+  let dashboardUsers = [];
+  let dashboardCategories = [];
+  const API = window.location.origin + '/api';
 
-  function formatDate(d) {
-    if (!d) return '—';
-    return new Date(d).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  const barangayLogoMap = {
+    // Add a logo file for each barangay here.
+    // The key should match the barangay name returned by the server.
+    // Example:
+    // 'Baang': '../images/barangay-baang.png',
+    // 'Bagtic': '../images/barangay-bagtic.png',
+  };
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
-  // ── Auth check ──────────────────────────────────────────────
-  window.addEventListener('load', async function() {
-    var res  = await fetch(API + '/auth/me', { credentials: 'include' });
-    var data = await res.json();
-    if (!data.success) { window.location.href = '/'; return; }
+  function getInitials(name) {
+    return String(name || 'SK')
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0].toUpperCase())
+      .join('');
+  }
 
-    var user = data.user;
-    document.getElementById('sidebarName').textContent   = user.name;
-    document.getElementById('sidebarRole').textContent   = user.role;
-    document.getElementById('barangayLabel').textContent = 'Brgy. ' + user.barangay;
+  function setBarangayUI() {
+    const barangayName = window.SkBarangay.getBarangayName(window.SkBarangay.getSelectedBarangayId()) || currentUser?.barangay || 'Bagtic';
+    const selector = document.getElementById('barangaySelector');
+    window.SkBarangay.populateDropdown(selector);
+    window.SkBarangay.updateSidebarCaption();
+    document.getElementById('profileBrgyBadge').textContent = 'Active: ' + barangayName;
+  }
 
-    loadDashboard();
-  });
+  function renderUsers() {
+    const container = document.getElementById('profilesContainer');
+    const chairpersons = dashboardUsers.filter(user => user.role === 'chairperson');
+    if (!chairpersons.length) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">Users</div><p>No SK Chairperson found.</p></div>';
+      return;
+    }
+
+    container.innerHTML = chairpersons.map(user => {
+      const logoSrc = barangayLogoMap[user.barangay_name] || '';
+      const avatarHtml = logoSrc
+        ? `<img src="${logoSrc}" alt="${escapeHtml(user.barangay_name)} logo">`
+        : escapeHtml(getInitials(user.name));
+
+      return `
+        <div class="profile-card" onclick="selectBarangayFromProfile('${user.barangay_id}','${escapeHtml(user.barangay_name)}')">
+          <div class="profile-avatar ${user.role === 'admin' ? 'federation' : ''}">${avatarHtml}</div>
+          <div class="profile-info">
+            <h4>${escapeHtml(user.name)}</h4>
+            <p>${escapeHtml(user.barangay_name)}</p>
+            <span class="role-badge">${escapeHtml('SK Chairperson')}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function selectBarangayFromProfile(barangayId, barangayName) {
+    if (!barangayId || !window.SkBarangay) return;
+    window.SkBarangay.setSelectedBarangayId(barangayId);
+    setBarangayUI();
+    loadDashboardData();
+    window.SkFDMS.showAlert('alertBox', 'Showing data for Brgy. ' + barangayName + '.', 'info');
+  }
+
+  function renderRecentDocs() {
+    const tbody = document.getElementById('recentDocsBody');
+    const recentDocs = dashboardDocs.slice(0, 5);
+
+    if (!recentDocs.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa;">No uploaded documents yet.</td></tr>';
+      document.getElementById('recentCount').textContent = '0 recent docs';
+      return;
+    }
+
+    tbody.innerHTML = recentDocs.map((doc, index) => `
+      <tr>
+        <td style="color:#aaa;">${index + 1}</td>
+        <td><strong>${escapeHtml(doc.title)}</strong></td>
+        <td><span class="badge badge-cat">${escapeHtml(doc.category_code || doc.category_name || 'DOC')}</span></td>
+        <td>${escapeHtml(doc.fiscal_year || '-')} ${doc.quarter ? `· ${escapeHtml(doc.quarter)}` : ''}</td>
+        <td><span class="badge ${doc.is_published ? 'badge-pub' : 'badge-draft'}">${doc.is_published ? 'Published' : 'Draft'}</span></td>
+        <td>${escapeHtml(doc.uploaded_by_name || doc.uploaded_by || '-')}</td>
+        <td>${window.SkFDMS.formatDate(doc.created_at || doc.published_at)}</td>
+        <td><a href="documents.html" class="btn btn-secondary btn-sm">Manage</a></td>
+      </tr>
+    `).join('');
+
+    document.getElementById('recentCount').textContent = `${recentDocs.length} recent docs`;
+  }
+
+  function renderCategoryBreakdown() {
+    const container = document.getElementById('catBreakdown');
+    if (!dashboardCategories.length) {
+      container.innerHTML = '<p style="padding:20px;color:#aaa;">No categories found.</p>';
+      document.getElementById('catBreakdownTotal').textContent = '0 total';
+      return;
+    }
+
+    const counts = dashboardCategories.map(category => ({
+      ...category,
+      count: dashboardDocs.filter(doc => String(doc.category_id) === String(category.id)).length,
+    }));
+
+    container.innerHTML = counts.map(category => `
+      <div class="cat-item">
+        <div>
+          <div class="cat-name">${escapeHtml(category.code)}</div>
+          <div style="font-size:.8rem;color:#888;margin-top:2px;">${escapeHtml(category.name)}</div>
+        </div>
+        <div class="cat-count">${category.count}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('catBreakdownTotal').textContent = `${dashboardDocs.length} total`;
+  }
 
   async function loadDashboard() {
-    // Update timestamp
+    currentUser = await window.SkFDMS.requireLogin();
+    if (!currentUser) return;
+
+    document.getElementById('sidebarName').textContent = currentUser.name;
+    document.getElementById('sidebarRole').textContent = currentUser.role;
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-PH');
+    applyRoleVisibility();
 
-    // Load stats
-    var statsRes  = await fetch(API + '/admin/stats', { credentials: 'include' });
-    var statsData = await statsRes.json();
+    // Init barangay context
+    await window.SkBarangay.init(currentUser);
+    setBarangayUI();
 
-    if (statsData.success) {
-      var s = statsData.data;
-      document.getElementById('statTotal').textContent     = s.totalDocs;
-      document.getElementById('statPublished').textContent = s.publishedDocs;
-      document.getElementById('statDraft').textContent     = s.draftDocs;
-      document.getElementById('statCategories').textContent= s.categories;
+    // Admin: listen to dropdown changes
+    if (currentUser.role === 'admin') {
+      document.getElementById('barangaySelector').addEventListener('change', function() {
+        window.SkBarangay.setSelectedBarangayId(this.value);
+        setBarangayUI();
+        loadDashboardData();
+      });
     }
 
-    // Load user count
+    await loadDashboardData();
+  }
+
+  async function loadDashboardData() {
+    const barangayId = window.SkBarangay.getSelectedBarangayId();
+    const qs = currentUser.role === 'admin' ? `?barangay_id=${barangayId}` : '';
+
     try {
-      var usersRes  = await fetch(API + '/admin/users', { credentials: 'include' });
-      var usersData = await usersRes.json();
-      if (usersData.success) {
-        var active = usersData.data.filter(function(u) { return u.is_active; }).length;
-        document.getElementById('statUsers').textContent = active;
-      }
-    } catch(e) {}
+      const [statsRes, docsRes, categoriesRes, usersRes] = await Promise.all([
+        fetch(API + '/admin/stats' + qs, {credentials:'include'}).then(r => r.json()),
+        fetch(API + '/admin/documents' + qs, {credentials:'include'}).then(r => r.json()),
+        fetch(API + '/categories', {credentials:'include'}).then(r => r.json()),
+        fetch(API + '/admin/users' + qs, {credentials:'include'}).then(r => r.json()),
+      ]);
 
-    // Load ALL documents for table and category breakdown
-    var docsRes  = await fetch(API + '/admin/documents', { credentials: 'include' });
-    var docsData = await docsRes.json();
-
-    if (docsData.success) {
-      var docs = docsData.data;
-      document.getElementById('recentCount').textContent = docs.length + ' docs';
-
-      // Recent 10 docs table
-      var tbody = document.getElementById('recentDocsBody');
-      if (!docs.length) {
-        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>No documents uploaded yet.</p></div></td></tr>';
+      if (statsRes.success) {
+        const stats = statsRes.data;
+        document.getElementById('statTotal').textContent = stats.totalDocs;
+        document.getElementById('statPublished').textContent = stats.publishedDocs;
+        document.getElementById('statDraft').textContent = stats.draftDocs;
+        document.getElementById('statCategories').textContent = stats.categories;
       } else {
-        tbody.innerHTML = docs.slice(0, 10).map(function(d, i) {
-          return '<tr>' +
-            '<td style="color:#aaa;">' + (i + 1) + '</td>' +
-            '<td><strong>' + d.title + '</strong></td>' +
-            '<td><span class="badge badge-cat">' + d.category_code + '</span></td>' +
-            '<td>' + d.fiscal_year + ' · ' + d.quarter + '</td>' +
-            '<td><span class="badge ' + (d.is_published ? 'badge-pub' : 'badge-draft') + '">' + (d.is_published ? '✅ Published' : '⏳ Draft') + '</span></td>' +
-            '<td>' + (d.uploaded_by_name || '—') + '</td>' +
-            '<td>' + formatDate(d.created_at) + '</td>' +
-            '<td><a href="documents.html" class="btn btn-secondary btn-sm">Manage</a></td>' +
-          '</tr>';
-        }).join('');
+        window.SkFDMS.showAlert('alertBox', statsRes.message || 'Failed to load stats.', 'danger');
       }
 
-      // Category breakdown
-      var catMap = {};
-      docs.forEach(function(d) {
-        var key = d.category_code + '|' + d.category_name;
-        if (!catMap[key]) catMap[key] = 0;
-        catMap[key]++;
-      });
+      dashboardDocs = docsRes.success ? docsRes.data : [];
+      dashboardCategories = categoriesRes.success ? categoriesRes.data : [];
+      dashboardUsers = usersRes.success ? usersRes.data : [];
 
-      document.getElementById('catBreakdownTotal').textContent = docs.length + ' total';
-
-      var catGrid = document.getElementById('catBreakdown');
-      var keys = Object.keys(catMap);
-      if (!keys.length) {
-        catGrid.innerHTML = '<p style="padding:20px;color:#aaa;">No documents yet.</p>';
-      } else {
-        catGrid.innerHTML = keys.map(function(k) {
-          var parts = k.split('|');
-          return '<div class="cat-item">' +
-            '<div><div class="cat-name">' + parts[0] + '</div><div style="font-size:.72rem;color:#888;margin-top:2px;">' + parts[1] + '</div></div>' +
-            '<div class="cat-count">' + catMap[k] + '</div>' +
-          '</div>';
-        }).join('');
-      }
+      renderUsers();
+      renderRecentDocs();
+      renderCategoryBreakdown();
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  // Logout
   document.getElementById('logoutBtn').addEventListener('click', async function() {
     if (!confirm('Are you sure you want to log out?')) return;
-    await fetch(API + '/auth/logout', { method: 'POST', credentials: 'include' });
-    window.location.href = '/';
+    await window.SkFDMS.logoutAndRedirect('/');
   });
+
+  window.addEventListener('load', loadDashboard);
+
+// Sidebar visibility
+    function applyRoleVisibility() {
+      var role = currentUser?.role;
+      if (!role) return;
+      var links = document.querySelectorAll('#sidebarNav a[data-role]');
+      links.forEach(function(link) {
+        var allowed = link.getAttribute('data-role').split(',');
+        if (!allowed.includes(role)) {
+          link.style.display = 'none';
+        }
+      });
+
+      // Role-based label renaming
+      updateSidebarLinks(role);
+    }
+
+    function updateSidebarLinks(role) {
+      var links = document.querySelectorAll('#sidebarNav a[data-role]');
+      links.forEach(function(link) {
+        var span = link.querySelector('span:last-child');
+        if (!span) return;
+        var href = link.getAttribute('href');
+        if (role === 'chairperson') {
+          if (href === 'upload.html') link.style.display = 'none';
+          if (href === 'documents.html') span.textContent = 'My Documents';
+          if (href === 'transparency.html') span.textContent = 'My Accomplishments';
+          if (href === 'announcements.html') span.textContent = 'Post Announcements';
+        } else if (role === 'admin') {
+          if (href === 'documents.html') span.textContent = 'Manage Documents';
+          if (href === 'transparency.html') span.textContent = 'Manage Accomplishments';
+          if (href === 'upload.html') link.style.display = 'none';
+        }
+      });
+    }
 </script>
 </body>
 </html>

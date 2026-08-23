@@ -3,89 +3,138 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Documents — SK-FDMS Admin</title>
+  <title>Documents-Admin</title>
+  <link rel="icon" type="image/png" href="../images/favicon.png">
   <link rel="stylesheet" href="../../css/style.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;}
     .admin-layout{display:flex;flex:1;}
-    .sidebar{width:240px;background:#0D2B55;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
-    .sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.1);}
-    .sidebar-logo .sk-badge{font-size:1.4rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
-    .sidebar-logo p{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;}
+    .sidebar{width:252px;background:#1A4530;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;}
+    .sidebar-logo{padding:24px 22px;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar-logo .sk-badge{font-size:1.55rem;font-weight:800;color:#D4AC0D;letter-spacing:2px;}
+    .sidebar-logo p{font-size:.84rem;color:rgba(255,255,255,.62);margin-top:6px;}
     .sidebar-nav{padding:12px 0;flex:1;}
-    .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.7);font-size:.88rem;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
+    .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:13px 22px;color:rgba(255,255,255,.78);font-size:1rem;font-weight:600;text-decoration:none;transition:all .18s;border-left:3px solid transparent;}
     .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
-    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;font-weight:600;}
-    .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);}
-    .sidebar-user .uname{font-weight:700;font-size:.85rem;color:#fff;}
-    .sidebar-user .urole{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:capitalize;margin-top:2px;}
+    .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;}
+    .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;min-width:22px;flex-shrink:0;font-size:1rem;line-height:1;color:transparent;position:relative;overflow:hidden;}
+    .nav-icon::before{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;}
+    .sidebar-user{padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user .uname{font-weight:700;font-size:.96rem;color:#fff;}
+    .sidebar-user .urole{font-size:.8rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:4px;}
     .admin-main{flex:1;overflow-y:auto;}
-    .topbar{background:#fff;padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
-    .topbar h2{font-size:1rem;color:#0D2B55;font-weight:700;}
-    .content{padding:24px;}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
-    .btn-primary{background:#2E86C1;color:#fff;}
-    .btn-primary:hover{background:#1A5276;}
+    .topbar{background:#fff;padding:0 30px;height:66px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,.05);position:sticky;top:0;z-index:50;}
+    .topbar-left { display: flex; align-items: center; gap: 15px; }
+    .topbar-left h2{font-size:1.2rem;color:#1A4530;font-weight:800;}
+    .barangay-select { padding: 9px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: .95rem; font-weight: 600; color: #1A4530; background-color: #F8FBFE; outline: none; }
+    .content{padding:28px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.92rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+    .btn-primary{background:#3D8C62;color:#fff;}
+    .btn-primary:hover{background:#1A4530;}
     .btn-success{background:#1E8449;color:#fff;}
-    .btn-success:hover{background:#145A32;}
+    .btn-success:hover{background:#0F2A1E;}
     .btn-danger{background:#C0392B;color:#fff;}
     .btn-danger:hover{background:#922B21;}
-    .btn-warning{background:#D4AC0D;color:#0D2B55;}
+    .btn-warning{background:#D4AC0D;color:#1A4530;}
     .btn-secondary{background:#f0f0f0;color:#444;}
     .btn-secondary:hover{background:#ddd;}
-    .btn-sm{padding:5px 11px;font-size:.75rem;}
-    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:inherit;}
+    .btn-sm{padding:6px 12px;font-size:.82rem;}
+    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:9px 16px;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:inherit;}
     .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;margin-bottom:20px;}
     .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-    .card-header h3{font-size:.9rem;color:#0D2B55;font-weight:700;}
-    .filter-row{padding:14px 22px;border-bottom:1px solid #f5f5f5;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:#fafafa;}
-    .filter-row select,.filter-row input{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.82rem;outline:none;font-family:inherit;}
-    .filter-row select:focus,.filter-row input:focus{border-color:#2E86C1;}
+    .card-header h3{font-size:1rem;color:#1A4530;font-weight:800;}
+    .filter-row{padding:16px 22px;border-bottom:1px solid #f5f5f5;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;background:#fafafa;}
+    .filter-row select,.filter-row input{padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;}
+    .filter-row select:focus,.filter-row input:focus{border-color:#3D8C62;}
     .table-wrap{overflow-x:auto;}
-    table{width:100%;border-collapse:collapse;}
-    thead tr{background:#0D2B55;}
-    thead th{color:#fff;font-size:.73rem;font-weight:600;padding:10px 14px;text-align:left;white-space:nowrap;}
+    table{width:100%;min-width:1080px;border-collapse:collapse;}
+    thead tr{background:#1A4530;}
+    thead th{color:#fff;font-size:.82rem;font-weight:700;padding:11px 14px;text-align:left;white-space:nowrap;}
     tbody tr{border-bottom:1px solid #f2f2f2;transition:background .15s;}
     tbody tr:hover{background:#f8fbfe;}
-    tbody td{padding:10px 14px;font-size:.82rem;color:#444;vertical-align:middle;}
-    .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700;}
+    tbody td{padding:11px 14px;font-size:.9rem;color:#444;vertical-align:middle;}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:700;}
     .badge-pub{background:#D5F5E3;color:#1E8449;}
     .badge-draft{background:#FEF9E7;color:#B7950B;}
-    .badge-cat{background:#EBF5FB;color:#1A5276;}
-    .alert{padding:10px 15px;border-radius:8px;margin-bottom:14px;font-size:.84rem;}
+    .badge-arch{background:#E2E8F0;color:#475569;}
+    .badge-cat{background:#D6F0E6;color:#1A4530;}
+    .alert{padding:11px 15px;border-radius:8px;margin-bottom:14px;font-size:.92rem;}
     .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
     .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
     .empty{text-align:center;padding:50px;color:#bbb;}
     .empty .eicon{font-size:2.5rem;margin-bottom:10px;}
     .stat-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:20px;}
-    .smi{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #eee;border-left:3px solid #2E86C1;}
-    .smi.g{border-left-color:#1E8449;} .smi.o{border-left-color:#D4AC0D;}
-    .smi-num{font-size:1.8rem;font-weight:800;color:#0D2B55;line-height:1;}
-    .smi-lbl{font-size:.72rem;color:#888;margin-top:4px;}
+    .smi{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #eee;border-left:3px solid #3D8C62;}
+    .smi.g{border-left-color:#1E8449;}
+    .smi.o{border-left-color:#D4AC0D;}
+    .smi-num{font-size:1.8rem;font-weight:800;color:#1A4530;line-height:1;}
+    .smi-lbl{font-size:.82rem;color:#888;margin-top:4px;}
+    th:last-child,
+    td:last-child{min-width:280px;}
+    .action-buttons{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;white-space:nowrap;min-width:max-content;}
+    .action-buttons .btn,
+    .action-buttons .badge{flex:0 0 auto;}
+    .action-buttons .btn-sm{padding:6px 10px;}
+    body:not(.role-chairperson) #uploadDocBtn{display:none!important;}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:200;}
+    .modal-backdrop.show{display:flex;}
+    .modal{width:min(100%,560px);background:#fff;border-radius:12px;border:1px solid #dfe7df;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden;}
+    .modal.preview-modal{width:min(1100px,96vw);height:min(820px,90vh);display:flex;flex-direction:column;}
+    .modal-header{padding:18px 22px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .modal-header h3{font-size:1.05rem;color:#1A4530;margin:0;font-weight:800;}
+    .modal-close{width:34px;height:34px;border:none;border-radius:8px;background:#f1f4f1;color:#1A4530;font-size:1.35rem;line-height:1;cursor:pointer;}
+    .modal-body{padding:20px 22px;}
+    .preview-body{padding:0;flex:1;min-height:420px;background:#f4f6f8;}
+    .preview-frame{display:block;width:100%;height:100%;border:0;background:#fff;}
+    .modal-field{margin-bottom:14px;}
+    .modal-field label{display:block;font-weight:700;font-size:.84rem;color:#555;margin-bottom:6px;}
+    .modal-field input,.modal-field select,.modal-field textarea{width:100%;padding:10px 12px;border:1.5px solid #d5ddd5;border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;}
+    .modal-field input:focus,.modal-field select:focus,.modal-field textarea:focus{border-color:#3D8C62;}
+    .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .modal-actions{padding:16px 22px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;background:#fafafa;}
+    @media(max-width:680px){.modal-grid{grid-template-columns:1fr;}th:last-child,td:last-child{min-width:260px;}.modal.preview-modal{height:88vh;}.preview-body{min-height:360px;}}
   </style>
+  <link rel="stylesheet" href="../../css/admin-shell.css"/>
+  <script src="../../js/public-theme.js" defer></script>
 </head>
 <body>
 <div class="admin-layout">
   <aside class="sidebar">
-    <div class="sidebar-logo"><div class="sk-badge">SK-FDMS</div><p>Barangay Bagtic Admin</p></div>
-    <nav class="sidebar-nav">
-      <a href="dashboard.html">🏠 Dashboard</a>
-      <a href="documents.html" class="active">📁 Documents</a>
-      <a href="upload.html">⬆ Upload</a>
-      <a href="announcements.html">📢 Announcements</a>
-      <a href="users.html">👥 Users</a>
-      <a href="activity-log.html">📋 Activity Log</a>
-      <a href="/" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;">🌐 Public Site</a>
+    <div class="sidebar-logo">
+      <div class="admin-brand">
+        <span class="admin-brand-logos" aria-hidden="true">
+          <img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" />
+          <img class="admin-brand-logo" src="../../images/favicon.png" alt="" />
+        </span>
+        <span class="admin-brand-title">
+          <span class="admin-brand-kabataan">Sangguniang Kabataan</span>
+          <span class="admin-brand-rule"></span>
+          <span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span>
+        </span>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <a href="dashboard.html"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="documents.html" class="active" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
+      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
+      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="/" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
     </nav>
-    <div class="sidebar-user"><div class="uname" id="sName">…</div><div class="urole" id="sRole"></div></div>
+    <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
   </aside>
 
   <div class="admin-main">
     <div class="topbar">
-      <h2>📁 Manage Documents</h2>
+      <div class="topbar-left">
+        <h2>Manage Documents</h2>
+        <select id="barangaySelector" class="barangay-select"></select>
+      </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <a href="upload.html" class="btn btn-primary btn-sm">⬆ Upload New</a>
+         <button class="btn btn-secondary btn-sm" id="archiveToggleBtn" onclick="toggleArchiveView()" style="display:none;">Archives</button>
         <button class="btn-logout" onclick="doLogout()">Log Out</button>
       </div>
     </div>
@@ -93,28 +142,26 @@
     <div class="content">
       <div id="alertBox"></div>
 
-      <!-- Mini stats -->
-      <div class="stat-mini">
-        <div class="smi"><div class="smi-num" id="mTotal">—</div><div class="smi-lbl">Total Documents</div></div>
-        <div class="smi g"><div class="smi-num" id="mPub">—</div><div class="smi-lbl">Published</div></div>
-        <div class="smi o"><div class="smi-num" id="mDraft">—</div><div class="smi-lbl">Drafts</div></div>
+      <div class="stat-mini" id="documentStats">
+        <div class="smi"><div class="smi-num" id="mTotal">-</div><div class="smi-lbl">Total Documents</div></div>
+        <div class="smi g"><div class="smi-num" id="mPub">-</div><div class="smi-lbl">Published</div></div>
+        <div class="smi o"><div class="smi-num" id="mDraft">-</div><div class="smi-lbl">Drafts</div></div>
       </div>
 
-      <!-- Document Table -->
       <div class="card">
         <div class="card-header">
-          <h3>All Documents</h3>
-          <span id="docCount" style="font-size:.78rem;color:#888;"></span>
+          <h3 id="docListTitle">All Documents</h3>
+          <span id="docCount" style="font-size:.84rem;color:#888;"></span>
+          <button class="btn btn-success btn-sm" id="uploadDocBtn" data-role="chairperson" style="display:none;" onclick="window.location.href='upload'">Upload</button>
         </div>
 
-        <!-- Filters -->
         <div class="filter-row">
           <div>
-            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Category</div>
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Category</div>
             <select id="fCat"><option value="">All Categories</option></select>
           </div>
           <div>
-            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Status</div>
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Status</div>
             <select id="fStatus">
               <option value="">All</option>
               <option value="1">Published</option>
@@ -122,17 +169,18 @@
             </select>
           </div>
           <div>
-            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Year</div>
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Year</div>
             <select id="fYear">
               <option value="">All Years</option>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
               <option value="2023">2023</option>
+              <option value="2022">2022</option>
             </select>
           </div>
           <div>
-            <div style="font-size:.75rem;color:#666;margin-bottom:3px;font-weight:600;">Search</div>
-            <input type="text" id="fSearch" placeholder="Search title…" style="width:180px;"/>
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Search</div>
+            <input type="text" id="fSearch" placeholder="Search title..." style="width:180px;"/>
           </div>
           <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply</button>
           <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
@@ -146,15 +194,15 @@
                 <th>Title</th>
                 <th>Category</th>
                 <th>FY / Period</th>
-                <th>Size</th>
-                <th>Uploaded By</th>
-                <th>Date</th>
+                <th>Project Type</th>
+                <th id="personColumn">Uploaded By</th>
+                <th id="dateColumn">Date</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="docsBody">
-              <tr><td colspan="9" class="empty"><div class="eicon">⏳</div><p>Loading…</p></td></tr>
+              <tr><td colspan="9" class="empty"><div class="eicon">⏳</div><p>Loading...</p></td></tr>
             </tbody>
           </table>
         </div>
@@ -163,21 +211,105 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="editModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-header">
+      <h3 id="editModalTitle">Edit Document</h3>
+      <button type="button" class="modal-close" onclick="closeEditModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
+      <div class="modal-field">
+        <label for="editTitle">Document Title</label>
+        <input type="text" id="editTitle" placeholder="Document title"/>
+      </div>
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label for="editCat">Category</label>
+          <select id="editCat"></select>
+        </div>
+        <div class="modal-field">
+          <label for="editYear">Fiscal Year</label>
+          <input type="number" id="editYear" min="2000" max="2100" step="1"/>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label for="editQuarter">Quarter / Period</label>
+        <select id="editQuarter">
+          <option value="Annual">Annual</option>
+          <option value="Q1">Q1</option>
+          <option value="Q2">Q2</option>
+          <option value="Q3">Q3</option>
+          <option value="Q4">Q4</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label for="editDesc">Description</label>
+        <textarea id="editDesc" rows="3" placeholder="Brief description"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" id="saveEditBtn" onclick="saveEditDoc()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="previewModal" aria-hidden="true" onclick="if(event.target===this) closePreviewModal()">
+  <div class="modal preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
+    <div class="modal-header">
+      <h3 id="previewModalTitle">Document Preview</h3>
+      <button type="button" class="modal-close" onclick="closePreviewModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body preview-body">
+      <iframe class="preview-frame" id="previewFrame" title="Document preview"></iframe>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/barangay-context.js"></script>
 <script>
   var API = window.location.origin + '/api';
-  var allDocs = [], currentUser = null;
+  var allDocs = [], categories = [], currentUser = null;
+  var showingArchived = false;
 
-  function fmt(d){ if(!d)return'—'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
-  function fmtKb(kb){ if(!kb)return'—'; if(kb<1024)return kb+' KB'; return (kb/1024).toFixed(1)+' MB'; }
-  function showAlert(msg,type){ var e=document.getElementById('alertBox'); e.innerHTML='<div class="alert alert-'+type+'">'+msg+'</div>'; if(type==='success')setTimeout(function(){e.innerHTML='';},4000); }
+  function escapeHtml(text) { if(!text)return ''; return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function fmt(d){ if(!d)return'-'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
+  function fmtKb(kb){ if(!kb)return'-'; if(kb<1024)return kb+' KB'; return (kb/1024).toFixed(1)+' MB'; }
+  function showAlert(msg,type){ var e=document.getElementById('alertBox'); e.innerHTML='<div class="alert alert-'+type+'">'+escapeHtml(msg)+'</div>'; if(type==='success')setTimeout(function(){e.innerHTML='';},4000); }
 
   window.addEventListener('load', async function(){
     var r=await fetch(API+'/auth/me',{credentials:'include'});
     var d=await r.json();
-    if(!d.success){window.location.href='/pages/login.html';return;}
+    if(!d.success){window.location.href='/pages/login';return;}
     currentUser=d.user;
+    document.body.classList.add('role-' + String(currentUser.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
     document.getElementById('sName').textContent=d.user.name;
     document.getElementById('sRole').textContent=d.user.role;
+
+    await window.SkBarangay.init(currentUser);
+    window.SkBarangay.populateDropdown(document.getElementById('barangaySelector'));
+    if (currentUser.role === 'admin' || currentUser.role === 'chairperson') {
+      document.getElementById('archiveToggleBtn').style.display='inline-flex';
+      document.getElementById('barangaySelector').addEventListener('change', function() {
+        window.SkBarangay.setSelectedBarangayId(this.value);
+        loadDocs();
+      });
+    }
+
+    applyRoleVisibility();
+
+    var uploadBtn = document.getElementById('uploadDocBtn');
+    if (uploadBtn) {
+      if (currentUser.role === 'chairperson') uploadBtn.style.display = 'inline-flex';
+      else uploadBtn.remove();
+    }
+
+    if (currentUser.role === 'admin') {
+      var draftOpt = document.querySelector('#fStatus option[value="0"]');
+      if (draftOpt) draftOpt.textContent = 'Requesting';
+    }
+
     await loadCategories();
     await loadDocs();
   });
@@ -186,87 +318,341 @@
     var r=await fetch(API+'/categories',{credentials:'include'});
     var d=await r.json();
     if(!d.data)return;
+    categories=d.data;
     var sel=document.getElementById('fCat');
     d.data.forEach(function(c){
       var o=document.createElement('option');
-      o.value=c.id; o.textContent=c.code+' — '+c.name;
+      o.value=c.id; o.textContent=c.code+' - '+c.name;
+      sel.appendChild(o);
+    });
+    populateEditCategories();
+  }
+
+  function populateEditCategories(){
+    var sel=document.getElementById('editCat');
+    sel.innerHTML='<option value="">Select category...</option>';
+    categories.forEach(function(c){
+      var o=document.createElement('option');
+      o.value=c.id;
+      o.textContent=c.code+' - '+c.name;
       sel.appendChild(o);
     });
   }
 
   async function loadDocs(params){
-    var qs=params?'?'+new URLSearchParams(params).toString():'';
-    var r=await fetch(API+'/admin/documents'+qs,{credentials:'include'});
-    var d=await r.json();
-    if(!d.success){showAlert('Failed to load documents.','danger');return;}
-    allDocs=d.data;
-    renderDocs(allDocs);
-    // Update mini stats
-    var pub=allDocs.filter(function(x){return x.is_published;}).length;
-    document.getElementById('mTotal').textContent=allDocs.length;
-    document.getElementById('mPub').textContent=pub;
-    document.getElementById('mDraft').textContent=allDocs.length-pub;
-    document.getElementById('docCount').textContent=allDocs.length+' document(s)';
+    var search = new URLSearchParams();
+    if (params) {
+      if (typeof params === 'string') {
+        search = new URLSearchParams(params.replace(/^\?/, ''));
+      } else {
+        Object.keys(params).forEach(function(key){
+          if(params[key] !== undefined && params[key] !== null && params[key] !== '') search.set(key, params[key]);
+        });
+      }
+    }
+    if (currentUser && currentUser.role === 'admin' && !search.has('barangay_id')) {
+      search.set('barangay_id', window.SkBarangay.getSelectedBarangayId());
+    }
+    if (showingArchived) search.set('archived','true');
+    var qs = search.toString() ? '?' + search.toString() : '';
+    try {
+      var r=await fetch(API+'/admin/documents'+qs,{credentials:'include'});
+      var d=await r.json();
+      if(!d.success){
+        showAlert(d.message||(showingArchived?'Failed to load archived documents.':'Failed to load documents.'),'danger');
+        return;
+      }
+      allDocs=d.data;
+      renderDocs(allDocs);
+      updateDocumentStats(allDocs.length+' '+(showingArchived?'archived document(s)':'document(s)'));
+      updateArchiveViewLabels();
+    } catch (err) {
+      console.error('loadDocs error:', err);
+      showAlert('Unable to load documents. Please check your connection and try again.','danger');
+    }
   }
 
   function renderDocs(docs){
     var tbody=document.getElementById('docsBody');
     if(!docs.length){
-      tbody.innerHTML='<tr><td colspan="9"><div class="empty"><div class="eicon">📭</div><p>No documents found.</p></div></td></tr>';
+      tbody.innerHTML='<tr><td colspan="9"><div class="empty"><div class="eicon"><span class="ui-icon ui-icon-inbox ui-icon-xxl" aria-hidden="true"></span></div><p>No documents found.</p></div></td></tr>';
       return;
     }
+    var isAdmin = currentUser && currentUser.role === 'admin';
+    var canArchiveUsers = isAdmin || (currentUser && currentUser.role === 'chairperson');
+    var canManage = currentUser && ['admin','chairperson','treasurer','secretary','councilor'].includes(currentUser.role);
+
     tbody.innerHTML=docs.map(function(d,i){
-      var canDelete=(currentUser&&(currentUser.role==='admin'||currentUser.role==='chairperson'));
-      return '<tr id="row-'+d.id+'">'
+      var isPublished = toBool(d.is_published);
+      var isRequested = toBool(d.publish_requested);
+      var actions = '<a href="'+API+'/documents/'+d.id+'/download?preview=1" class="btn btn-secondary btn-sm" target="_blank" rel="noopener">Preview</a>';
+      if (canManage) {
+        if (showingArchived) {
+          if (canArchiveUsers) {
+            actions += '<button class="btn btn-success btn-sm" id="restore-'+d.id+'" onclick="restoreDoc('+d.id+')">Unarchive</button>';
+            actions += '<button class="btn btn-danger btn-sm" id="delete-'+d.id+'" onclick="deleteDoc('+d.id+',\''+escapeHtml(d.title).replace(/'/g,'&#39;')+'\')">Delete</button>';
+          }
+        } else {
+          if (isAdmin) {
+            actions += '<button class="btn '+(isPublished?'btn-warning':'btn-success')+' btn-sm" id="pub-'+d.id+'" onclick="togglePublish('+d.id+','+isPublished+')">'+(isPublished?'Unpublish':'Publish')+'</button>';
+          } else {
+            if (isPublished) {
+              actions += '<span class="badge badge-ok" title="Published">&#10003; Published</span>';
+            } else if (isRequested) {
+              actions += '<span class="badge badge-draft" title="Pending admin review">Processing...</span>';
+            } else {
+              actions += '<button class="btn btn-success btn-sm" id="pub-'+d.id+'" onclick="requestPublish('+d.id+')">Request</button>';
+            }
+          }
+          if (canArchiveUsers) {
+            actions += '<button class="btn btn-danger btn-sm" id="archive-'+d.id+'" onclick="archiveDoc('+d.id+')">Archive</button>';
+          }
+        }
+      }
+
+      return '<tr id="row-'+d.id+'" data-doc-id="'+d.id+'">'
         +'<td style="color:#bbb;">'+(i+1)+'</td>'
-        +'<td><strong style="color:#0D2B55;">'+d.title+'</strong>'+(d.description?'<br><span style="font-size:.72rem;color:#888;">'+d.description+'</span>':'')+'</td>'
-        +'<td><span class="badge badge-cat">'+d.category_code+'</span></td>'
+        +'<td><strong style="color:#1A4530;">'+escapeHtml(d.title)+'</strong></td>'
+        +'<td><span class="badge badge-cat">'+escapeHtml(d.category_code)+'</span></td>'
         +'<td>'+d.fiscal_year+' · '+d.quarter+'</td>'
-        +'<td>'+fmtKb(d.file_size_kb)+'</td>'
-        +'<td>'+(d.uploaded_by_name||'—')+'</td>'
-        +'<td>'+fmt(d.created_at)+'</td>'
-        +'<td><span class="badge '+(d.is_published?'badge-pub':'badge-draft')+'" id="stat-'+d.id+'">'+(d.is_published?'✅ Published':'⏳ Draft')+'</span></td>'
-        +'<td><div style="display:flex;gap:5px;flex-wrap:wrap;">'
-          +'<a href="'+API+'/documents/'+d.id+'/download" class="btn btn-secondary btn-sm" target="_blank">⬇</a>'
-          +'<button class="btn '+(d.is_published?'btn-warning':'btn-success')+' btn-sm" id="pub-'+d.id+'" onclick="togglePublish('+d.id+','+d.is_published+')">'+(d.is_published?'Unpublish':'Publish')+'</button>'
-          +(canDelete?'<button class="btn btn-danger btn-sm" onclick="deleteDoc('+d.id+',\''+d.title.replace(/'/g,"\\'")+'\')" >Delete</button>':'')
-        +'</div></td>'
+        +'<td>'+(isPublished?'<span class="badge badge-pub">Finished</span>':'<span class="badge badge-draft">Ongoing</span>')+'</td>'
+        +'<td>'+escapeHtml(d.uploaded_by_name||'-')+'</td>'
+        +'<td>'+fmt(showingArchived ? d.archived_at : (d.requested_at || d.created_at))+'</td>'
+        +'<td><span class="badge '+(showingArchived?'badge-arch':(isPublished?'badge-pub':'badge-draft'))+'" id="stat-'+d.id+'">'+(showingArchived?'Archived':(isPublished?'Published':(isAdmin?'Requesting':'Draft')))+'</span></td>'
+        +'<td><div class="action-buttons">' + actions + '</div></td>'
       +'</tr>';
     }).join('');
   }
 
+
+  function getDocById(id){
+    return allDocs.find(function(x){ return Number(x.id) === Number(id); });
+  }
+
+  function toBool(value){
+    return value === true || value === 1 || value === '1' || value === 'true';
+  }
+
+  function openPreviewDoc(id){
+    var doc=getDocById(id);
+    var title=doc && doc.title ? doc.title : 'Document Preview';
+    document.getElementById('previewModalTitle').textContent=title;
+    document.getElementById('previewFrame').src=API+'/documents/'+id+'/download?preview=1';
+    document.getElementById('previewModal').classList.add('show');
+    document.getElementById('previewModal').setAttribute('aria-hidden','false');
+  }
+
+  function closePreviewModal(){
+    document.getElementById('previewFrame').src='about:blank';
+    document.getElementById('previewModal').classList.remove('show');
+    document.getElementById('previewModal').setAttribute('aria-hidden','true');
+  }
+
+  function updateDocumentStats(countLabel){
+    var pub=allDocs.filter(function(x){return toBool(x.is_published);}).length;
+    document.getElementById('mTotal').textContent=allDocs.length;
+    document.getElementById('mPub').textContent=pub;
+    document.getElementById('mDraft').textContent=allDocs.length-pub;
+    var isAdmin = currentUser && currentUser.role === 'admin';
+    if (isAdmin) {
+      var draftLabel = document.querySelector('.smi.o .smi-lbl');
+      if (draftLabel) draftLabel.textContent = 'Requesting';
+    }
+    if(countLabel){
+      document.getElementById('docCount').textContent=countLabel;
+    }
+  }
+
+  function updateArchiveViewLabels(){
+    document.getElementById('docListTitle').textContent=showingArchived?'Archives':'All Documents';
+    document.getElementById('archiveToggleBtn').textContent=showingArchived?'Back to Documents':'Archives';
+    document.getElementById('dateColumn').textContent=showingArchived?'Archived Date':'Date';
+    var stats = document.getElementById('documentStats');
+    if (stats) stats.style.display = showingArchived ? 'none' : '';
+  }
+
+  function documentActionUrl(id, action){
+    var url = API+'/admin/documents/'+id+(action || '');
+    if (currentUser.role === 'admin') {
+      var doc = getDocById(id);
+      var barangayId = doc && doc.barangay_id ? doc.barangay_id : window.SkBarangay.getSelectedBarangayId();
+      url += '?barangay_id=' + encodeURIComponent(barangayId);
+    }
+    return url;
+  }
+
+  function openEditDoc(id){
+    var doc=getDocById(id);
+    if(!doc){showAlert('Document not found in the current list.','danger');return;}
+    document.getElementById('editId').value=doc.id;
+    document.getElementById('editTitle').value=doc.title || '';
+    document.getElementById('editCat').value=doc.category_id || '';
+    document.getElementById('editYear').value=doc.fiscal_year || new Date().getFullYear();
+    document.getElementById('editQuarter').value=doc.quarter || 'Annual';
+    document.getElementById('editDesc').value=doc.description || '';
+    document.getElementById('editModal').classList.add('show');
+    document.getElementById('editModal').setAttribute('aria-hidden','false');
+    setTimeout(function(){document.getElementById('editTitle').focus();},50);
+  }
+
+  function closeEditModal(){
+    document.getElementById('editModal').classList.remove('show');
+    document.getElementById('editModal').setAttribute('aria-hidden','true');
+  }
+
+  async function saveEditDoc(){
+    var id=document.getElementById('editId').value;
+    var title=document.getElementById('editTitle').value.trim();
+    var category_id=document.getElementById('editCat').value;
+    var fiscal_year=document.getElementById('editYear').value;
+    var quarter=document.getElementById('editQuarter').value;
+    var description=document.getElementById('editDesc').value.trim();
+
+    if(!title){showAlert('Document title is required.','danger');document.getElementById('editTitle').focus();return;}
+    if(!category_id){showAlert('Please select a category.','danger');document.getElementById('editCat').focus();return;}
+    if(!fiscal_year){showAlert('Fiscal year is required.','danger');document.getElementById('editYear').focus();return;}
+
+    var btn=document.getElementById('saveEditBtn');
+    btn.disabled=true; btn.textContent='Saving...';
+    try{
+      var r=await fetch(documentActionUrl(id,''), {
+        method:'PATCH',
+        credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({title:title,category_id:category_id,fiscal_year:fiscal_year,quarter:quarter,description:description})
+      });
+      var d=await r.json();
+      if(r.ok&&d.success){
+        closeEditModal();
+        showAlert(d.message,'success');
+        await loadDocs();
+      } else {
+        showAlert(d.message||'Update failed.','danger');
+      }
+    }catch(err){
+      showAlert('Update error: '+err.message,'danger');
+    }
+    btn.disabled=false; btn.textContent='Save Changes';
+  }
+
   async function togglePublish(id, isPublished){
     var btn=document.getElementById('pub-'+id);
-    btn.disabled=true; btn.textContent='…';
-    var r=await fetch(API+'/admin/documents/'+id+'/publish',{method:'PATCH',credentials:'include'});
+    btn.disabled=true; btn.textContent='Processing...';
+    try{
+      var url = documentActionUrl(id,'/publish');
+      var r=await fetch(url, {method:'PATCH',credentials:'include'});
+      var d=await r.json();
+      if(r.ok&&d.success){
+        var nowPub=toBool(d.is_published);
+        var nowRequested=toBool(d.publish_requested);
+        allDocs=allDocs.map(function(doc){
+          if(Number(doc.id)===Number(id)){
+            return Object.assign({}, doc, {
+              is_published: nowPub,
+              publish_requested: nowRequested,
+              published_at: nowPub ? (d.published_at || doc.published_at || new Date().toISOString()) : null
+            });
+          }
+          return doc;
+        });
+        updateDocumentStats();
+        applyFilters();
+      } else {
+        showAlert(d.message||'Failed.','danger');
+        btn.disabled=false;
+        btn.textContent=isPublished?'Unpublish':'Publish';
+      }
+    }catch(err){
+      showAlert('Publish error: '+err.message,'danger');
+      btn.disabled=false;
+      btn.textContent=isPublished?'Unpublish':'Publish';
+    }
+  }
+
+  async function requestPublish(id){
+    var btn=document.getElementById('pub-'+id);
+    btn.disabled=true; btn.textContent='Requesting...';
+    var url = documentActionUrl(id,'/publish');
+    var r=await fetch(url, {method:'PATCH',credentials:'include'});
     var d=await r.json();
     if(r.ok&&d.success){
-      var nowPub=d.is_published;
-      document.getElementById('stat-'+id).className='badge '+(nowPub?'badge-pub':'badge-draft');
-      document.getElementById('stat-'+id).textContent=nowPub?'✅ Published':'⏳ Draft';
-      btn.className='btn '+(nowPub?'btn-warning':'btn-success')+' btn-sm';
-      btn.textContent=nowPub?'Unpublish':'Publish';
-      btn.onclick=function(){togglePublish(id,nowPub);};
-      showAlert(d.message,'success');
-      // Refresh stats
-      var pub=0; document.querySelectorAll('[id^="stat-"]').forEach(function(e){if(e.textContent.includes('Published'))pub++;});
-      document.getElementById('mPub').textContent=pub;
-      document.getElementById('mDraft').textContent=allDocs.length-pub;
-    } else { showAlert(d.message||'Failed.','danger'); }
+      btn.className='btn btn-warning btn-sm';
+      btn.textContent='Processing...';
+      btn.onclick=null;
+      allDocs=allDocs.map(function(doc){
+        if(Number(doc.id)===Number(id)){
+          doc.is_published=false;
+          doc.publish_requested=true;
+        }
+        return doc;
+      });
+      showAlert(d.message||'Publish request submitted.','success');
+    } else { showAlert(d.message||'Failed to submit request.','danger'); }
     btn.disabled=false;
   }
 
+  async function archiveDoc(id){
+    var doc=getDocById(id);
+    var title=doc ? doc.title : 'this document';
+    if(!confirm('Archive "'+title+'"?\n\nThis will move it to Archives and remove it from the public site.'))return;
+    var btn=document.getElementById('archive-'+id);
+    if(btn){btn.disabled=true;btn.textContent='Archiving...';}
+    try{
+      var r=await fetch(documentActionUrl(id,'/archive'), {method:'PATCH',credentials:'include'});
+      var d=await r.json();
+      if(r.ok&&d.success){
+        showAlert(d.message||'Document archived successfully.','success');
+        await loadDocs();
+      } else {
+        showAlert(d.message||'Archive failed.','danger');
+        if(btn){btn.disabled=false;btn.textContent='Archive';}
+      }
+    }catch(err){
+      showAlert('Archive error: '+err.message,'danger');
+      if(btn){btn.disabled=false;btn.textContent='Archive';}
+    }
+  }
+
+  async function restoreDoc(id){
+    var doc=getDocById(id);
+    var title=doc ? doc.title : 'this document';
+    if(!confirm('Unarchive "'+title+'"?\n\nThis will return it to the active documents list as a draft.'))return;
+    var btn=document.getElementById('restore-'+id);
+    if(btn){btn.disabled=true;btn.textContent='Restoring...';}
+    try{
+      var r=await fetch(documentActionUrl(id,'/restore'), {method:'PATCH',credentials:'include'});
+      var d=await r.json();
+      if(r.ok&&d.success){
+        showAlert(d.message||'Document restored successfully.','success');
+        await loadDocs();
+      } else {
+        showAlert(d.message||'Unarchive failed.','danger');
+        if(btn){btn.disabled=false;btn.textContent='Unarchive';}
+      }
+    }catch(err){
+      showAlert('Unarchive error: '+err.message,'danger');
+      if(btn){btn.disabled=false;btn.textContent='Unarchive';}
+    }
+  }
+
   async function deleteDoc(id, title){
-    if(!confirm('Delete "'+title+'"?\n\nThis cannot be undone.'))return;
-    var r=await fetch(API+'/admin/documents/'+id,{method:'DELETE',credentials:'include'});
-    var d=await r.json();
-    if(r.ok&&d.success){
-      document.getElementById('row-'+id)?.remove();
-      showAlert(d.message,'success');
-      allDocs=allDocs.filter(function(x){return x.id!==id;});
-      document.getElementById('mTotal').textContent=allDocs.length;
-      document.getElementById('docCount').textContent=allDocs.length+' document(s)';
-    } else { showAlert(d.message||'Delete failed.','danger'); }
+    if(!confirm('Permanently delete "'+title+'"?\n\nThis action cannot be undone and will remove the file from the server.'))return;
+    var btn=document.getElementById('delete-'+id);
+    if(btn){btn.disabled=true;btn.textContent='Deleting...';}
+    try{
+      var r=await fetch(documentActionUrl(id,''), {method:'DELETE',credentials:'include'});
+      var d=await r.json();
+      if(r.ok&&d.success){
+        showAlert(d.message||'Document deleted successfully.','success');
+        await loadDocs();
+      } else {
+        showAlert(d.message||'Delete failed.','danger');
+        if(btn){btn.disabled=false;btn.textContent='Delete';}
+      }
+    }catch(err){
+      showAlert('Delete error: '+err.message,'danger');
+      if(btn){btn.disabled=false;btn.textContent='Delete';}
+    }
   }
 
   function applyFilters(){
@@ -276,7 +662,7 @@
     var q=document.getElementById('fSearch').value.trim().toLowerCase();
     var filtered=allDocs.filter(function(d){
       var mCat=!cat||String(d.category_id)===cat;
-      var mStat=status===''||String(d.is_published?1:0)===status;
+      var mStat=status===''||String(toBool(d.is_published)?1:0)===status;
       var mYear=!year||String(d.fiscal_year)===year;
       var mQ=!q||d.title.toLowerCase().includes(q);
       return mCat&&mStat&&mYear&&mQ;
@@ -286,18 +672,60 @@
   }
 
   function resetFilters(){
+    clearFilters();
+    renderDocs(allDocs);
+    document.getElementById('docCount').textContent=allDocs.length+' '+(showingArchived?'archived document(s)':'document(s)');
+  }
+
+  function clearFilters(){
     document.getElementById('fCat').value='';
     document.getElementById('fStatus').value='';
     document.getElementById('fYear').value='';
     document.getElementById('fSearch').value='';
-    renderDocs(allDocs);
-    document.getElementById('docCount').textContent=allDocs.length+' document(s)';
+  }
+
+  async function toggleArchiveView(){
+    showingArchived=!showingArchived;
+    clearFilters();
+    updateArchiveViewLabels();
+    await loadDocs();
   }
 
   async function doLogout(){
     if(!confirm('Are you sure you want to log out?'))return;
     await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
     window.location.href='/';
+  }
+// Sidebar visibility
+  function applyRoleVisibility() {
+    var role = currentUser?.role;
+    if (!role) return;
+    var links = document.querySelectorAll('#sidebarNav a[data-role]');
+    links.forEach(function(link) {
+      var allowed = link.getAttribute('data-role').split(',');
+      if (!allowed.includes(role)) {
+        link.style.display = 'none';
+      }
+    });
+    updateSidebarLinks(role);
+  }
+  function updateSidebarLinks(role) {
+    var links = document.querySelectorAll('#sidebarNav a[data-role]');
+    links.forEach(function(link) {
+      var span = link.querySelector('span:last-child');
+      if (!span) return;
+      var href = link.getAttribute('href');
+       if (role === 'chairperson') {
+         if (href === 'upload.html') link.style.display = 'none';
+         if (href === 'documents.html') span.textContent = 'My Documents';
+         if (href === 'transparency.html') span.textContent = 'My Accomplishments';
+         if (href === 'announcements.html') span.textContent = 'Post Announcements';
+       } else if (role === 'admin') {
+        if (href === 'documents.html') span.textContent = 'Manage Documents';
+        if (href === 'transparency.html') span.textContent = 'Manage Accomplishments';
+        if (href === 'upload.html') link.style.display = 'none';
+      }
+    });
   }
 </script>
 </body>
