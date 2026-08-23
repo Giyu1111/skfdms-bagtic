@@ -67,7 +67,9 @@ function cookieOptions() {
 }
 
 function setAuthCookie(res, user) {
-  res.cookie(COOKIE_NAME, encodeUser(user), cookieOptions());
+  const token = encodeUser(user);
+  res.cookie(COOKIE_NAME, token, cookieOptions());
+  return token;
 }
 
 function clearAuthCookie(res) {
@@ -78,8 +80,13 @@ function getAuthCookieUser(req) {
   return decodeUser(parseCookies(req)[COOKIE_NAME]);
 }
 
+function getAuthHeaderUser(req) {
+  const header = req.get ? req.get('x-skfdms-auth') : req.headers['x-skfdms-auth'];
+  return decodeUser(header);
+}
+
 function getCurrentUser(req) {
-  return (req.session && req.session.user) || getAuthCookieUser(req);
+  return (req.session && req.session.user) || getAuthCookieUser(req) || getAuthHeaderUser(req);
 }
 
 module.exports = {

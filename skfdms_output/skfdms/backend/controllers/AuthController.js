@@ -67,7 +67,7 @@ async function login(req, res) {
       barangay:    user.barangay_name,
     };
     req.session.user = sessionUser;
-    setAuthCookie(res, sessionUser);
+    const authToken = setAuthCookie(res, sessionUser);
 
     // Update last login (UPDATED: $1 placeholder and NOW())
     await db.query(`UPDATE users SET last_login = NOW() WHERE id = $1`, [user.id]);
@@ -89,6 +89,7 @@ async function login(req, res) {
         role:     user.role,
         barangay: user.barangay_name,
       },
+      token: authToken,
     });
 
   } catch (err) {

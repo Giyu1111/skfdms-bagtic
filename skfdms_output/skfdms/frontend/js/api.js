@@ -6,10 +6,35 @@
 // Automatically uses whatever port the page is served from
 const API_BASE = window.location.origin + '/api';
 
+function getStoredAuthToken() {
+  try {
+    const cached = JSON.parse(sessionStorage.getItem('skfdms_current_user') || 'null');
+    return cached && cached.token ? cached.token : '';
+  } catch (err) {
+    return '';
+  }
+}
+
+function withAuthHeader(headers = {}) {
+  const nextHeaders = headers instanceof Headers ? Object.fromEntries(headers.entries()) : { ...headers };
+  const token = getStoredAuthToken();
+  if (token) nextHeaders['X-SKFDMS-Auth'] = token;
+  return nextHeaders;
+}
+
+const nativeFetch = window.fetch.bind(window);
+window.fetch = function(input, options = {}) {
+  const url = typeof input === 'string' ? new URL(input, window.location.href) : new URL(input.url, window.location.href);
+  if (url.origin === window.location.origin && url.pathname.indexOf('/api/') === 0) {
+    options = { ...options, headers: withAuthHeader(options.headers) };
+  }
+  return nativeFetch(input, options);
+};
+
 async function apiFetch(endpoint, options = {}) {
   const defaultOpts = {
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options.headers },
+    headers: withAuthHeader({ 'Content-Type': 'application/json', ...options.headers }),
   };
 
   if (options.body instanceof FormData) {
@@ -133,12 +158,18 @@ function formatFileSize(kb) {
 async function requireLogin() {
   const { ok, data } = await Auth.me();
   if (!ok || !data.success) {
+    const cached = (() => {
+      try { return JSON.parse(sessionStorage.getItem('skfdms_current_user') || 'null'); } catch (err) { return null; }
+    })();
+    if (cached && cached.user && cached.token) return cached.user;
     sessionStorage.removeItem('skfdms_current_user');
     window.location.href = '/pages/login';
     return null;
   }
+  const cachedToken = getStoredAuthToken();
   sessionStorage.setItem('skfdms_current_user', JSON.stringify({
     user: data.user,
+    token: cachedToken,
     cached_at: Date.now()
   }));
   window.dispatchEvent(new CustomEvent('skfdms:user', { detail: data.user }));

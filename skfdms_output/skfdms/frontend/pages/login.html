@@ -330,6 +330,7 @@
       if (response.ok && data.success) {
         sessionStorage.setItem('skfdms_current_user', JSON.stringify({
           user: data.user,
+          token: data.token,
           cached_at: Date.now()
         }));
         showAlert('Welcome, ' + data.user.name + '! Redirecting...', 'success');
@@ -351,12 +352,18 @@
   }
 
   // If already logged in, redirect
-  fetch(API + '/auth/me', { credentials: 'include' })
+  var cachedLogin = null;
+  try { cachedLogin = JSON.parse(sessionStorage.getItem('skfdms_current_user') || 'null'); } catch (err) {}
+  fetch(API + '/auth/me', {
+      credentials: 'include',
+      headers: cachedLogin && cachedLogin.token ? { 'X-SKFDMS-Auth': cachedLogin.token } : {}
+    })
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.success) {
         sessionStorage.setItem('skfdms_current_user', JSON.stringify({
           user: d.user,
+          token: cachedLogin && cachedLogin.token,
           cached_at: Date.now()
         }));
         var memberRoles = ['treasurer', 'secretary', 'councilor'];
