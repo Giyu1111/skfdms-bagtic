@@ -19,14 +19,21 @@
     .sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#D4AC0D;}
     .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;min-width:22px;flex-shrink:0;font-size:1rem;line-height:1;color:transparent;position:relative;overflow:hidden;}
     .nav-icon::before{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;}
-    .sidebar-user{padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);}
-    .sidebar-user .uname{font-weight:700;font-size:.96rem;color:#fff;}
-    .sidebar-user .urole{font-size:.8rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:4px;}
+    .sidebar-user{padding:14px 22px;border-top:1px solid rgba(255,255,255,.1);position:relative;display:flex;align-items:center;gap:10px;}
+    .sidebar-user .uname{font-weight:700;font-size:.96rem;color:#fff;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+    .sidebar-user .urole{font-size:.8rem;color:rgba(255,255,255,.5);text-transform:capitalize;margin-top:0;text-align:left;min-width:0;}
+    .sidebar-user-avatar{width:52px;height:52px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.3rem;flex-shrink:0;overflow:hidden;margin-bottom:0;position:relative;}
+    .sidebar-user-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+    .sidebar-edit-btn{position:absolute;top:4px;right:4px;width:18px;height:18px;padding:0;border:none;border-radius:0;background:transparent;color:#fff;cursor:pointer;font-size:.75rem;line-height:1;transition:color .18s;display:flex;align-items:center;justify-content:center;}
+    .sidebar-edit-btn:hover{background:transparent;color:#D4AC0D;}
     .admin-topbar { background: #fff; padding: 0 30px; height: 66px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,.06); position: sticky; top: 0; z-index: 50; }
     .topbar-left { display: flex; align-items: center; gap: 15px; }
     .topbar-left h2 { font-size: 1.2rem; color: #1A4530; margin: 0; font-weight: 800; }
     .barangay-select { padding: 9px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: .95rem; font-weight: 600; color: #1A4530; background-color: #F8FBFE; outline: none; }
     .admin-content { padding: 28px; }
+    .dashboard-greeting { margin-bottom: 20px; padding: 20px 24px; border: 1px solid rgba(26,69,48,.12); border-left: 4px solid #D4AC0D; border-radius: 14px; background: linear-gradient(135deg,#F7FFFB 0%,#FFF8DB 100%); box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .dashboard-greeting h1 { margin: 0; color: #143225; font-size: 1.45rem; line-height: 1.2; font-weight: 900; }
+    .dashboard-greeting p { margin: 6px 0 0; color: #62766B; font-size: .92rem; font-weight: 600; }
     .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; margin-bottom: 28px; }
     .stat-card { background: #fff; border-radius: 14px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; border-left: 4px solid #3D8C62; transition: transform .2s, box-shadow .2s; }
     .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
@@ -36,6 +43,45 @@
     .stat-num { font-size: 2.4rem; font-weight: 800; color: #1A4530; line-height: 1; }
     .stat-label { font-size: .84rem; color: #888; margin-top: 6px; }
     .stat-sub { font-size: .8rem; color: #aaa; margin-top: 3px; }
+    .dashboard-graph { display:grid; grid-template-columns:minmax(260px,.9fr) minmax(0,1.4fr); gap:0; }
+    .graph-panel { padding:22px 24px; min-width:0; }
+    .graph-panel + .graph-panel { border-left:1px solid #edf1ee; }
+    .graph-title { margin:0 0 4px; color:#1A4530; font-size:.98rem; font-weight:800; }
+    .graph-subtitle { margin:0 0 20px; color:#7b8880; font-size:.82rem; }
+    .status-graph { display:grid; gap:18px; }
+    .status-row { display:grid; grid-template-columns:86px minmax(0,1fr) 34px; align-items:center; gap:10px; }
+    .status-label, .status-value { color:#506158; font-size:.83rem; font-weight:700; }
+    .status-value { color:#1A4530; text-align:right; }
+    .status-track { height:10px; overflow:hidden; border-radius:5px; background:#edf3ee; }
+    .status-fill { height:100%; min-width:0; border-radius:inherit; transition:width .35s ease; }
+    .status-fill.published { background:#2f8a5d; }
+    .status-fill.drafts { background:#d4ac0d; }
+    .category-chart { min-height:218px; display:grid; grid-template-columns:190px minmax(0,1fr); align-items:center; gap:24px; }
+    .pie-chart { width:178px; aspect-ratio:1; margin:auto; border-radius:50%; position:relative; background:#edf3ee; box-shadow:inset 0 0 0 1px rgba(26,69,48,.06); }
+    .pie-chart::after { content:''; position:absolute; inset:32px; border-radius:50%; background:#fff; box-shadow:0 0 0 1px rgba(26,69,48,.08); }
+    .pie-center { position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#143225; text-align:center; }
+    .pie-total { font-size:1.8rem; font-weight:900; line-height:1; }
+    .pie-caption { margin-top:4px; color:#708077; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+    .pie-legend { display:grid; gap:10px; min-width:0; }
+    .pie-legend-item { display:grid; grid-template-columns:10px minmax(0,1fr) auto; align-items:center; gap:8px; color:#506158; font-size:.8rem; font-weight:700; }
+    .pie-legend-swatch { width:10px; height:10px; border-radius:50%; }
+    .pie-legend-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .pie-legend-value { color:#1A4530; font-weight:900; }
+    .graph-empty { color:#89958e; font-size:.86rem; text-align:center; padding:48px 0; }
+    @keyframes dashboard-rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes dashboard-pop { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
+    @media (prefers-reduced-motion:no-preference) {
+      body.dashboard-ready .dashboard-greeting { animation:dashboard-rise .42s ease both; }
+      body.dashboard-ready .dashboard-stat-cards .stat-card { animation:dashboard-rise .42s ease both; }
+      body.dashboard-ready .dashboard-stat-cards .stat-card:nth-child(1) { animation-delay:.06s; }
+      body.dashboard-ready .dashboard-stat-cards .stat-card:nth-child(2) { animation-delay:.12s; }
+      body.dashboard-ready .dashboard-stat-cards .stat-card:nth-child(3) { animation-delay:.18s; }
+      body.dashboard-ready .dashboard-stat-cards .stat-card:nth-child(4) { animation-delay:.24s; }
+      body.dashboard-ready .section-card { animation:dashboard-rise .46s ease both; animation-delay:.28s; }
+      body.dashboard-ready .section-card:nth-of-type(n+2) { animation-delay:.36s; }
+      body.dashboard-ready .pie-chart { animation:dashboard-pop .58s cubic-bezier(.2,.8,.2,1) .4s both; }
+    }
+    @media(max-width:760px) { .dashboard-graph { grid-template-columns:1fr; } .graph-panel + .graph-panel { border-left:0; border-top:1px solid #edf1ee; } .category-chart { grid-template-columns:1fr; gap:18px; } .pie-legend { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     .section-card { background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border: 1px solid #eee; overflow: hidden; margin-bottom: 24px; }
     .sc-header { padding: 16px 24px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
     .sc-header h3 { font-size: 1rem; color: #1A4530; margin: 0; font-weight: 800; }
@@ -55,15 +101,11 @@
     .profile-card { background: #fff; border: 1px solid #D6F0E6; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.04); transition: transform 0.2s; cursor: pointer; }
     .profile-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
     .profile-avatar { width: 60px; height: 60px; border-radius: 50%; background: #3D8C62; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; flex-shrink: 0; overflow: hidden; }
-    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
     .profile-avatar.federation { background: #D4AC0D; }
     .profile-info h4 { margin: 0 0 4px 0; color: #1A4530; font-size: 1rem; }
     .profile-info p { margin: 0; font-size: .9rem; color: #666; }
     .profile-info .role-badge { display: inline-block; margin-top: 8px; padding: 3px 8px; background: #f0f4f8; border-radius: 6px; font-size: .78rem; font-weight: 600; color: #3D8C62; text-transform: capitalize; }
-    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 20px 24px; }
-    .cat-item { background: #F8FBFE; border: 1px solid #D6F0E6; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .cat-name { font-size: .9rem; color: #1A4530; font-weight: 600; }
-    .cat-count { font-size: 1.3rem; font-weight: 800; color: #1A4530; }
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: .92rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .2s; }
     .btn-primary { background: #3D8C62; color: #fff; }
     .btn-primary:hover { background: #1A4530; }
@@ -74,8 +116,26 @@
     .btn-logout:hover { background: #e0e0e0; }
     .empty-state { text-align: center; padding: 48px; color: #aaa; }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .quick-actions { display:flex; flex-wrap:wrap; gap:12px; padding:20px 24px; }
+    .quick-actions p { width:100%; margin:0 0 2px; color:#718078; font-size:.84rem; }
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
+  <style>
+    /* Quick Actions use color only to indicate hover, not a preselected action. */
+    .quick-actions .btn-primary {
+      background: rgba(255, 255, 255, .62) !important;
+      border: 1px solid rgba(26, 69, 48, .18) !important;
+      box-shadow: none !important;
+      color: #1A4530 !important;
+    }
+    .quick-actions .btn-primary:hover,
+    .quick-actions .btn-secondary:hover {
+      background: #1A4530 !important;
+      border-color: #1A4530 !important;
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+  </style>
   <script src="../../js/public-theme.js" defer></script>
 </head>
 <body>
@@ -93,19 +153,20 @@
           <span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span>
         </span>
       </div>
-      <p id="sidebarBarangayText">Admin Portal</p>
+      
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" class="active" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="dashboard.html" class="active" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
       <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
       <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
       <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
-      <a href="/" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
+       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+      <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
-    <div class="sidebar-user">
+    <div class="sidebar-user" id="sidebarUser">
       <div class="uname" id="sidebarName">Administrator</div>
       <div class="urole" id="sidebarRole">SK Official</div>
     </div>
@@ -119,82 +180,91 @@
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="font-size:.84rem;color:#aaa;" id="lastUpdated"></span>
-        <button class="btn-logout" id="logoutBtn">Log Out</button>
       </div>
     </div>
 
     <div class="admin-content">
       <div id="alertBox"></div>
 
-      <div class="stat-cards">
+      <div class="dashboard-greeting">
+        <h1 id="dashboardGreeting">Welcome Back</h1>
+        <p id="dashboardGreetingSub">Here is the latest SK disclosure activity.</p>
+      </div>
+
+      <div class="stat-cards dashboard-stat-cards">
         <div class="stat-card">
           <div class="stat-num" id="statTotal">0</div>
-          <div class="stat-label">Total Documents</div>
-          <div class="stat-sub">All uploaded files</div>
+          <div class="stat-label" id="summaryLabel1">Total Accomplishments</div>
+          <div class="stat-sub" id="summarySub1">Submitted proof records</div>
         </div>
         <div class="stat-card green">
           <div class="stat-num" id="statPublished">0</div>
-          <div class="stat-label">Published</div>
-          <div class="stat-sub">Visible to public</div>
+          <div class="stat-label" id="summaryLabel2">Published</div>
+          <div class="stat-sub" id="summarySub2">Visible on the public site</div>
         </div>
         <div class="stat-card gold">
           <div class="stat-num" id="statDraft">0</div>
-          <div class="stat-label">Drafts</div>
-          <div class="stat-sub">Pending publish</div>
+          <div class="stat-label" id="summaryLabel3">Pending Review</div>
+          <div class="stat-sub" id="summarySub3">Needs publication action</div>
         </div>
         <div class="stat-card red">
-          <div class="stat-num" id="statCategories">0</div>
-          <div class="stat-label">Categories Used</div>
-          <div class="stat-sub">Based on uploaded records</div>
+          <div class="stat-num" id="statFourth">0</div>
+          <div class="stat-label" id="summaryLabel4">Published Amount</div>
+          <div class="stat-sub" id="summarySub4">Total from public accomplishments</div>
         </div>
       </div>
 
-      <div class="section-card">
+      <div class="section-card" aria-labelledby="documentOverviewTitle">
         <div class="sc-header">
-          <h3>SK Officials Directory</h3>
+          <h3 id="documentOverviewTitle">Document Overview</h3>
+          <span class="badge-count" id="graphScopeLabel">Loading...</span>
+        </div>
+        <div class="dashboard-graph">
+          <section class="graph-panel" aria-labelledby="statusGraphTitle">
+            <h4 class="graph-title" id="statusGraphTitle">Publication Status</h4>
+            <p class="graph-subtitle">Current availability of uploaded documents</p>
+            <div class="status-graph" id="statusGraph"><p class="graph-empty">Loading document data...</p></div>
+          </section>
+          <section class="graph-panel" aria-labelledby="categoryGraphTitle">
+            <h4 class="graph-title" id="categoryGraphTitle">Category Distribution</h4>
+            <p class="graph-subtitle">Documents grouped by category</p>
+            <div class="category-chart" id="categoryGraph" role="img" aria-label="Document count by category"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="section-card" aria-labelledby="accomplishmentOverviewTitle">
+        <div class="sc-header">
+          <h3 id="accomplishmentOverviewTitle">Transparency &amp; Accomplishment Overview</h3>
+          <span class="badge-count" id="accomplishmentGraphScopeLabel">Loading...</span>
+        </div>
+        <div class="dashboard-graph">
+          <section class="graph-panel" aria-labelledby="accomplishmentStatusTitle">
+            <h4 class="graph-title" id="accomplishmentStatusTitle">Publication Status</h4>
+            <p class="graph-subtitle">Status of submitted accomplishment records</p>
+            <div class="status-graph" id="accomplishmentStatusGraph"><p class="graph-empty">Loading accomplishment data...</p></div>
+          </section>
+          <section class="graph-panel" aria-labelledby="accomplishmentCategoryTitle">
+            <h4 class="graph-title" id="accomplishmentCategoryTitle">Expense Category Distribution</h4>
+            <p class="graph-subtitle">Accomplishments grouped by expense category</p>
+            <div class="category-chart" id="accomplishmentCategoryGraph" role="img" aria-label="Accomplishment count by expense category"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="section-card" aria-labelledby="quickActionsTitle">
+        <div class="sc-header"><h3 id="quickActionsTitle">Quick Actions</h3></div>
+        <div class="quick-actions" id="quickActions"></div>
+      </div>
+
+      <div class="section-card" id="profileDirectorySection" style="display:none;">
+        <div class="sc-header">
+          <h3>SK Chairmans Directory</h3>
           <span class="badge-count" id="profileBrgyBadge">Loading...</span>
         </div>
         <div class="profile-grid" id="profilesContainer"></div>
       </div>
 
-      <div class="section-card">
-        <div class="sc-header">
-          <h3>Recent Document Uploads</h3>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <span class="badge-count" id="recentCount">Loading...</span>
-            <a href="documents.html" class="btn btn-secondary btn-sm">View All</a>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Document Title</th>
-                <th>Category</th>
-                <th>Fiscal Year</th>
-                <th>Status</th>
-                <th>Uploaded By</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="recentDocsBody">
-              <tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa;">Loading live dashboard data...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="sc-header">
-          <h3>Documents by Category</h3>
-          <span class="badge-count" id="catBreakdownTotal">Loading...</span>
-        </div>
-        <div class="cat-grid" id="catBreakdown">
-          <p style="padding:20px;color:#aaa;">Loading category breakdown...</p>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -204,13 +274,15 @@
 <script>
   let currentUser = null;
   let dashboardDocs = [];
+  let dashboardProofs = [];
   let dashboardUsers = [];
   let dashboardCategories = [];
+  let dashboardBarangays = [];
   const API = window.location.origin + '/api';
 
   const barangayLogoMap = {
-    // Add a logo file for each barangay here.
-    // The key should match the barangay name returned by the server.
+    // Optional fallback barangay seal/logo per barangay name.
+    // A per-chairman profile_image (if set) takes priority over this.
     // Example:
     // 'Baang': '../images/barangay-baang.png',
     // 'Bagtic': '../images/barangay-bagtic.png',
@@ -234,16 +306,122 @@
       .join('');
   }
 
+  function getFirstName(name) {
+    return String(name || '').trim().split(/\s+/)[0] || 'Chairman';
+  }
+
+  function setDashboardGreeting() {
+    const greetingName = currentUser?.role === 'admin' ? 'Admin' : getFirstName(currentUser?.name);
+    const greeting = document.getElementById('dashboardGreeting');
+    const sub = document.getElementById('dashboardGreetingSub');
+    if (greeting) greeting.textContent = 'Welcome Back, ' + greetingName + '!';
+    if (sub) {
+      sub.textContent = currentUser?.role === 'admin'
+        ? 'Review disclosure records across all barangays.'
+        : 'Track your barangay disclosure records and recent activity.';
+    }
+  }
+
+  function avatarImgError(img) {
+    img.onerror = null;
+    var avatar = img.closest('.profile-avatar');
+    if (avatar) {
+      avatar.innerHTML = avatar.getAttribute('data-initials') || '';
+    }
+  }
+
   function setBarangayUI() {
     const barangayName = window.SkBarangay.getBarangayName(window.SkBarangay.getSelectedBarangayId()) || currentUser?.barangay || 'Bagtic';
     const selector = document.getElementById('barangaySelector');
     window.SkBarangay.populateDropdown(selector);
     window.SkBarangay.updateSidebarCaption();
-    document.getElementById('profileBrgyBadge').textContent = 'Active: ' + barangayName;
+    const profileBadge = document.getElementById('profileBrgyBadge');
+    if (profileBadge) profileBadge.textContent = 'Active: ' + barangayName;
+  }
+
+  function addSidebarEditButton(user) {
+    if (!user || user.role !== 'chairperson') return;
+    var avatar = document.querySelector('.sidebar-user-avatar');
+    if (!avatar) return;
+    var box = avatar.closest('.sidebar-user');
+    var existing = avatar.querySelector('.sidebar-edit-btn');
+    if (existing) existing.remove();
+    var existingBesideAvatar = box ? box.querySelector(':scope > .sidebar-edit-btn') : null;
+    if (existingBesideAvatar) existingBesideAvatar.remove();
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sidebar-edit-btn';
+    btn.id = 'sidebarEditBtn';
+    btn.title = 'Change logo';
+    btn.setAttribute('aria-label', 'Change logo');
+    btn.onclick = function() { editProfileImage(user.id); };
+    btn.innerHTML = '<span class="ui-icon ui-icon-edit" aria-hidden="true"></span>';
+    if (box) {
+      box.insertBefore(btn, avatar.nextSibling);
+    } else {
+      avatar.appendChild(btn);
+    }
+  }
+
+  async function editProfileImage(userId) {
+    var fileInput = document.getElementById('profileImageInput');
+    if (!fileInput) {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.id = 'profileImageInput';
+      input.accept = 'image/*';
+      input.style.display = 'none';
+      input.onchange = function(e) { uploadProfileImage(userId, e.target.files[0]); };
+      document.body.appendChild(input);
+      fileInput = input;
+    }
+    fileInput.value = '';
+    fileInput.click();
+  }
+
+  async function uploadProfileImage(userId, file) {
+    if (!file) return;
+    if (window.SkBarangay && !await window.SkBarangay.validateLogoFile(file)) return;
+    var formData = new FormData();
+    formData.append('image', file);
+    try {
+      var res = await fetch('/api/admin/users/' + userId + '/profile-image', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      var data = await res.json();
+      if (res.ok && data.success) {
+        window.SkBarangay.renderSidebarUser(currentUser);
+        addSidebarEditButton(currentUser);
+        window.SkBarangay.updateSidebarLogo(currentUser.role);
+        renderUsers();
+        showAlert('Profile image updated.', 'success');
+      } else {
+        showAlert(data.message || 'Failed to update profile image.', 'danger');
+      }
+    } catch(err) {
+      showAlert('Cannot connect to server.', 'danger');
+    }
+  }
+
+  function showAlert(message, type) {
+    var alertBox = document.getElementById('alertBox');
+    if (!alertBox) {
+      alertBox = document.createElement('div');
+      alertBox.id = 'alertBox';
+      document.querySelector('.admin-content').prepend(alertBox);
+    }
+    alertBox.innerHTML = '<div class="alert alert-' + type + '">' + message + '</div>';
+    if (type === 'success' || type === 'info') {
+      setTimeout(function(){ alertBox.innerHTML = ''; }, 4500);
+    }
   }
 
   function renderUsers() {
+    if (currentUser?.role !== 'admin') return;
     const container = document.getElementById('profilesContainer');
+    if (!container) return;
     const chairpersons = dashboardUsers.filter(user => user.role === 'chairperson');
     if (!chairpersons.length) {
       container.innerHTML = '<div class="empty-state"><div class="icon">Users</div><p>No SK Chairperson found.</p></div>';
@@ -251,14 +429,17 @@
     }
 
     container.innerHTML = chairpersons.map(user => {
-      const logoSrc = barangayLogoMap[user.barangay_name] || '';
-      const avatarHtml = logoSrc
-        ? `<img src="${logoSrc}" alt="${escapeHtml(user.barangay_name)} logo">`
-        : escapeHtml(getInitials(user.name));
+      const initials = escapeHtml(getInitials(user.name));
+      const imgSrc = user.profile_image
+        ? '/uploads/' + user.profile_image
+        : (barangayLogoMap[user.barangay_name] || '');
+      const avatarHtml = imgSrc
+        ? `<img src="${imgSrc}" alt="${escapeHtml(user.name)}" onerror="avatarImgError(this)">`
+        : initials;
 
       return `
         <div class="profile-card" onclick="selectBarangayFromProfile('${user.barangay_id}','${escapeHtml(user.barangay_name)}')">
-          <div class="profile-avatar ${user.role === 'admin' ? 'federation' : ''}">${avatarHtml}</div>
+          <div class="profile-avatar ${user.role === 'admin' ? 'federation' : ''}" data-initials="${initials}">${avatarHtml}</div>
           <div class="profile-info">
             <h4>${escapeHtml(user.name)}</h4>
             <p>${escapeHtml(user.barangay_name)}</p>
@@ -277,56 +458,118 @@
     window.SkFDMS.showAlert('alertBox', 'Showing data for Brgy. ' + barangayName + '.', 'info');
   }
 
-  function renderRecentDocs() {
-    const tbody = document.getElementById('recentDocsBody');
-    const recentDocs = dashboardDocs.slice(0, 5);
-
-    if (!recentDocs.length) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#aaa;">No uploaded documents yet.</td></tr>';
-      document.getElementById('recentCount').textContent = '0 recent docs';
-      return;
-    }
-
-    tbody.innerHTML = recentDocs.map((doc, index) => `
-      <tr>
-        <td style="color:#aaa;">${index + 1}</td>
-        <td><strong>${escapeHtml(doc.title)}</strong></td>
-        <td><span class="badge badge-cat">${escapeHtml(doc.category_code || doc.category_name || 'DOC')}</span></td>
-        <td>${escapeHtml(doc.fiscal_year || '-')} ${doc.quarter ? `· ${escapeHtml(doc.quarter)}` : ''}</td>
-        <td><span class="badge ${doc.is_published ? 'badge-pub' : 'badge-draft'}">${doc.is_published ? 'Published' : 'Draft'}</span></td>
-        <td>${escapeHtml(doc.uploaded_by_name || doc.uploaded_by || '-')}</td>
-        <td>${window.SkFDMS.formatDate(doc.created_at || doc.published_at)}</td>
-        <td><a href="documents.html" class="btn btn-secondary btn-sm">Manage</a></td>
-      </tr>
-    `).join('');
-
-    document.getElementById('recentCount').textContent = `${recentDocs.length} recent docs`;
+  function donutCategoryColors(count) {
+    // The golden-angle spacing keeps adjacent slices visually distinct,
+    // including when more than the original six categories are present.
+    return Array.from({ length: count }, (_, index) => {
+      const hue = Math.round((148 + (index * 137.508)) % 360);
+      return `hsl(${hue} 68% 42%)`;
+    });
   }
 
-  function renderCategoryBreakdown() {
-    const container = document.getElementById('catBreakdown');
-    if (!dashboardCategories.length) {
-      container.innerHTML = '<p style="padding:20px;color:#aaa;">No categories found.</p>';
-      document.getElementById('catBreakdownTotal').textContent = '0 total';
+  function renderDashboardGraph() {
+    const isPublished = doc => doc.is_published === true || doc.is_published === 'true' || doc.is_published === 1;
+    const isRequested = doc => !isPublished(doc) && (doc.publish_requested === true || doc.publish_requested === 'true' || doc.publish_requested === 1);
+    const published = dashboardDocs.filter(isPublished).length;
+    const requested = dashboardDocs.filter(isRequested).length;
+    const total = published + requested;
+    const scope = currentUser?.role === 'admin' ? 'Selected barangay' : 'My barangay';
+    document.getElementById('graphScopeLabel').textContent = scope;
+    document.getElementById('statusGraph').innerHTML = [
+      { label: 'Published', value: published, className: 'published' },
+      { label: 'Requested', value: requested, className: 'drafts' }
+    ].map(item => {
+      const percentage = total ? Math.round((item.value / total) * 100) : 0;
+      return `<div class="status-row"><span class="status-label">${item.label}</span><div class="status-track"><div class="status-fill ${item.className}" style="width:${percentage}%"></div></div><span class="status-value">${item.value}</span></div>`;
+    }).join('');
+
+    const categories = dashboardCategories.map(category => ({
+      label: category.code || category.name || 'Other',
+      count: dashboardDocs.filter(doc => String(doc.category_id) === String(category.id)).length
+    })).filter(category => category.count > 0).sort((a, b) => b.count - a.count);
+    const categoryGraph = document.getElementById('categoryGraph');
+    if (!categories.length) {
+      categoryGraph.innerHTML = '<p class="graph-empty">No document categories in this view yet.</p>';
       return;
     }
+    const colors = donutCategoryColors(categories.length);
+    let cursor = 0;
+    const segments = categories.map(category => {
+      const end = cursor + (category.count / total) * 100;
+      const segment = `${colors[categories.indexOf(category)]} ${cursor}% ${end}%`;
+      cursor = end;
+      return segment;
+    });
+    categoryGraph.setAttribute('aria-label', categories.map(category => `${category.label}: ${category.count}`).join(', '));
+    categoryGraph.innerHTML = `<div class="pie-chart" style="background:conic-gradient(${segments.join(',')});"><div class="pie-center"><span class="pie-total">${total}</span><span class="pie-caption">Documents</span></div></div><div class="pie-legend">${categories.map((category, index) => `<div class="pie-legend-item"><span class="pie-legend-swatch" style="background:${colors[index]}"></span><span class="pie-legend-label">${escapeHtml(category.label)}</span><span class="pie-legend-value">${category.count}</span></div>`).join('')}</div>`;
+  }
 
-    const counts = dashboardCategories.map(category => ({
-      ...category,
-      count: dashboardDocs.filter(doc => String(doc.category_id) === String(category.id)).length,
-    }));
+  function renderAccomplishmentGraph() {
+    const isPublished = proof => proof.is_published === true || proof.is_published === 'true' || proof.is_published === 1;
+    const isRequested = proof => !isPublished(proof) && (proof.publish_requested === true || proof.publish_requested === 'true' || proof.publish_requested === 1);
+    const published = dashboardProofs.filter(isPublished).length;
+    const requested = dashboardProofs.filter(isRequested).length;
+    const total = published + requested;
+    const scope = currentUser?.role === 'admin' ? 'Selected barangay' : 'My barangay';
+    document.getElementById('accomplishmentGraphScopeLabel').textContent = scope;
+    document.getElementById('accomplishmentStatusGraph').innerHTML = [
+      { label: 'Published', value: published, className: 'published' },
+      { label: 'Requested', value: requested, className: 'drafts' }
+    ].map(item => {
+      const percentage = total ? Math.round((item.value / total) * 100) : 0;
+      return `<div class="status-row"><span class="status-label">${item.label}</span><div class="status-track"><div class="status-fill ${item.className}" style="width:${percentage}%"></div></div><span class="status-value">${item.value}</span></div>`;
+    }).join('');
 
-    container.innerHTML = counts.map(category => `
-      <div class="cat-item">
-        <div>
-          <div class="cat-name">${escapeHtml(category.code)}</div>
-          <div style="font-size:.8rem;color:#888;margin-top:2px;">${escapeHtml(category.name)}</div>
-        </div>
-        <div class="cat-count">${category.count}</div>
-      </div>
-    `).join('');
+    const grouped = dashboardProofs.reduce((groups, proof) => {
+      const label = String(proof.expense_category || 'Uncategorized').trim() || 'Uncategorized';
+      groups[label] = (groups[label] || 0) + 1;
+      return groups;
+    }, {});
+    const categories = Object.keys(grouped).map(label => ({ label, count: grouped[label] })).sort((a, b) => b.count - a.count);
+    const graph = document.getElementById('accomplishmentCategoryGraph');
+    if (!categories.length) {
+      graph.innerHTML = '<p class="graph-empty">No accomplishment categories in this view yet.</p>';
+      return;
+    }
+    const colors = donutCategoryColors(categories.length);
+    let cursor = 0;
+    const segments = categories.map((category, index) => {
+      const end = cursor + (category.count / total) * 100;
+      const segment = `${colors[index]} ${cursor}% ${end}%`;
+      cursor = end;
+      return segment;
+    });
+    graph.setAttribute('aria-label', categories.map(category => `${category.label}: ${category.count}`).join(', '));
+    graph.innerHTML = `<div class="pie-chart" style="background:conic-gradient(${segments.join(',')});"><div class="pie-center"><span class="pie-total">${total}</span><span class="pie-caption">Records</span></div></div><div class="pie-legend">${categories.map((category, index) => `<div class="pie-legend-item"><span class="pie-legend-swatch" style="background:${colors[index]}"></span><span class="pie-legend-label">${escapeHtml(category.label)}</span><span class="pie-legend-value">${category.count}</span></div>`).join('')}</div>`;
+  }
 
-    document.getElementById('catBreakdownTotal').textContent = `${dashboardDocs.length} total`;
+  function setDashboardSummary() {
+    const publishedProofs = dashboardProofs.filter(proof => proof.is_published === true || proof.is_published === 'true' || proof.is_published === 1);
+    const requestedProofs = dashboardProofs.filter(proof => !publishedProofs.includes(proof) && (proof.publish_requested === true || proof.publish_requested === 'true' || proof.publish_requested === 1));
+    const isFedAdmin = currentUser.role === 'admin';
+    const summary = isFedAdmin
+      ? [
+          [dashboardBarangays.length, 'Total Barangays', 'Barangays in the federation'],
+          [dashboardDocs.length, 'Documents', 'In the current dashboard view'],
+          [publishedProofs.length, 'Published Accomplishments', 'Visible on the public site'],
+          [requestedProofs.length, 'Pending Reviews', 'Accomplishments awaiting action']
+        ]
+      : [
+          [dashboardDocs.length, 'My Documents', 'Documents from my barangay'],
+          [dashboardProofs.length, 'My Accomplishments', 'Submitted proof records'],
+          [publishedProofs.length, 'Published Records', 'Visible on the public site'],
+          [requestedProofs.length, 'Pending Requests', 'Awaiting SK Fed review']
+        ];
+    summary.forEach((item, index) => {
+      const suffix = index + 1;
+      document.getElementById(suffix === 1 ? 'statTotal' : suffix === 2 ? 'statPublished' : suffix === 3 ? 'statDraft' : 'statFourth').textContent = item[0];
+      document.getElementById('summaryLabel' + suffix).textContent = item[1];
+      document.getElementById('summarySub' + suffix).textContent = item[2];
+    });
+    const actions = isFedAdmin
+      ? '<p>Review records and manage disclosures across the selected barangay.</p><a href="transparency.html" class="btn btn-primary">Manage Accomplishments</a><a href="documents.html" class="btn btn-secondary">Manage Documents</a><a href="users.html" class="btn btn-secondary">Manage Users</a>'
+      : '<p>Submit and track records for your barangay.</p><a href="transparency.html" class="btn btn-primary">My Accomplishments</a><a href="documents.html" class="btn btn-secondary">My Documents</a><a href="announcements.html" class="btn btn-secondary">Post Announcement</a>';
+    document.getElementById('quickActions').innerHTML = actions;
   }
 
   async function loadDashboard() {
@@ -335,8 +578,16 @@
 
     document.getElementById('sidebarName').textContent = currentUser.name;
     document.getElementById('sidebarRole').textContent = currentUser.role;
+    window.SkBarangay.renderSidebarUser(currentUser);
+    addSidebarEditButton(currentUser);
+    window.SkBarangay.updateSidebarLogo(currentUser.role);
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-PH');
+    setDashboardGreeting();
     applyRoleVisibility();
+    const profileDirectorySection = document.getElementById('profileDirectorySection');
+    if (profileDirectorySection) {
+      profileDirectorySection.style.display = currentUser.role === 'admin' ? '' : 'none';
+    }
 
     // Init barangay context
     await window.SkBarangay.init(currentUser);
@@ -359,32 +610,33 @@
     const qs = currentUser.role === 'admin' ? `?barangay_id=${barangayId}` : '';
 
     try {
-      const [statsRes, docsRes, categoriesRes, usersRes] = await Promise.all([
-        fetch(API + '/admin/stats' + qs, {credentials:'include'}).then(r => r.json()),
+      const [proofsRes, docsRes, categoriesRes, usersRes, barangaysRes] = await Promise.all([
+        fetch(API + '/admin/fund-proofs' + qs, {credentials:'include'}).then(r => r.json()),
         fetch(API + '/admin/documents' + qs, {credentials:'include'}).then(r => r.json()),
         fetch(API + '/categories', {credentials:'include'}).then(r => r.json()),
-        fetch(API + '/admin/users' + qs, {credentials:'include'}).then(r => r.json()),
+        currentUser.role === 'admin'
+          ? fetch(API + '/admin/users' + qs, {credentials:'include'}).then(r => r.json())
+          : Promise.resolve({ success: true, data: [] }),
+        fetch(API + '/barangays', {credentials:'include'}).then(r => r.json()),
       ]);
 
-      if (statsRes.success) {
-        const stats = statsRes.data;
-        document.getElementById('statTotal').textContent = stats.totalDocs;
-        document.getElementById('statPublished').textContent = stats.publishedDocs;
-        document.getElementById('statDraft').textContent = stats.draftDocs;
-        document.getElementById('statCategories').textContent = stats.categories;
-      } else {
-        window.SkFDMS.showAlert('alertBox', statsRes.message || 'Failed to load stats.', 'danger');
-      }
-
+      if (!proofsRes.success) throw new Error(proofsRes.message || 'Failed to load accomplishments.');
+      dashboardProofs = proofsRes.data || [];
       dashboardDocs = docsRes.success ? docsRes.data : [];
       dashboardCategories = categoriesRes.success ? categoriesRes.data : [];
       dashboardUsers = usersRes.success ? usersRes.data : [];
+      dashboardBarangays = barangaysRes.success ? barangaysRes.data : [];
 
+      setDashboardSummary();
       renderUsers();
-      renderRecentDocs();
-      renderCategoryBreakdown();
+      renderDashboardGraph();
+      renderAccomplishmentGraph();
+      if (!document.body.classList.contains('dashboard-ready')) {
+        requestAnimationFrame(() => document.body.classList.add('dashboard-ready'));
+      }
     } catch (err) {
       console.error(err);
+      showAlert(err.message || 'Unable to load dashboard accomplishments.', 'danger');
     }
   }
 

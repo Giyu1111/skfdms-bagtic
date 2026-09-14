@@ -78,14 +78,16 @@
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
-      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
-      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
+      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
       <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
       <a href="activity-log.html" class="active" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
-      <a href="/" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
+      <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+      <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
+      
     </nav>
     <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
   </aside>
@@ -98,7 +100,6 @@
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="btn btn-secondary btn-sm" onclick="loadLogs()">Refresh</button>
-        <button class="btn-logout" onclick="doLogout()">Log Out</button>
       </div>
     </div>
 
@@ -222,21 +223,23 @@
   window.addEventListener('load', async function(){
     var r=await fetch(API+'/auth/me',{credentials:'include'});
     var d=await r.json();
-    if(!d.success){window.location.href='/pages/login';return;}
+    if(!d.success){window.location.href='/pages/login.html';return;}
     currentUser = d.user;
 
     // SK Federated admin sees all barangays; SK chairpersons see their own barangay only.
     if (!['admin', 'chairperson'].includes(currentUser.role)) {
       alert('Access denied. This page is for SK Federated and SK Chairperson accounts only.');
-      window.location.href = 'dashboard';
+      window.location.href = 'dashboard.html';
       return;
     }
 
     document.getElementById('sName').textContent=d.user.name;
     document.getElementById('sRole').textContent=d.user.role;
+     window.SkBarangay.renderSidebarUser(currentUser);
+     window.SkBarangay.updateSidebarLogo(currentUser.role);
     document.getElementById('logTitle').textContent = currentUser.role === 'admin'
       ? 'All Admin Actions'
-      : 'Barangay Admin Actions';
+      : 'My Activity Log';
 
     await window.SkBarangay.init(currentUser);
     

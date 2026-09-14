@@ -6,7 +6,6 @@
 // Automatically uses whatever port the page is served from
 const API_BASE = window.location.origin + '/api';
 const AUTH_CACHE_KEY = 'skfdms_current_user';
-const AUTH_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 function readAuthCache() {
   try {
@@ -25,10 +24,6 @@ function writeAuthCache(value) {
 function clearAuthCache() {
   sessionStorage.removeItem(AUTH_CACHE_KEY);
   localStorage.removeItem(AUTH_CACHE_KEY);
-}
-
-function isFreshAuthCache(cached) {
-  return cached && cached.user && cached.cached_at && Date.now() - cached.cached_at < AUTH_CACHE_MAX_AGE_MS;
 }
 
 function getStoredAuthToken() {
@@ -130,8 +125,12 @@ const Categories = {
 const Users = {
   list:         ()     => apiFetch('/admin/users'),
   create:       (data) => apiFetch('/admin/users',              { method: 'POST',  body: JSON.stringify(data) }),
+  update:       (id, data)  => apiFetch(`/admin/users/${id}`,        { method: 'PUT',   body: JSON.stringify(data) }),
   toggleActive: (id)   => apiFetch(`/admin/users/${id}/toggle`, { method: 'PATCH' }),
   review:       (id, decision) => apiFetch(`/admin/users/${id}/approval`, { method: 'PATCH', body: JSON.stringify({ decision }) }),
+  uploadProfileImage: (id, formData) => apiFetch(`/admin/users/${id}/profile-image`, { method: 'POST', body: formData }),
+  removeProfileImage: (id) => apiFetch(`/admin/users/${id}/profile-image`, { method: 'DELETE' }),
+  profileImageUrl: (profileImage) => profileImage ? '/uploads/' + profileImage : '',
 };
 
 const Announcements = {
@@ -177,12 +176,10 @@ function formatFileSize(kb) {
 }
 
 async function requireLogin() {
-  const cachedBeforeCheck = readAuthCache();
   const { ok, data } = await Auth.me();
   if (!ok || !data.success) {
-    if (isFreshAuthCache(cachedBeforeCheck)) return cachedBeforeCheck.user;
     clearAuthCache();
-    window.location.href = '/pages/login';
+    window.location.href = '/pages/login.html';
     return null;
   }
   const cachedToken = getStoredAuthToken();

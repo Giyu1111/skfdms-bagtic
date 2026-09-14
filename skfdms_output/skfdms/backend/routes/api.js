@@ -18,20 +18,27 @@ const FeedbackController     = require('../controllers/FeedbackController');
 const ContactMessageController = require('../controllers/ContactMessageController');
 
 const { requireAuth, requireRole } = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload, documentUpload, registrationUpload } = require('../middleware/upload');
 
 // ─────────────────────────────────────────────────────────────
 // AUTH routes
 // ─────────────────────────────────────────────────────────────
 router.post('/auth/login',  AuthController.login);
 router.post('/auth/logout', AuthController.logout);
+router.post('/auth/register-request', registrationUpload.single('supporting_document'), AuthController.registerRequest);
+router.get ('/auth/password-setup/validate', AuthController.validatePasswordSetup);
+router.post('/auth/password-setup', AuthController.completePasswordSetup);
 router.get ('/auth/me',     AuthController.me);
+router.patch('/auth/account/name', requireAuth, AuthController.changeName);
+router.patch('/auth/account/email', requireAuth, AuthController.changeEmail);
+router.patch('/auth/account/password', requireAuth, AuthController.changePassword);
 
 // ─────────────────────────────────────────────────────────────
 // PUBLIC routes (no auth required)
 // ─────────────────────────────────────────────────────────────
 router.get('/categories',                CategoryController.list);
 router.get('/documents',                 DocumentController.listPublic);
+router.post('/documents/:id/engagement', DocumentController.recordEngagement);
 router.get('/documents/:id/download',    DocumentController.download);
 router.get('/fund-proofs',               FundProofController.listPublic);
 router.get('/fund-proofs/:id/download',  FundProofController.download);
@@ -51,9 +58,10 @@ router.get('/admin/stats',               requireAuth, DocumentController.stats);
 
 // Document management
 router.get   ('/admin/documents',             requireAuth, DocumentController.listAdmin);
-router.post  ('/admin/documents',             requireRole('chairperson'), upload.array('file', 10), DocumentController.upload);
+router.post  ('/admin/documents',             requireRole('chairperson'), documentUpload.single('file'), DocumentController.upload);
 router.patch ('/admin/documents/:id',         requireRole(['admin', 'chairperson']), DocumentController.update);
 router.patch ('/admin/documents/:id/publish', requireRole(['admin', 'chairperson']), DocumentController.togglePublish);
+router.patch ('/admin/documents/bulk/archive',  requireRole(['admin', 'chairperson']), DocumentController.bulkArchive);
 router.patch ('/admin/documents/:id/archive', requireRole(['admin', 'chairperson']), DocumentController.archive);
 router.patch ('/admin/documents/:id/restore', requireRole(['admin', 'chairperson']), DocumentController.restore);
 router.delete('/admin/documents/:id',         requireRole(['admin', 'chairperson']), DocumentController.remove);
@@ -68,23 +76,34 @@ router.delete('/admin/fund-proofs/:id',         requireRole(['admin', 'chairpers
 
 // User management
 router.get  ('/admin/users',                   requireRole(['admin', 'chairperson']), UserController.list);
+router.get  ('/admin/users/archived',          requireRole('admin'), UserController.listArchived);
 router.post ('/admin/users',                   requireRole('admin'), UserController.create);
 router.put  ('/admin/users/:id',               requireRole('admin'), UserController.update);
 router.patch('/admin/users/:id/toggle',        requireRole('admin'), UserController.toggleActive);
+router.post  ('/admin/users/:id/approve',      requireRole('admin'), UserController.approveRequest);
+router.post  ('/admin/users/:id/reject',       requireRole('admin'), UserController.rejectRequest);
+router.post  ('/admin/users/:id/reset-password', requireRole('admin'), UserController.resetPassword);
+router.get  ('/admin/users/:id/registration-document', requireRole('admin'), UserController.registrationDocument);
+router.patch ('/admin/users/:id/password',       requireRole('admin'), UserController.updatePassword);
+router.patch ('/admin/users/:id/archive',        requireRole('admin'), UserController.archive);
+router.patch ('/admin/users/:id/restore',        requireRole('admin'), UserController.restore);
 router.delete('/admin/users/:id',              requireRole('admin'), UserController.remove);
+router.post  ('/admin/users/:id/profile-image', requireRole(['admin', 'chairperson']), upload.single('image'), UserController.uploadProfileImage);
+router.delete('/admin/users/:id/profile-image', requireRole(['admin', 'chairperson']), UserController.removeProfileImage);
 
 // Announcements
 router.get   ('/admin/announcements',      requireAuth, AnnouncementController.listAdmin);
 router.post  ('/admin/announcements',      requireRole('chairperson'), AnnouncementController.create);
-router.delete('/admin/announcements/:id',  requireAuth, AnnouncementController.remove);
+router.delete('/admin/announcements/:id',  requireRole(['admin', 'chairperson']), AnnouncementController.remove);
 
 // Activity logs
 router.get('/admin/activity-logs', requireRole(['admin', 'chairperson']), ActivityLogController.list);
 
 // Contact messages
-router.get('/admin/contact-messages', requireAuth, ContactMessageController.listAdmin);
-router.get('/admin/contact-messages/unread-count', requireAuth, ContactMessageController.unreadCount);
-router.patch('/admin/contact-messages/:id/read', requireAuth, ContactMessageController.markRead);
-router.delete('/admin/contact-messages/:id', requireAuth, ContactMessageController.remove);
+router.get('/admin/contact-messages', requireRole(['admin', 'chairperson']), ContactMessageController.listAdmin);
+router.post('/admin/contact-messages', requireRole('admin'), ContactMessageController.sendToChairperson);
+router.get('/admin/contact-messages/unread-count', requireRole(['admin', 'chairperson']), ContactMessageController.unreadCount);
+router.patch('/admin/contact-messages/:id/read', requireRole(['admin', 'chairperson']), ContactMessageController.markRead);
+router.delete('/admin/contact-messages/:id', requireRole(['admin', 'chairperson']), ContactMessageController.remove);
 
 module.exports = router;

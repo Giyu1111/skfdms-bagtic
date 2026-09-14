@@ -27,7 +27,11 @@
     .topbar-left{display:flex;align-items:center;gap:15px;min-width:0;}
     .topbar h2{font-size:1.2rem;color:#1A4530;font-weight:800;}
     .barangay-select{padding:9px 12px;border-radius:8px;border:1px solid #ccc;font-size:.95rem;font-weight:600;color:#1A4530;background:#F8FBFE;outline:none;}
-    .content{padding:28px;}
+    .content{width:100%;max-width:1600px;margin:0 auto;padding:28px;}
+    .page-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:0 0 22px;}
+    .page-intro h1{color:#1A4530;font-size:1.65rem;line-height:1.15;font-weight:900;letter-spacing:-.02em;}
+    .page-intro p{max-width:680px;margin-top:6px;color:#6f7c74;font-size:.92rem;line-height:1.5;}
+    .page-intro-note{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #dce9e0;border-radius:999px;background:#f8fbf9;color:#397353;font-size:.78rem;font-weight:800;white-space:nowrap;}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.9rem;font-weight:700;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;white-space:nowrap;}
     .btn-primary{background:#3D8C62;color:#fff;}
     .btn-primary:hover{background:#1A4530;}
@@ -38,18 +42,21 @@
     .btn-warning{background:#D4AC0D;color:#1A4530;}
     .btn-danger{background:#C0392B;color:#fff;}
     .btn-sm{padding:6px 11px;font-size:.82rem;}
+    #archiveToggleBtn{background:#D4AC0D;color:#1A4530;}
+    #archiveToggleBtn:hover{background:#B9970A;}
     .btn-logout{background:#f0f0f0;color:#555;border:none;padding:9px 16px;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:inherit;}
-    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:20px;}
-    .stat-card{background:#fff;border:1px solid #e6ece8;border-left:4px solid #3D8C62;border-radius:13px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px;}
+    .stat-card{position:relative;overflow:hidden;background:#fff;border:1px solid #e6ece8;border-left:4px solid #3D8C62;border-radius:13px;padding:19px 20px;box-shadow:0 2px 7px rgba(15,42,30,.055);}
+    .stat-card::after{content:'';position:absolute;right:-18px;bottom:-26px;width:90px;height:90px;border-radius:50%;background:rgba(61,140,98,.06);}
     .stat-card.gold{border-left-color:#D4AC0D;}
     .stat-card.red{border-left-color:#C0392B;}
     .stat-num{font-size:2rem;font-weight:900;color:#1A4530;line-height:1;}
     .stat-label{font-size:.82rem;color:#7d8780;font-weight:700;margin-top:7px;}
     .grid{display:grid;grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr);gap:20px;align-items:start;}
     .grid.read-only{grid-template-columns:1fr;}
-    .card{background:#fff;border:1px solid #e6ece8;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);overflow:hidden;margin-bottom:20px;}
-    .card-header{padding:15px 20px;border-bottom:1px solid #edf2ee;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-    .card-header h3{font-size:1rem;color:#1A4530;font-weight:900;}
+    .card{background:#fff;border:1px solid #e1e9e3;border-radius:15px;box-shadow:0 3px 12px rgba(15,42,30,.06);overflow:hidden;margin-bottom:20px;}
+    .card-header{padding:18px 22px;border-bottom:1px solid #edf2ee;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .card-header h3{font-size:1.2rem;color:#1A4530;font-weight:900;}
     .card-sub{font-size:.8rem;color:#8b938e;margin-top:3px;}
     .card-body{padding:20px;}
     .form-group{margin-bottom:14px;}
@@ -70,33 +77,53 @@
     input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
     input:focus,select:focus,textarea:focus{border-color:#3D8C62;box-shadow:0 0 0 3px rgba(61,140,98,.1);}
     .hint{font-size:.78rem;color:#8a948d;margin-top:5px;line-height:1.45;}
+    .proof-filter-row{display:grid;padding:16px 22px;border-bottom:1px solid #edf2ee;background:linear-gradient(180deg,#fbfdfb 0%,#f6faf7 100%);grid-template-columns:minmax(220px,1.5fr) repeat(3,minmax(125px,.75fr)) auto;gap:12px;align-items:end;}
+    .proof-filter-row .barangay-proof-filter{display:none;}
+    body.role-admin .proof-filter-row .barangay-proof-filter{display:block;}
+    body.role-admin .proof-filter-row{grid-template-columns:minmax(165px,.9fr) minmax(220px,1.4fr) repeat(3,minmax(120px,.72fr)) auto;}
+    .proof-filter-row .filter-label{font-size:.82rem;color:#5d6861;margin-bottom:4px;font-weight:800;}
     .file-input-wrapper{position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
     .file-label{display:inline-flex;align-items:center;gap:6px;background:#f8fbf9;border:1.5px solid #dce5df;border-radius:9px;padding:10px 16px;font-size:.92rem;font-weight:600;color:#1A4530;cursor:pointer;transition:background .2s ease,border-color .2s ease;}
     .file-label:hover{background:#e8f5eb;border-color:#3D8C62;}
     .file-input-wrapper input[type=file]{display:none;}
     .file-selected{font-size:.82rem;color:#7d8780;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .table-wrap{overflow-x:auto;}
-    table{width:100%;border-collapse:collapse;table-layout:fixed;}
-    col.col-details{width:26%;}
-    col.col-amount{width:16%;}
-    col.col-proof{width:18%;}
-    col.col-status{width:14%;}
-    col.col-actions{width:26%;}
+    .table-wrap{overflow-x:auto;scrollbar-color:#b8c9bd transparent;scrollbar-width:thin;}
+    table{width:100%;min-width:980px;border-collapse:collapse;table-layout:fixed;}
+    col.col-select{width:4%;} col.col-details{width:25%;} col.col-category{width:11%;} col.col-date{width:11%;}
+    col.col-amount{width:12%;} col.col-proof{width:13%;} col.col-status{width:10%;} col.col-actions{width:14%;}
     th{background:#1A4530;color:white;text-align:left;font-size:.8rem;padding:11px 10px;white-space:nowrap;}
-    td{padding:12px 10px;border-bottom:1px solid #edf2ee;font-size:.88rem;color:#46524a;vertical-align:middle;}
+    td{padding:14px 10px;border-bottom:1px solid #edf2ee;font-size:.88rem;color:#46524a;vertical-align:middle;}
+    tbody tr{transition:background .16s ease;}
+    tbody tr:hover{background:#f4fbf6;}
     .badge{display:inline-flex;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800;}
     .badge-ok{background:#D5F5E3;color:#1E8449;}
     .badge-draft{background:#FEF9E7;color:#B7950B;}
-    .proof-title{font-weight:900;color:#1A4530;margin-bottom:0;line-height:1.3;}
+    .proof-title{font-weight:900;color:#1A4530;margin-bottom:0;line-height:1.3;font-size:1.05rem;}
     .proof-desc{font-size:.78rem;color:#7d8780;line-height:1.45;max-width:320px;}
+    .proof-details{min-width:0;}
+    .proof-detail-row{font-size:.78rem;color:#5d6861;line-height:1.45;margin-top:3px;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .proof-detail-label{font-weight:700;color:#3a4742;}
     .proof-files{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
     .proof-file-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid #dce5df;background:#f8fbf9;color:#1A4530;border-radius:999px;padding:4px 9px;font-size:.74rem;font-weight:800;}
     .file-count{font-size:.76rem;color:#7d8780;font-weight:700;}
     .amount{font-weight:900;color:#1A4530;white-space:nowrap;}
     .action-row{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;}
     .action-row .btn-sm{padding-left:10px!important;padding-right:10px!important;}
-    .icon-delete{width:28px!important;min-width:28px!important;height:32px!important;min-height:32px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#C0392B!important;font-size:1.35rem!important;font-weight:900!important;line-height:1!important;align-items:center!important;justify-content:center!important;}
-    .icon-delete:hover{background:transparent!important;color:#922B21!important;transform:none!important;}
+    .proof-menu{position:relative;display:inline-block;}
+    .proof-menu-trigger{width:34px;height:32px;padding:0!important;font-size:1.2rem!important;line-height:1!important;}
+    .proof-menu-list{position:absolute;right:0;top:calc(100% + 5px);z-index:40;display:none;min-width:155px;padding:6px;background:#fff;border:1px solid #dce5df;border-radius:9px;box-shadow:0 10px 24px rgba(15,42,30,.16);}
+    .proof-menu.open .proof-menu-list{display:block;}
+    .proof-menu-list button{display:block;width:100%;border:0;border-radius:6px;background:transparent;padding:8px 10px;text-align:left;color:#33443a;cursor:pointer;font:700 .8rem inherit;}
+    .proof-menu-list button:hover{background:#eaf7ef;color:#1A4530;}.proof-menu-list .menu-danger{color:#C0392B;}.proof-menu-list .menu-warning{color:#9A7500;}
+    .proof-thumb-stack{display:flex;align-items:center;gap:4px;}.proof-thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;border:1px solid #dce5df;background:#f8fbf9;}
+    .proof-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;border-top:1px solid #edf2ee;flex-wrap:wrap;background:#fcfdfc;}.proof-pagination span{font-size:.8rem;color:#738078;font-weight:700;}.proof-pagination-controls{display:flex;gap:6px;}
+    .proof-bulk-tools{display:none;align-items:center;gap:8px;padding:11px 22px;border-bottom:1px solid #eadfb9;background:#fff9e9;color:#6b5714;}.proof-bulk-tools.show{display:flex;}.proof-bulk-tools #proofBulkCount{margin-right:2px;font-size:.84rem;font-weight:900;}.proof-check{width:17px;height:17px;accent-color:#3D8C62;}
+    #proofSelectionHead,.proof-selection-cell{display:none;}
+    .table-wrap.proof-selection-mode #proofSelectionHead,.table-wrap.proof-selection-mode .proof-selection-cell{display:table-cell;}
+    .table-wrap:not(.proof-selection-mode) .col-select{display:none;}
+    .proof-selection-target{background:#E2F4E8!important;}
+    @media(max-width:1080px){.proof-filter-row,body.role-admin .proof-filter-row{grid-template-columns:repeat(3,minmax(0,1fr));}.proof-filter-row .btn{justify-self:start;}}
+    @media(max-width:680px){.page-intro{align-items:flex-start;flex-direction:column;}.proof-filter-row,body.role-admin .proof-filter-row{grid-template-columns:1fr;}.proof-pagination{align-items:flex-start;flex-direction:column;}.proof-bulk-tools{align-items:flex-start;flex-wrap:wrap;}.card-header{padding:16px 18px;}.proof-filter-row{padding:14px 18px;}}
     .alert{padding:11px 15px;border-radius:8px;margin-bottom:14px;font-size:.92rem;}
     .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
     .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
@@ -106,10 +133,19 @@
     .modal-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:200;}
     .modal-backdrop.show{display:flex;}
     .modal{width:min(100%,600px);background:#fff;border-radius:12px;border:1px solid #dfe7df;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden;}
+    .form-modal{width:min(100%,760px);max-height:92vh;display:flex;flex-direction:column;}
     .modal-header{padding:18px 22px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:12px;}
     .modal-header h3{font-size:1.05rem;color:#1A4530;margin:0;font-weight:800;}
     .modal-close{width:34px;height:34px;border:none;border-radius:8px;background:#f1f4f1;color:#1A4530;font-size:1.35rem;line-height:1;cursor:pointer;}
     .modal-body{padding:20px 22px;}
+    .archive-inventory-modal{width:min(1120px,96vw);height:min(76vh,680px);min-height:540px;max-height:90vh;display:flex;flex-direction:column;}
+    .archive-inventory-body{flex:1;min-height:0;overflow:auto;}
+    .archive-inventory-table{min-width:900px;}
+    .archive-inventory-table th{background:#334155;}
+    .archive-inventory-actions,.archive-actions{display:flex;gap:6px;align-items:center;white-space:nowrap;}
+    .archive-inventory-body .table-wrap{min-height:100%;}
+    .archive-inventory-body .empty{height:420px;vertical-align:middle;}
+    .form-modal .modal-body{overflow-y:auto;}
     .album-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px;}
     .album-item{border:1px solid #dce5df;border-radius:10px;background:#f8fbf9;overflow:hidden;min-height:120px;display:flex;align-items:center;justify-content:center;color:#1A4530;font-weight:900;text-decoration:none;}
     .album-item img{width:100%;height:150px;object-fit:cover;display:block;}
@@ -155,6 +191,7 @@
     .doc-select-meta{display:block;font-size:.78rem;color:#7d8780;}
     .doc-select-empty{text-align:center;padding:26px;color:#8a948d;background:#f8fbf9;border:1px dashed #dce5df;border-radius:9px;}
     .proof-doc-ref{font-size:.74rem;color:#7d8780;margin-top:2px;display:inline-flex;align-items:center;gap:4px;}
+    @media(max-height:650px){.archive-inventory-modal{height:calc(100vh - 40px);min-height:0;}.archive-inventory-body .empty{height:260px;}}
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
   <script src="../../js/public-theme.js" defer></script>
@@ -176,14 +213,15 @@
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
-      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" class="active" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Manage Accomplishments</span></a>
-      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Post Announcements</span></a>
       <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
       <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
-      <a href="../../index.html#fund-usage" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Fund View</span></a>
+      <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+      <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
     <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
   </aside>
@@ -191,32 +229,36 @@
   <div class="admin-main">
     <div class="topbar">
       <div class="topbar-left">
-        <h2>Manage</h2>
-        <select id="barangaySelector" class="barangay-select"></select>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="btn btn-secondary btn-sm" id="archiveToggleBtn" onclick="toggleArchiveView()" style="display:none;">Archives</button>
-        
-        <button class="btn-logout" id="logoutBtn">Log Out</button>
+        <h2 id="proofPageTitle">Published Accomplishments</h2>
       </div>
     </div>
 
     <main class="content">
       <div id="alertBox"></div>
 
-      <section class="stat-grid">
+      <section class="page-intro" aria-labelledby="pageTitle">
+        <div>
+          <h1 id="pageTitle">Accomplishment records</h1>
+          <p>Organize completed SK projects, attach proof files, and decide which accomplishments are published for the community.</p>
+        </div>
+        <span class="page-intro-note">Records with proof</span>
+      </section>
+
+      <section class="stat-grid soft-stat-cards">
         <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total proof records</div></div>
         <div class="stat-card"><div class="stat-num" id="statPublished">0</div><div class="stat-label">Visible on homepage</div></div>
         <div class="stat-card gold"><div class="stat-num" id="statDraft">0</div><div class="stat-label">Draft proof records</div></div>
         <div class="stat-card red"><div class="stat-num" id="statAmount">₱0</div><div class="stat-label">Published amount with proof</div></div>
       </section>
 
-      <section class="grid">
-        <div class="card" id="uploadCard">
-          <div class="card-header">
-            <div><h3>Submit Accomplishment</h3><div class="card-sub">Upload a receipt, photos, or documents as one proof album</div></div>
+      <section class="grid read-only">
+        <div class="modal-backdrop" id="accomplishmentModal" aria-hidden="true">
+          <div class="modal form-modal" role="dialog" aria-modal="true" aria-labelledby="accomplishmentModalTitle">
+          <div class="modal-header">
+            <div><h3 id="accomplishmentModalTitle">Submit Accomplishment</h3><div class="card-sub">Upload a receipt, photos, or documents as one proof album</div></div>
+            <button type="button" class="modal-close" onclick="setAccomplishmentFormVisible(false)" aria-label="Close">&times;</button>
           </div>
-          <div class="card-body">
+          <div class="modal-body" id="accomplishmentFormBody">
             <form id="proofForm">
               <div class="form-section">
                 <div class="section-title">Basic Information</div>
@@ -292,21 +334,41 @@
               </div>
 
               <div class="form-divider"></div>
-              <button class="btn btn-primary" id="submitBtn" type="submit">Upload Proof</button>
+              <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
+                <button type="button" class="btn btn-secondary" onclick="setAccomplishmentFormVisible(false)">Cancel</button>
+                <button class="btn btn-primary" id="submitBtn" type="submit">Upload Proof</button>
+              </div>
             </form>
+          </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
             <div><h3 id="proofTableTitle">Manage Proofs</h3><div class="card-sub" id="proofTableSub">Publish records to make them visible on the homepage</div></div>
-            <span id="proofCount" style="font-size:.84rem;color:#7d8780;"></span>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <button type="button" class="btn btn-primary" id="addAccomplishmentBtn" onclick="toggleAccomplishmentForm()" aria-expanded="false" style="display:none;">+ Add Accomplishment</button>
+              <button type="button" class="btn btn-warning btn-sm" id="archiveToggleBtn" onclick="openArchiveInventory()" style="display:none;">Archives</button>
+              <span id="proofCount" style="font-size:.84rem;color:#7d8780;"></span>
+            </div>
           </div>
+          <div class="proof-filter-row">
+            <div class="barangay-proof-filter">
+              <div class="filter-label">Barangay</div>
+              <select id="barangaySelector" class="barangay-select"></select>
+            </div>
+            <div><div class="filter-label">Search</div><input id="proofSearch" type="search" placeholder="Search accomplishment..."/></div>
+            <select id="proofStatus" hidden aria-hidden="true" tabindex="-1"><option value="">All statuses</option><option value="published">Published</option><option value="draft">Draft</option><option value="requested">Requested</option></select>
+            <div><div class="filter-label">Fiscal Year</div><select id="proofYear"><option value="">All years</option></select></div>
+            <div><div class="filter-label">Category</div><select id="proofCategory"><option value="">All categories</option></select></div>
+            <button type="button" class="btn btn-secondary btn-sm" id="clearProofFilters" onclick="clearProofFilters()" hidden>Clear Filters</button>
+          </div>
+          <div class="proof-bulk-tools" id="proofBulkTools"><span id="proofBulkCount"></span><button type="button" class="btn btn-danger btn-sm" onclick="bulkArchiveProofs()">Archive selected</button><button type="button" class="btn btn-secondary btn-sm" onclick="clearProofSelection()">Clear</button></div>
           <div class="table-wrap">
             <table>
-              <colgroup><col class="col-details"><col class="col-amount"><col class="col-proof"><col class="col-status"><col class="col-actions"></colgroup>
-              <thead><tr><th>Expense Details</th><th>Amount</th><th>Proof Album</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody id="proofRows"><tr><td colspan="5" class="empty">Loading proof records...</td></tr></tbody>
+              <colgroup><col class="col-select"><col class="col-details"><col class="col-category"><col class="col-date"><col class="col-amount"><col class="col-proof"><col class="col-status"><col class="col-actions"></colgroup>
+              <thead><tr><th id="proofSelectionHead"><input id="selectAllProofs" class="proof-check" type="checkbox" aria-label="Select visible accomplishments" onchange="toggleSelectAllProofs(this)"></th><th>Accomplishment</th><th>Category</th><th>Date</th><th>Budget</th><th>Proofs</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="proofRows"><tr><td colspan="8" class="empty">Loading proof records...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -324,6 +386,36 @@
           </div>
         </div>
       </div>
+
+  <!-- Archive Inventory Modal -->
+  <div class="modal-backdrop" id="archiveInventoryModal" aria-hidden="true" onclick="if(event.target===this) closeArchiveInventory()">
+    <div class="modal archive-inventory-modal" role="dialog" aria-modal="true" aria-labelledby="archiveInventoryTitle">
+      <div class="modal-header">
+        <div><h3 id="archiveInventoryTitle">Accomplishment Archive Inventory</h3><small>Archived records can be restored or deleted permanently.</small></div>
+        <button type="button" class="modal-close" onclick="closeArchiveInventory()" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body archive-inventory-body">
+        <div class="table-wrap">
+          <table class="archive-inventory-table">
+            <thead><tr><th>Expense Details</th><th><div class="input-group">
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-secondary dropdown-toggle" aria-label="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
+                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">Toggle Dropdown</span></button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item disabled" href="#">Disabled action</a>
+                <div role="separator" class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+              </span>
+              <input type="text" class="form-control" name="name" id="name" placeholder="" aria-label="">
+            </div></th><th>Barangay</th><th>FY / Period</th><th>Archived</th><th>Actions</th></tr></thead>
+            <tbody id="archiveInventoryBody"><tr><td colspan="6" class="empty">Loading archived accomplishments...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Document Selector Modal -->
   <div class="modal-backdrop" id="docSelectModal" aria-hidden="true">
@@ -351,7 +443,11 @@
 var API = window.location.origin + '/api';
 var currentUser = null;
 var proofs = [];
+var archivedProofs = [];
 var showingArchived = false;
+var proofView = (new URLSearchParams(window.location.search).get('view') || 'published').toLowerCase();
+if (!['published','requested'].includes(proofView)) proofView = 'published';
+var selectedProofIds = {};
 
 function money(value) {
   return '₱' + Number(value || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -362,6 +458,13 @@ function escapeHtml(value) {
 function fmt(value) {
   if (!value) return '-';
   return new Date(value).toLocaleDateString('en-PH', {year:'numeric', month:'short', day:'numeric'});
+}
+function fmtDate(value) {
+  return fmt(value);
+}
+function detailRow(label, value) {
+  if (!value) return '';
+  return '<div class="proof-detail-row"><span class="proof-detail-label">' + escapeHtml(label) + ':</span> <span class="proof-detail-value">' + escapeHtml(value) + '</span></div>';
 }
 function fileTypeLabel(file) {
   return String((file && file.type) || 'file').toUpperCase();
@@ -442,8 +545,11 @@ window.addEventListener('load', init);
 async function init() {
   currentUser = await window.SkFDMS.requireLogin();
   if (!currentUser) return;
+  document.body.classList.add('role-' + String(currentUser.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
   document.getElementById('sName').textContent = currentUser.name;
   document.getElementById('sRole').textContent = currentUser.role;
+   window.SkBarangay.renderSidebarUser(currentUser);
+   window.SkBarangay.updateSidebarLogo(currentUser.role);
   await window.SkBarangay.init(currentUser);
   setBarangayUI();
   initAmountInput();
@@ -451,7 +557,9 @@ async function init() {
   initFileInput();
   applyRoleVisibility();
   applyFundProofAccess();
-
+  if (canSubmitProofs() && !isAdmin()) {
+    document.getElementById('addAccomplishmentBtn').style.display = 'inline-flex';
+  }
   if (currentUser.role === 'admin' || ['chairperson', 'treasurer'].includes(currentUser.role)) {
     document.getElementById('archiveToggleBtn').style.display = 'inline-flex';
   }
@@ -463,10 +571,12 @@ async function init() {
     });
   }
 
-  if (canManageProofs()) {  
-    document.getElementById('proofForm').addEventListener('submit', uploadProof);
+  if (canManageProofs() && !isAdmin()) {
+    var pf = document.getElementById('proofForm');
+    if (pf) pf.addEventListener('submit', uploadProof);
   }
 
+  setProofView(proofView, false);
   await loadProofs();
 }
 
@@ -479,7 +589,7 @@ function setBarangayUI() {
   var titleElem = document.querySelector('.topbar-left h2');
   if (titleElem) {
     titleElem.textContent = currentUser.role === 'admin'
-      ? (isAllBarangays ? 'Accomplishments' : 'Accomplishments - Brgy. ' + name)
+      ? (proofView === 'requested' ? 'Requested Accomplishments' : 'Published Accomplishments')
       : 'Accomplishment';
   }
 
@@ -516,10 +626,38 @@ function canManageProofs() {
   return ['admin','chairperson','treasurer'].includes(currentUser.role);
 }
 
+function isAdmin() {
+  return currentUser.role === 'admin';
+}
+
+function setAccomplishmentFormVisible(isVisible) {
+  var modal = document.getElementById('accomplishmentModal');
+  var btn = document.getElementById('addAccomplishmentBtn');
+  if (!modal || !btn) return;
+  modal.classList.toggle('show', isVisible);
+  modal.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+  btn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+}
+
+function toggleAccomplishmentForm() {
+  var modal = document.getElementById('accomplishmentModal');
+  if (!modal) return;
+  setAccomplishmentFormVisible(!modal.classList.contains('show'));
+}
+
 function applyFundProofAccess() {
   if (canSubmitProofs()) return;
 
-  document.getElementById('uploadCard').style.display = 'none';
+  // Completely remove "Add Accomplishment" button and modal for non-chairperson / SK Fed admin
+  if (isAdmin()) {
+    var addBtn = document.getElementById('addAccomplishmentBtn');
+    if (addBtn) addBtn.remove();
+    var accomplModal = document.getElementById('accomplishmentModal');
+    if (accomplModal) accomplModal.remove();
+  } else {
+    document.getElementById('addAccomplishmentBtn').style.display = 'none';
+  }
+
   document.querySelector('.grid').classList.add('read-only');
   if (currentUser.role === 'admin') {
     setBarangayUI();
@@ -585,6 +723,7 @@ async function uploadProof(event) {
     document.getElementById('selected_document_ids').value = '[]';
     document.getElementById('selectedDocInfo').textContent = 'No document selected';
     initFiscalYear();
+    setAccomplishmentFormVisible(false);
     await loadProofs();
   } catch (err) {
     showAlert(err.message || 'Upload failed.', 'danger');
@@ -593,76 +732,178 @@ async function uploadProof(event) {
   btn.textContent = 'Upload Proof';
 }
 
+function populateProofFilters() {
+  // Keep the same filter choices available in both Published and Requested views,
+  // including years/categories that do not yet have a record in the current view.
+  var fiscalYears = [2023, 2024, 2025, 2026];
+  var expenseCategories = [
+    'Sports Development',
+    'Education / Training',
+    'Health',
+    'Environment',
+    'Livelihood',
+    'Supplies / Materials',
+    'Other SK Project'
+  ];
+  var years = Array.from(new Set(fiscalYears.concat(proofs.map(function(item){ return item.fiscal_year; }).filter(Boolean)))).sort(function(a,b){ return b-a; });
+  var categories = Array.from(new Set(expenseCategories.concat(proofs.map(function(item){ return item.expense_category; }).filter(Boolean)))).sort();
+  var year = document.getElementById('proofYear'), category = document.getElementById('proofCategory');
+  var selectedYear = year.value, selectedCategory = category.value;
+  year.innerHTML = '<option value="">All years</option>' + years.map(function(value){ return '<option value="'+escapeHtml(value)+'">'+escapeHtml(value)+'</option>'; }).join('');
+  category.innerHTML = '<option value="">All categories</option>' + categories.map(function(value){ return '<option value="'+escapeHtml(value)+'">'+escapeHtml(value)+'</option>'; }).join('');
+  year.value = selectedYear; category.value = selectedCategory;
+}
+
+function filteredProofs() {
+  var search = document.getElementById('proofSearch').value.trim().toLowerCase();
+  var status = document.getElementById('proofStatus').value;
+  var year = document.getElementById('proofYear').value;
+  var category = document.getElementById('proofCategory').value;
+  document.getElementById('clearProofFilters').hidden = !(search || year || category);
+  return proofs.filter(function(item){
+    var requested=toBool(item.publish_requested), published=toBool(item.is_published);
+    var statusMatch=!status || (status==='published' && published) || (status==='requested' && !published && requested) || (status==='draft' && !published && !requested);
+    var text=[item.title,item.expense_category,item.purpose,item.payee].join(' ').toLowerCase();
+    return (!search || text.includes(search)) && (!year || String(item.fiscal_year)===year) && (!category || item.expense_category===category) && statusMatch;
+  });
+}
+
+function clearProofFilters(){ ['proofSearch','proofYear','proofCategory'].forEach(function(id){ document.getElementById(id).value=''; }); renderProofs(); }
+
+function setProofView(view, shouldRender) {
+  proofView = view === 'requested' ? 'requested' : 'published';
+  showingArchived = false;
+  var status = document.getElementById('proofStatus');
+  // SKFED admin uses the Published / Requested navigation views. A
+  // chairperson's "My Submitted Accomplishments" view must include drafts as
+  // well: newly uploaded proofs start as drafts until publication is
+  // requested and approved.
+  if (status) status.value = isAdmin() ? proofView : '';
+  var title = document.getElementById('proofPageTitle');
+  if (title) title.textContent = proofView === 'requested' ? 'Requested Accomplishments' : 'Published Accomplishments';
+  if (currentUser) setBarangayUI();
+  if (shouldRender) renderProofs();
+}
+
 function renderProofs() {
+  populateProofFilters();
   var published = proofs.filter(function(item){ return toBool(item.is_published); });
   var publishedAmount = published.reduce(function(sum, item){ return sum + Number(item.amount || 0); }, 0);
   document.getElementById('statTotal').textContent = proofs.length;
   document.getElementById('statPublished').textContent = published.length;
   document.getElementById('statDraft').textContent = proofs.length - published.length;
   document.getElementById('statAmount').textContent = money(publishedAmount);
-  document.getElementById('proofCount').textContent = proofs.length + ' record' + (proofs.length === 1 ? '' : 's');
+  var filtered = filteredProofs();
+  var pageItems = filtered;
+  document.getElementById('proofCount').textContent = filtered.length + ' record' + (filtered.length === 1 ? '' : 's');
 
-  if (!proofs.length) {
+  if (!filtered.length) {
     var emptyText = showingArchived
       ? 'No archived records.'
-      : canSubmitProofs()
-      ? 'No proof records yet. Upload the first receipt or proof file.'
       : (currentUser.role === 'admin' && window.SkBarangay.getSelectedBarangayId() === 'all'
         ? 'No proof records uploaded by any barangay yet.'
-        : 'No proof records uploaded for this barangay yet.');
-    document.getElementById('proofRows').innerHTML = '<tr><td colspan="5" class="empty">' + emptyText + '</td></tr>';
+        : (currentUser.role === 'admin'
+          ? 'No proof records uploaded for this barangay yet.'
+          : (canSubmitProofs()
+            ? 'No proof records yet. Upload the first receipt or proof file.'
+            : 'No proof records uploaded yet.')));
+    document.getElementById('proofRows').innerHTML = '<tr><td colspan="8" class="empty">' + emptyText + '</td></tr>';
     return;
   }
 
   var canManage = canManageProofs();
   var isAdmin = currentUser && currentUser.role === 'admin';
-  document.getElementById('proofRows').innerHTML = proofs.map(function(item) {
+  document.getElementById('proofRows').innerHTML = pageItems.map(function(item) {
     var isPublished = toBool(item.is_published);
     var isRequested = toBool(item.publish_requested);
     var files = proofFiles(item);
-    var fileChips = files.slice(0, 3).map(function(file) {
-      return '<span class="proof-file-chip">' + fileTypeLabel(file) + '</span>';
-    }).join('');
-    if (files.length > 3) fileChips += '<span class="file-count">+' + (files.length - 3) + ' more</span>';
-
-    var actions = '<button class="btn btn-secondary btn-sm" onclick="previewProof(' + item.id + ')">' + (showingArchived ? 'View' : 'Preview') + '</button>';
+    var menuItems = '';
     if (canManage) {
       if (showingArchived) {
         if (isAdmin || ['chairperson', 'treasurer'].includes(currentUser.role)) {
-          actions += '<button class="btn btn-success btn-sm" id="restore-proof-' + item.id + '" onclick="restoreProof(' + item.id + ')">Restore</button>';
-          actions += '<button class="icon-delete" id="delete-proof-' + item.id + '" title="Delete" aria-label="Delete proof" onclick="deleteProof(' + item.id + ',\'' + escapeHtml(item.title).replace(/'/g,'&#39;') + '\')">&times;</button>';
+          menuItems += '<button type="button" id="restore-proof-' + item.id + '" onclick="restoreProof(' + item.id + ')">Restore</button>';
+          menuItems += '<button type="button" class="menu-danger" id="delete-proof-' + item.id + '" onclick="deleteProof(' + item.id + ')">Delete permanently</button>';
         }
       } else if (isAdmin) {
-        actions += '<button class="btn ' + (isPublished ? 'btn-warning' : 'btn-success') + ' btn-sm" id="pub-proof-' + item.id + '" onclick="togglePublish(' + item.id + ')">' + (isPublished ? 'Unpublish' : 'Publish') + '</button>';
-        actions += '<button class="btn btn-danger btn-sm" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ',\'' + escapeHtml(item.title).replace(/'/g,'&#39;') + '\')">Archive</button>';
+        menuItems += '<button type="button" class="' + (isPublished ? 'menu-warning' : '') + '" id="pub-proof-' + item.id + '" onclick="togglePublish(' + item.id + ')">' + (isPublished ? 'Unpublish' : 'Publish') + '</button>';
+        menuItems += '<button type="button" class="menu-danger" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ')">Archive</button>';
       } else {
-          if (!isPublished && !isRequested) {
-            actions += '<button class="btn btn-success btn-sm" id="pub-proof-'+item.id+'" onclick="requestPublish('+item.id+')">Request</button>';
-          }
+          if (!isPublished && !isRequested && currentUser.role === 'chairperson') menuItems += '<button type="button" id="pub-proof-'+item.id+'" onclick="requestPublish('+item.id+')">Request publication</button>';
           if (['chairperson', 'treasurer'].includes(currentUser.role)) {
-            actions += '<button class="btn btn-danger btn-sm" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ',\'' + escapeHtml(item.title).replace(/'/g,'&#39;') + '\')">Archive</button>';
+            menuItems += '<button type="button" class="menu-danger" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ')">Archive</button>';
           }
         }
     }
-    return '<tr>'
-      + '<td><div class="proof-title">' + escapeHtml(item.title) + '</div>' + connectedDocumentsHtml(item) + '</td>'
+    var actions = '<button class="btn btn-primary btn-sm" onclick="previewProof(' + item.id + ')">Preview</button><div class="proof-menu"><button class="btn btn-secondary btn-sm proof-menu-trigger" type="button" onclick="toggleProofMenu(this,event)" aria-label="More actions" aria-expanded="false">&#8942;</button><div class="proof-menu-list">'+menuItems+'</div></div>';
+    return '<tr ondblclick="toggleProofSelectionMode(this,event)">'
+      + '<td class="proof-selection-cell"><input class="proof-check proof-row-check" type="checkbox" value="'+item.id+'" '+(selectedProofIds[item.id] ? 'checked' : '')+' onchange="updateProofSelection()"></td>'
+      + '<td><div class="proof-title">' + escapeHtml(item.title) + '</div></td>'
+      + '<td><span class="badge badge-draft">' + escapeHtml(item.expense_category || 'Uncategorized') + '</span></td>'
+      + '<td>' + fmtDate(item.spent_at || item.created_at) + '<br><span class="file-count">FY ' + escapeHtml(item.fiscal_year || '-') + '</span></td>'
       + '<td><span class="amount">' + money(item.amount) + '</span></td>'
-      + '<td><div class="proof-files">' + fileChips + '</div></td>'
+      + '<td><div class="proof-thumb-stack">' + files.slice(0,2).map(function(file,index){ return file.is_image ? '<img class="proof-thumb" src="'+API+'/fund-proofs/'+item.id+'/download?preview=1&file='+index+'" alt="">' : '<span class="proof-file-chip">'+fileTypeLabel(file)+'</span>'; }).join('') + '<span class="file-count">'+files.length+' file'+(files.length===1?'':'s')+'</span></div></td>'
       + '<td><span class="badge ' + (showingArchived ? 'badge-draft' : (isPublished ? 'badge-ok' : 'badge-draft')) + '">' + (showingArchived ? 'Archived' : (isPublished ? 'Published' : (isRequested ? 'Requested' : 'Draft'))) + '</span></td>'
       + '<td><div class="action-row">' + actions + '</div></td>'
     + '</tr>';
   }).join('');
+  updateProofSelection();
+}
+
+function toggleProofMenu(trigger,event){ event.stopPropagation(); var menu=trigger.closest('.proof-menu'); var open=!menu.classList.contains('open'); closeProofMenus(); menu.classList.toggle('open',open); trigger.setAttribute('aria-expanded',open?'true':'false'); }
+function closeProofMenus(){ document.querySelectorAll('.proof-menu.open').forEach(function(menu){ menu.classList.remove('open'); var trigger=menu.querySelector('.proof-menu-trigger'); if(trigger) trigger.setAttribute('aria-expanded','false'); }); }
+document.addEventListener('click',closeProofMenus);
+
+function updateProofSelection(){
+  selectedProofIds={};
+  document.querySelectorAll('.proof-row-check:checked').forEach(function(check){ selectedProofIds[check.value]=true; });
+  var count=Object.keys(selectedProofIds).length, tools=document.getElementById('proofBulkTools');
+  tools.classList.toggle('show', count>0 && canManageProofs());
+  document.getElementById('proofBulkCount').textContent=count+' selected';
+  document.querySelectorAll('.proof-row-check').forEach(function(check){
+    var row=check.closest('tr');
+    if(row) row.classList.toggle('proof-selection-target',check.checked);
+  });
+  var tableWrap=document.querySelector('#proofRows').closest('.table-wrap');
+  if(tableWrap) tableWrap.classList.toggle('proof-selection-mode',count>0);
+  var rows=document.querySelectorAll('.proof-row-check'), all=document.getElementById('selectAllProofs');
+  if(all){all.checked=rows.length>0 && count===rows.length;all.indeterminate=count>0&&count<rows.length;}
+}
+function toggleSelectAllProofs(control){ document.querySelectorAll('.proof-row-check').forEach(function(check){check.checked=control.checked;}); updateProofSelection(); }
+function clearProofSelection(){ document.querySelectorAll('.proof-row-check').forEach(function(check){check.checked=false;}); var tableWrap=document.querySelector('#proofRows').closest('.table-wrap'); if(tableWrap) tableWrap.classList.remove('proof-selection-mode'); updateProofSelection(); }
+function toggleProofSelectionMode(row,event){
+  if(!canManageProofs() || (event && event.target.closest('button,a,input,label'))) return;
+  var tableWrap=row.closest('.table-wrap');
+  if(!tableWrap) return;
+  var isActive=tableWrap.classList.contains('proof-selection-mode') && row.classList.contains('proof-selection-target');
+  clearProofSelection();
+  if(isActive) return;
+  tableWrap.classList.add('proof-selection-mode');
+  var check=row.querySelector('.proof-row-check');
+  if(check) check.checked=true;
+  updateProofSelection();
+}
+async function bulkArchiveProofs(){
+  var ids=Object.keys(selectedProofIds); if(!ids.length || !confirm('Archive '+ids.length+' selected accomplishment(s)? They will be removed from the public site.')) return;
+  for(var i=0;i<ids.length;i++){ var res=await fetch(proofActionUrl(ids[i],'/archive'),{method:'PATCH',credentials:'include'}); if(!res.ok) { showAlert('Some selected accomplishments could not be archived.','danger'); break; } }
+  clearProofSelection(); await loadProofs();
 }
 function proofActionUrl(id, action) {
   var url = API + '/admin/fund-proofs/' + id + (action || '');
   if (currentUser.role === 'admin') {
-    var proof = proofs.find(function(item) { return Number(item.id) === Number(id); });
+    var proof = getProofById(id);
     var barangayId = proof && proof.barangay_id ? proof.barangay_id : window.SkBarangay.getSelectedBarangayId();
     url += '?barangay_id=' + encodeURIComponent(barangayId);
   }
+
+  ['proofSearch','proofStatus','proofYear','proofCategory'].forEach(function(id){
+    var field=document.getElementById(id);
+    if(field) field.addEventListener(id === 'proofSearch' ? 'input' : 'change', renderProofs);
+  });
   return url;
 }
 async function togglePublish(id) {
+  var proof = getProofById(id);
+  if (proof && toBool(proof.is_published) && !confirm('Unpublish "' + (proof.title || 'this accomplishment') + '"? It will no longer be visible on the public site.')) return;
   var btn = document.getElementById('pub-proof-' + id);
   if (btn) {
     btn.disabled = true;
@@ -690,61 +931,107 @@ async function togglePublish(id) {
 }
 
 async function requestPublish(id) {
+  var btn = document.getElementById('pub-proof-' + id);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Requesting...';
+  }
   var url = proofActionUrl(id, '/publish');
-  var res = await fetch(url, { method:'PATCH', credentials:'include' });
-  var data = await res.json();
-  if (res.ok && data.success) {
-    showAlert(data.message || 'Publish request submitted.', 'success');
-    await loadProofs();
-  } else {
-    showAlert(data.message || 'Failed to submit publish request.', 'danger');
+  try {
+    var res = await fetch(url, { method:'PATCH', credentials:'include' });
+    var data = await res.json();
+    if (res.ok && data.success) {
+      proofs = proofs.map(function(proof) {
+        if (Number(proof.id) === Number(id)) {
+          proof.is_published = false;
+          proof.publish_requested = true;
+        }
+        return proof;
+      });
+      renderProofs();
+      showAlert(data.message || 'Publish request submitted.', 'success');
+    } else {
+      showAlert(data.message || 'Failed to submit publish request.', 'danger');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Request';
+      }
+    }
+  } catch (err) {
+    showAlert(err.message || 'Failed to submit publish request.', 'danger');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Request';
+    }
   }
 }
 
-async function archiveProof(id, title) {
+async function archiveProof(id) {
+  var proof = getProofById(id);
+  var title = proof ? proof.title : 'this proof';
   if (!confirm('Archive proof "' + title + '"? This will move it to Archive Inventory and remove it from the public site.')) return;
   var btn = document.getElementById('archive-proof-' + id);
   if (btn) { btn.disabled = true; btn.textContent = 'Archiving...'; }
-  var res = await fetch(proofActionUrl(id, '/archive'), { method:'PATCH', credentials:'include' });
-  var data = await res.json();
-  if (res.ok && data.success) {
-    showAlert(data.message || 'Proof archived successfully.', 'success');
-    await loadProofs();
-  } else {
-    showAlert(data.message || 'Unable to archive proof.', 'danger');
+  try {
+    var res = await fetch(proofActionUrl(id, '/archive'), { method:'PATCH', credentials:'include' });
+    var data = await res.json();
+    if (res.ok && data.success) {
+      showAlert(data.message || 'Proof archived successfully.', 'success');
+      await loadProofs();
+      refreshArchiveInventoryIfOpen();
+    } else {
+      showAlert(data.message || 'Unable to archive proof.', 'danger');
+      if (btn) { btn.disabled = false; btn.textContent = 'Archive'; }
+    }
+  } catch (err) {
+    showAlert(err.message || 'Unable to archive proof.', 'danger');
     if (btn) { btn.disabled = false; btn.textContent = 'Archive'; }
   }
 }
 
 async function restoreProof(id) {
-  var proof = proofs.find(function(item) { return Number(item.id) === Number(id); });
+  var proof = getProofById(id);
   var title = proof ? proof.title : 'this proof';
   if (!confirm('Restore proof "' + title + '" to the active list?')) return;
   var btn = document.getElementById('restore-proof-' + id);
   if (btn) { btn.disabled = true; btn.textContent = 'Restoring...'; }
-  var res = await fetch(proofActionUrl(id, '/restore'), { method:'PATCH', credentials:'include' });
-  var data = await res.json();
-  if (res.ok && data.success) {
-    showAlert(data.message || 'Proof restored successfully.', 'success');
-    await loadProofs();
-  } else {
-    showAlert(data.message || 'Unable to restore proof.', 'danger');
+  try {
+    var res = await fetch(proofActionUrl(id, '/restore'), { method:'PATCH', credentials:'include' });
+    var data = await res.json();
+    if (res.ok && data.success) {
+      showAlert(data.message || 'Proof restored successfully.', 'success');
+      await loadProofs();
+      refreshArchiveInventoryIfOpen();
+    } else {
+      showAlert(data.message || 'Unable to restore proof.', 'danger');
+      if (btn) { btn.disabled = false; btn.textContent = 'Restore'; }
+    }
+  } catch (err) {
+    showAlert(err.message || 'Unable to restore proof.', 'danger');
     if (btn) { btn.disabled = false; btn.textContent = 'Restore'; }
   }
 }
 
-async function deleteProof(id, title) {
+async function deleteProof(id) {
+  var proof = getProofById(id);
+  var title = proof ? proof.title : 'this proof';
   if (!confirm('Permanently delete proof "' + title + '"? This cannot be undone.')) return;
   var btn = document.getElementById('delete-proof-' + id);
   if (btn) { btn.disabled = true; btn.innerHTML = '&times;'; }
-  var res = await fetch(proofActionUrl(id, ''), { method:'DELETE', credentials:'include' });
-  var data = await res.json();
-  if (res.ok && data.success) {
-    showAlert(data.message || 'Proof deleted successfully.', 'success');
-    await loadProofs();
-  } else {
-    showAlert(data.message || 'Unable to delete proof.', 'danger');
-    if (btn) { btn.disabled = false; btn.innerHTML = '&times;'; }
+  try {
+    var res = await fetch(proofActionUrl(id, ''), { method:'DELETE', credentials:'include' });
+    var data = await res.json();
+    if (res.ok && data.success) {
+      showAlert(data.message || 'Proof deleted successfully.', 'success');
+      await loadProofs();
+      refreshArchiveInventoryIfOpen();
+    } else {
+      showAlert(data.message || 'Unable to delete proof.', 'danger');
+      if (btn) { btn.disabled = false; btn.textContent = 'Delete'; }
+    }
+  } catch (err) {
+    showAlert(err.message || 'Unable to delete proof.', 'danger');
+    if (btn) { btn.disabled = false; btn.textContent = 'Delete'; }
   }
 }
 
@@ -759,13 +1046,68 @@ async function toggleArchiveView() {
   await loadProofs();
 }
 
+function getProofById(id){
+  var n=Number(id);
+  var p=proofs.find(function(item){return Number(item.id)===n;});
+  if(p)return p;
+  return (archivedProofs||[]).find(function(item){return Number(item.id)===n;})||null;
+}
+function refreshArchiveInventoryIfOpen(){
+  var modal=document.getElementById('archiveInventoryModal');
+  if(modal&&modal.classList.contains('show')){loadArchiveInventory();}
+}
+function openArchiveInventory(){
+  var modal=document.getElementById('archiveInventoryModal');
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  loadArchiveInventory();
+}
+function closeArchiveInventory(){
+  var modal=document.getElementById('archiveInventoryModal');
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden','true');
+}
+async function loadArchiveInventory(){
+  var body=document.getElementById('archiveInventoryBody');
+  body.innerHTML='<tr><td colspan="6" class="empty">Loading archived accomplishments...</td></tr>';
+  try{
+    var url=API+'/admin/fund-proofs';
+    var qs=adminQs();
+    url=url+qs+(qs?'&':'?')+'archived=true';
+    var res=await fetch(url,{credentials:'include'});
+    var data=await res.json();
+    if(!res.ok||!data.success){body.innerHTML='<tr><td colspan="6" class="empty">'+escapeHtml(data.message||'Unable to load archived accomplishments.')+'</td></tr>';return;}
+    archivedProofs=data.data||[];
+    renderArchiveInventory(archivedProofs);
+  }catch(err){body.innerHTML='<tr><td colspan="6" class="empty">Unable to load archived accomplishments.</td></tr>';}
+}
+function renderArchiveInventory(items){
+  var body=document.getElementById('archiveInventoryBody');
+  if(!items.length){body.innerHTML='<tr><td colspan="6" class="empty">No archived accomplishments.</td></tr>';return;}
+  body.innerHTML=items.map(function(item){
+    var archivedBy=item.archived_by_name?'<br><span style="font-size:.76rem;color:#64748B;">by '+escapeHtml(item.archived_by_name)+'</span>':'';
+    return '<tr>'
+      +'<td><div class="proof-details"><div class="proof-title">'+escapeHtml(item.title)+'</div>'+connectedDocumentsHtml(item)+detailRow('Purpose',item.purpose)+detailRow('Category',item.expense_category)+detailRow('Payee',item.payee)+'</div></td>'
+      +'<td><span class="amount">'+money(item.amount)+'</span></td>'
+      +'<td>'+escapeHtml(item.barangay_name||'-')+'</td>'
+      +'<td>'+escapeHtml(item.fiscal_year?String(item.fiscal_year):'-')+' · '+escapeHtml(item.quarter||'Annual')+'</td>'
+      +'<td>'+fmt(item.archived_at)+archivedBy+'</td>'
+      +'<td><div class="proof-menu"><button class="btn btn-secondary btn-sm proof-menu-trigger" type="button" onclick="toggleProofMenu(this,event)" aria-label="Archived accomplishment actions" aria-expanded="false">&#8942;</button><div class="proof-menu-list">'
+        +'<button type="button" onclick="previewProof('+item.id+')">Preview</button>'
+        +'<button id="restore-proof-'+item.id+'" type="button" onclick="restoreProof('+item.id+')">Restore</button>'
+        +'<button class="menu-danger" id="delete-proof-'+item.id+'" type="button" onclick="deleteProof('+item.id+')">Delete permanently</button>'
+      +'</div></div></td>'
+    +'</tr>';
+  }).join('');
+}
+
 document.getElementById('logoutBtn').addEventListener('click', async function() {
   if (!confirm('Are you sure you want to log out?')) return;
   await window.SkFDMS.logoutAndRedirect('/');
 });
 
 function previewProof(id) {
-  var proof = proofs.find(function(p) { return p.id === id; });
+  var proof = getProofById(id);
   if (!proof) { showAlert('Proof not found.', 'danger'); return; }
 
   document.getElementById('proofPreviewTitle').textContent = proof.title || 'Proof Preview';
@@ -829,7 +1171,7 @@ function buildProofViewerHtml(proof, files, activeIndex) {
 }
 
 function showProofFile(id, index) {
-  var proof = proofs.find(function(p) { return Number(p.id) === Number(id); });
+  var proof = getProofById(id);
   if (!proof) return;
   document.getElementById('proofPreviewBody').innerHTML = buildProofViewerHtml(proof, proofFiles(proof), index);
 }

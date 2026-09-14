@@ -29,7 +29,8 @@
     .topbar-left h2{font-size:1.2rem;color:#1A4530;font-weight:800;}
     .barangay-select { padding: 9px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: .95rem; font-weight: 600; color: #1A4530; background-color: #F8FBFE; outline: none; }
     .content{padding:28px;}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.92rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+     .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:.92rem;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .18s;font-family:inherit;}
+     .btn-xs{padding:3px 8px;font-size:.7rem;}
     .btn-primary{background:#3D8C62;color:#fff;}
     .btn-primary:hover{background:#1A4530;}
     .btn-success{background:#1E8449;color:#fff;}
@@ -40,20 +41,35 @@
     .btn-secondary{background:#f0f0f0;color:#444;}
     .btn-secondary:hover{background:#ddd;}
     .btn-sm{padding:6px 12px;font-size:.82rem;}
-    .btn-logout{background:#f0f0f0;color:#555;border:none;padding:9px 16px;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:inherit;}
+     .btn-logout{background:#f0f0f0;color:#555;border:none;padding:9px 16px;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:inherit;}
+     #archiveToggleBtn{background:#D4AC0D;color:#1A4530;}
+     #archiveToggleBtn:hover{background:#B9970A;}
     .card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #eee;overflow:hidden;margin-bottom:20px;}
     .card-header{padding:14px 22px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
     .card-header h3{font-size:1rem;color:#1A4530;font-weight:800;}
-    .filter-row{padding:16px 22px;border-bottom:1px solid #f5f5f5;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;background:#fafafa;}
-    .filter-row select,.filter-row input{padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;}
+     .filter-row{padding:16px 22px;border-bottom:1px solid #f5f5f5;display:grid;grid-template-columns:minmax(160px,1fr) minmax(220px,1.35fr) minmax(120px,150px) minmax(120px,140px) minmax(140px,1fr) minmax(140px,max-content);gap:12px;align-items:end;background:#fafafa;}
+    .filter-row > div{min-width:0;}
+    .filter-row select,.filter-row input{width:100%;padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;}
     .filter-row select:focus,.filter-row input:focus{border-color:#3D8C62;}
-    .table-wrap{overflow-x:auto;}
-    table{width:100%;min-width:1080px;border-collapse:collapse;}
+    .table-wrap{overflow:visible;}
+    table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;}
     thead tr{background:#1A4530;}
-    thead th{color:#fff;font-size:.82rem;font-weight:700;padding:11px 14px;text-align:left;white-space:nowrap;}
+    thead th{color:#fff;font-size:.76rem;font-weight:700;padding:12px 9px;text-align:left;white-space:normal;line-height:1.25;}
     tbody tr{border-bottom:1px solid #f2f2f2;transition:background .15s;}
-    tbody tr:hover{background:#f8fbfe;}
-    tbody td{padding:11px 14px;font-size:.9rem;color:#444;vertical-align:middle;}
+    .table-wrap tbody tr:hover{background:#E7F8EE!important;}
+    tbody td{padding:12px 9px;font-size:.82rem;color:#444;vertical-align:middle;line-height:1.4;overflow-wrap:anywhere;word-break:break-word;}
+    #docsBody td:nth-child(1){width:4%;}
+    #docsBody td:nth-child(2){width:4%;}
+    #docsBody td:nth-child(3){width:19%;min-width:0;}
+    #docsBody td:nth-child(4){width:9%;}
+    #docsBody td:nth-child(5){width:10%;}
+    #docsBody td:nth-child(6){width:8%;}
+    #docsBody td:nth-child(7){width:9%;}
+    #docsBody td:nth-child(8){width:11%;}
+    #docsBody td:nth-child(9){width:9%;}
+    #docsBody td:nth-child(10){width:8%;}
+    #docsBody td:nth-child(11){width:9%;}
+    #docsBody td:nth-child(3) strong{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.35;}
     .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:700;}
     .badge-pub{background:#D5F5E3;color:#1E8449;}
     .badge-draft{background:#FEF9E7;color:#B7950B;}
@@ -71,16 +87,101 @@
     .smi-num{font-size:1.8rem;font-weight:800;color:#1A4530;line-height:1;}
     .smi-lbl{font-size:.82rem;color:#888;margin-top:4px;}
     th:last-child,
-    td:last-child{min-width:280px;}
+    td:last-child{min-width:0;}
     .action-buttons{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;white-space:nowrap;min-width:max-content;}
     .action-buttons .btn,
     .action-buttons .badge{flex:0 0 auto;}
     .action-buttons .btn-sm{padding:6px 10px;}
+    .document-menu{position:relative;display:inline-block;}
+    .document-menu.open{z-index:60;}
+    .table-wrap:has(.document-menu.open){position:relative;z-index:10;}
+    .card:has(.document-menu.open){position:relative;z-index:20;overflow:visible;}
+    .document-menu-trigger{width:34px;height:34px;padding:0!important;font-size:1.25rem!important;line-height:1!important;font-weight:900!important;}
+    .document-menu-list{position:absolute;right:0;top:calc(100% + 5px);z-index:60;display:none;min-width:154px;padding:6px;background:#fff;border:1px solid #dfe7df;border-radius:9px;box-shadow:0 10px 25px rgba(15,42,30,.16);}
+    .document-menu.open .document-menu-list{display:block;}
+    .document-menu-list button,.document-menu-list a{display:block;width:100%;padding:8px 10px;border:0;border-radius:6px;background:transparent;color:#34473A;text-align:left;text-decoration:none;cursor:pointer;font:600 .82rem inherit;white-space:nowrap;}
+    .document-menu-list button:hover,.document-menu-list a:hover{background:#E7F8EE;color:#1A4530;}
+    .document-menu-list .menu-danger{color:#C0392B;}
+    .document-menu-list .menu-warning{color:#9A7500;}
+    .bulk-col{width:52px;min-width:52px;text-align:center;}
+    .bulk-check{
+      appearance:none;
+      -webkit-appearance:none;
+      width:19px!important;
+      height:19px!important;
+      margin:0;
+      display:inline-grid;
+      place-content:center;
+      vertical-align:middle;
+      border:1.5px solid rgba(26,69,48,.34);
+      border-radius:5px;
+      background-color:rgba(255,255,255,.92)!important;
+      background-position:center!important;
+      background-repeat:no-repeat!important;
+      background-size:12px 12px!important;
+      box-shadow:inset 0 1px 1px rgba(15,42,30,.04)!important;
+      cursor:pointer;
+      transition:background .14s,border-color .14s,box-shadow .14s;
+    }
+    .bulk-check:hover{border-color:#3D8C62!important;box-shadow:0 0 0 3px rgba(61,140,98,.10)!important;}
+    .bulk-check:focus-visible{outline:3px solid rgba(61,140,98,.22);outline-offset:2px;}
+    .bulk-check:checked{
+      background-color:#2F7D55!important;
+      border-color:#2F7D55!important;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7.2 5.8 10 11 4' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+    }
+    .bulk-check:indeterminate{
+      background-color:#2F7D55!important;
+      border-color:#2F7D55!important;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.2 7h7.6' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round'/%3E%3C/svg%3E")!important;
+    }
+    .table-wrap tbody tr.is-bulk-selected{background:#DDF3E8!important;}
+    .table-wrap tbody tr.is-bulk-selected:hover{background:#D1EEDC!important;}
+    body.dark .table-wrap tbody tr:hover{background:rgba(61,140,98,.28)!important;}
+    body.dark .table-wrap tbody tr.is-bulk-selected{background:rgba(61,140,98,.34)!important;}
+    body.dark .table-wrap tbody tr.is-bulk-selected:hover{background:rgba(61,140,98,.42)!important;}
+    .bulk-actions{display:grid;gap:6px;align-items:start;}
+    .bulk-actions-title{font-weight:800;}
+    .bulk-actions-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+    .bulk-actions-row .btn-sm{padding:5px 8px;font-size:.74rem;}
+    .bulk-count{font-size:.74rem;color:rgba(255,255,255,.78);font-weight:700;}
+    body:not(.role-admin) .bulk-admin-only{display:none!important;}
+    /* Bulk selection column: visible to roles that can archive (admin & chairperson) */
+    #bulkColHead, .bulk-col{display:none;}
+    body.role-admin #bulkColHead, body.role-admin .bulk-col,
+    body.role-chairperson #bulkColHead, body.role-chairperson .bulk-col{display:table-cell;}
+    body.role-admin .table-wrap:not(.selection-mode) #bulkColHead,
+    body.role-chairperson .table-wrap:not(.selection-mode) #bulkColHead,
+    body.role-admin .table-wrap:not(.selection-mode) .bulk-col,
+    body.role-chairperson .table-wrap:not(.selection-mode) .bulk-col{display:none;}
+     /* Bulk action controls appear beside Clear Filters while rows are selected. */
+     .filter-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-width:0;}
+     .bulk-control{display:none;align-items:center;gap:8px;white-space:nowrap;min-width:max-content;flex-wrap:nowrap;}
+     body.has-bulk-selection.role-admin .bulk-control, body.has-bulk-selection.role-chairperson .bulk-control{display:inline-flex;}
+     .bulk-control #bulkCount{white-space:nowrap;margin-right:4px;}
+     .bulk-control .bulk-btn-group{display:inline-flex;gap:4px;flex-shrink:0;}
+     .bulk-control .btn-xs,#clearFiltersBtn{width:104px;height:34px;padding:0;font-size:.82rem;line-height:1;justify-content:center;align-items:center;gap:6px;flex-shrink:0;text-align:center;}
+    .barangay-filter{display:none;}
+    body.role-admin .barangay-filter{display:block;}
+    .barangay-col{display:none;}
+    body.role-admin .barangay-col{display:table-cell;}
+     body:not(.role-admin) .filter-row{grid-template-columns:minmax(220px,1.6fr) minmax(120px,150px) minmax(120px,140px) minmax(140px,1fr) minmax(140px,max-content);}
+    @media(max-width:1060px){.filter-row{grid-template-columns:repeat(3,minmax(0,1fr));}}
+    @media(max-width:720px){.filter-row{grid-template-columns:1fr;}.filter-actions{justify-content:flex-start;}}
     body:not(.role-chairperson) #uploadDocBtn{display:none!important;}
+    .admin-only-status{display:none;}
+    body.role-admin .admin-only-status{display:inline;}
     .modal-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:200;}
     .modal-backdrop.show{display:flex;}
     .modal{width:min(100%,560px);background:#fff;border-radius:12px;border:1px solid #dfe7df;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden;}
     .modal.preview-modal{width:min(1100px,96vw);height:min(820px,90vh);display:flex;flex-direction:column;}
+    .modal.archive-inventory-modal{width:min(1120px,96vw);height:min(76vh,680px);min-height:540px;max-height:90vh;display:flex;flex-direction:column;}
+    .archive-inventory-body{flex:1;min-height:0;overflow:auto;}
+    .archive-inventory-table{min-width:900px;}
+    .archive-inventory-table th{background:#334155;}
+    .archive-inventory-actions{display:flex;gap:6px;align-items:center;white-space:nowrap;}
+    .archive-inventory-body .table-wrap{min-height:100%;}
+    .archive-inventory-body .empty{height:420px;vertical-align:middle;}
     .modal-header{padding:18px 22px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:12px;}
     .modal-header h3{font-size:1.05rem;color:#1A4530;margin:0;font-weight:800;}
     .modal-close{width:34px;height:34px;border:none;border-radius:8px;background:#f1f4f1;color:#1A4530;font-size:1.35rem;line-height:1;cursor:pointer;}
@@ -93,7 +194,25 @@
     .modal-field input:focus,.modal-field select:focus,.modal-field textarea:focus{border-color:#3D8C62;}
     .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
     .modal-actions{padding:16px 22px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;background:#fafafa;}
-    @media(max-width:680px){.modal-grid{grid-template-columns:1fr;}th:last-child,td:last-child{min-width:260px;}.modal.preview-modal{height:88vh;}.preview-body{min-height:360px;}}
+    @media(max-width:680px){.modal-grid{grid-template-columns:1fr;}.modal.preview-modal{height:88vh;}.preview-body{min-height:360px;}}
+    @media(max-height:650px){.modal.archive-inventory-modal{height:calc(100vh - 40px);min-height:0;}.archive-inventory-body .empty{height:260px;}}
+
+    /* Document Preview Modal (mirrors transparency.html proof viewer style) */
+    .doc-preview-modal{width:min(100%,780px);height:min(90vh,760px);max-width:none;display:flex;flex-direction:column;}
+    .doc-preview-body{padding:0;flex:1;min-height:0;background:#252525;}
+    .doc-viewer-toolbar{height:48px;background:#3b3b3b;border-bottom:1px solid #4a4a4a;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;color:#fff;}
+    .doc-viewer-toolbar strong{font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .doc-viewer-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+    .doc-viewer-actions .btn{background:#4b4b4b;color:#fff;border:1px solid #5a5a5a;}
+    .doc-viewer-frame-wrap{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;background:#252525;overflow:hidden;}
+    .doc-viewer-frame{width:100%;height:100%;border:0;background:#252525;}
+    .doc-viewer-image{max-width:100%;max-height:100%;object-fit:contain;margin:auto;display:block;}
+    .doc-viewer-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#e8eaed;padding:26px;}
+    .doc-viewer-empty strong{font-size:1rem;}
+    .doc-viewer-empty span{font-size:.85rem;color:#b8babd;}
+    .modal.doc-preview-modal .modal-header{background:#333;border-bottom-color:#454545;}
+    .modal.doc-preview-modal .modal-header h3{color:#fff;}
+    .modal.doc-preview-modal .modal-close{background:#444;color:#fff;}
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
   <script src="../../js/public-theme.js" defer></script>
@@ -115,14 +234,15 @@
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="dashboard.html"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
       <a href="documents.html" class="active" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
       <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
       <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
-      <a href="/" class="sidebar-public-link" style="margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
+       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+      <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
     <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
   </aside>
@@ -130,46 +250,51 @@
   <div class="admin-main">
     <div class="topbar">
       <div class="topbar-left">
-        <h2>Manage Documents</h2>
-        <select id="barangaySelector" class="barangay-select"></select>
+        <h2 id="pageTitle">Published Documents</h2>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-         <button class="btn btn-secondary btn-sm" id="archiveToggleBtn" onclick="toggleArchiveView()" style="display:none;">Archives</button>
-        <button class="btn-logout" onclick="doLogout()">Log Out</button>
+
       </div>
     </div>
 
     <div class="content">
       <div id="alertBox"></div>
 
-      <div class="stat-mini" id="documentStats">
+      <div class="stat-mini soft-stat-cards" id="documentStats">
         <div class="smi"><div class="smi-num" id="mTotal">-</div><div class="smi-lbl">Total Documents</div></div>
         <div class="smi g"><div class="smi-num" id="mPub">-</div><div class="smi-lbl">Published</div></div>
         <div class="smi o"><div class="smi-num" id="mDraft">-</div><div class="smi-lbl">Drafts</div></div>
+        <div class="smi"><div class="smi-num" id="mArchived">-</div><div class="smi-lbl">Archived</div></div>
       </div>
 
       <div class="card">
         <div class="card-header">
           <h3 id="docListTitle">All Documents</h3>
           <span id="docCount" style="font-size:.84rem;color:#888;"></span>
-          <button class="btn btn-success btn-sm" id="uploadDocBtn" data-role="chairperson" style="display:none;" onclick="window.location.href='upload'">Upload</button>
+          <span id="archiveRetentionNote" style="display:none;font-size:.78rem;color:#64746A;font-weight:700;">Auto-deletes after 5 years</span>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-left:auto;">
+            <button class="btn btn-warning btn-sm" id="archiveToggleBtn" onclick="openArchiveInventory()" style="display:none;">Archives</button>
+            <button class="btn btn-success btn-sm" id="uploadDocBtn" data-role="chairperson" style="display:none;" onclick="window.location.href='upload.html'">+ Upload Document</button>
+          </div>
         </div>
 
         <div class="filter-row">
+          <div class="barangay-filter">
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Barangay</div>
+            <select id="barangaySelector" class="barangay-select"></select>
+          </div>
           <div>
             <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Category</div>
             <select id="fCat"><option value="">All Categories</option></select>
           </div>
-          <div>
-            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Status</div>
-            <select id="fStatus">
+          <select id="fStatus" hidden aria-hidden="true" tabindex="-1">
               <option value="">All</option>
               <option value="1">Published</option>
               <option value="0">Draft</option>
-            </select>
-          </div>
+              <option value="requested" class="admin-only-status">Requested</option>
+          </select>
           <div>
-            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Year</div>
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Fiscal Year</div>
             <select id="fYear">
               <option value="">All Years</option>
               <option value="2025">2025</option>
@@ -179,30 +304,44 @@
             </select>
           </div>
           <div>
-            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Search</div>
-            <input type="text" id="fSearch" placeholder="Search title..." style="width:180px;"/>
+            <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Sort</div>
+            <select id="fSort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="title-asc">Title A–Z</option><option value="title-desc">Title Z–A</option></select>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply</button>
-          <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
-        </div>
+           <div>
+             <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Search</div>
+             <input type="text" id="fSearch" placeholder="Search title..."/>
+            </div>
+            <div class="filter-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="clearFiltersBtn" onclick="resetFilters()" hidden>Clear Filters</button>
+              <div class="bulk-control">
+                <span id="bulkCount" style="font-size:.82rem;font-weight:700;color:#1A4530;">0 selected</span>
+                <div class="bulk-btn-group">
+                  <button class="btn btn-danger btn-xs" id="bulkArchiveBtn" disabled onclick="bulkArchiveSelected()">Archive</button>
+                  <button class="btn btn-secondary btn-xs" onclick="clearBulkSelection()">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <div class="table-wrap">
+          <div class="table-wrap">
           <table>
             <thead>
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>FY / Period</th>
-                <th>Project Type</th>
-                <th id="personColumn">Uploaded By</th>
-                <th id="dateColumn">Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
+                <tr>
+                  <th id="bulkColHead"><input type="checkbox" id="selectAllDocs" class="bulk-check" aria-label="Select all documents" onchange="toggleSelectAll(this)"/></th>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th class="barangay-col">Barangay</th>
+                  <th>FY / Period</th>
+                  <th>Project Type</th>
+                  <th id="personColumn">Uploaded By</th>
+                  <th id="dateColumn">Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
             </thead>
             <tbody id="docsBody">
-              <tr><td colspan="9" class="empty"><div class="eicon">⏳</div><p>Loading...</p></td></tr>
+              <tr><td colspan="11" class="empty"><div class="eicon">⏳</div><p>Loading...</p></td></tr>
             </tbody>
           </table>
         </div>
@@ -256,13 +395,30 @@
 </div>
 
 <div class="modal-backdrop" id="previewModal" aria-hidden="true" onclick="if(event.target===this) closePreviewModal()">
-  <div class="modal preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
+  <div class="modal doc-preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
     <div class="modal-header">
       <h3 id="previewModalTitle">Document Preview</h3>
       <button type="button" class="modal-close" onclick="closePreviewModal()" aria-label="Close">&times;</button>
     </div>
-    <div class="modal-body preview-body">
-      <iframe class="preview-frame" id="previewFrame" title="Document preview"></iframe>
+    <div class="modal-body doc-preview-body" id="previewBody">
+      <div style="text-align:center;padding:20px;color:#aaa;">Loading preview…</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="archiveInventoryModal" aria-hidden="true" onclick="if(event.target===this) closeArchiveInventory()">
+  <div class="modal archive-inventory-modal" role="dialog" aria-modal="true" aria-labelledby="archiveInventoryTitle">
+    <div class="modal-header">
+      <div><h3 id="archiveInventoryTitle">Document Archive Inventory</h3><small>Archived documents can be restored or deleted permanently.</small></div>
+      <button type="button" class="modal-close" onclick="closeArchiveInventory()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body archive-inventory-body">
+      <div class="table-wrap">
+        <table class="archive-inventory-table">
+          <thead><tr><th>Title</th><th>Category</th><th>Barangay</th><th>FY / Period</th><th>Archived</th><th>Actions</th></tr></thead>
+          <tbody id="archiveInventoryBody"><tr><td colspan="6" class="empty">Loading archived documents...</td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -270,8 +426,10 @@
 <script src="../../js/barangay-context.js"></script>
 <script>
   var API = window.location.origin + '/api';
-  var allDocs = [], categories = [], currentUser = null;
+  var allDocs = [], archivedDocs = [], categories = [], currentUser = null;
   var showingArchived = false;
+  var documentView = (new URLSearchParams(window.location.search).get('view') || 'published').toLowerCase();
+  if (!['published','requests','archive'].includes(documentView)) documentView = 'published';
 
   function escapeHtml(text) { if(!text)return ''; return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function fmt(d){ if(!d)return'-'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
@@ -281,19 +439,41 @@
   window.addEventListener('load', async function(){
     var r=await fetch(API+'/auth/me',{credentials:'include'});
     var d=await r.json();
-    if(!d.success){window.location.href='/pages/login';return;}
+    if(!d.success){window.location.href='/pages/login.html';return;}
     currentUser=d.user;
     document.body.classList.add('role-' + String(currentUser.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
     document.getElementById('sName').textContent=d.user.name;
     document.getElementById('sRole').textContent=d.user.role;
-
+     window.SkBarangay.renderSidebarUser(currentUser);
+     window.SkBarangay.updateSidebarLogo(currentUser.role);
     await window.SkBarangay.init(currentUser);
     window.SkBarangay.populateDropdown(document.getElementById('barangaySelector'));
     if (currentUser.role === 'admin' || currentUser.role === 'chairperson') {
       document.getElementById('archiveToggleBtn').style.display='inline-flex';
+    }
+    document.getElementById('archiveToggleBtn').style.display='none';
+    if (currentUser.role === 'admin') {
       document.getElementById('barangaySelector').addEventListener('change', function() {
         window.SkBarangay.setSelectedBarangayId(this.value);
         loadDocs();
+      });
+    }
+
+    // Auto-filter documents when category, status, year, or search changes
+    var fCat = document.getElementById('fCat');
+    var fStatus = document.getElementById('fStatus');
+    var fYear = document.getElementById('fYear');
+    var fSort = document.getElementById('fSort');
+    var fSearch = document.getElementById('fSearch');
+    if (fCat) fCat.addEventListener('change', applyFilters);
+    if (fStatus) fStatus.addEventListener('change', applyFilters);
+    if (fYear) fYear.addEventListener('change', applyFilters);
+    if (fSort) fSort.addEventListener('change', applyFilters);
+    if (fSearch) {
+      var searchDebounce;
+      fSearch.addEventListener('input', function() {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(applyFilters, 300);
       });
     }
 
@@ -305,13 +485,9 @@
       else uploadBtn.remove();
     }
 
-    if (currentUser.role === 'admin') {
-      var draftOpt = document.querySelector('#fStatus option[value="0"]');
-      if (draftOpt) draftOpt.textContent = 'Requesting';
-    }
-
     await loadCategories();
-    await loadDocs();
+    await setDocumentView(documentView);
+    loadArchivedCount();
   });
 
   async function loadCategories(){
@@ -353,7 +529,14 @@
     if (currentUser && currentUser.role === 'admin' && !search.has('barangay_id')) {
       search.set('barangay_id', window.SkBarangay.getSelectedBarangayId());
     }
-    if (showingArchived) search.set('archived','true');
+    if (showingArchived) {
+      search.set('archived','true');
+    } else if (currentUser && currentUser.role === 'admin' && documentView === 'published') {
+      search.set('is_published','true');
+    } else if (currentUser && currentUser.role === 'admin' && documentView === 'requests') {
+      search.set('is_published','false');
+      search.set('publish_requested','true');
+    }
     var qs = search.toString() ? '?' + search.toString() : '';
     try {
       var r=await fetch(API+'/admin/documents'+qs,{credentials:'include'});
@@ -363,19 +546,82 @@
         return;
       }
       allDocs=d.data;
-      renderDocs(allDocs);
       updateDocumentStats(allDocs.length+' '+(showingArchived?'archived document(s)':'document(s)'));
       updateArchiveViewLabels();
+      applyFilters();
     } catch (err) {
       console.error('loadDocs error:', err);
       showAlert('Unable to load documents. Please check your connection and try again.','danger');
     }
   }
 
+  async function loadArchivedCount(){
+    var countEl=document.getElementById('mArchived');
+    if (!countEl || !currentUser || !['admin','chairperson'].includes(currentUser.role)) { if(countEl) countEl.textContent='0'; return; }
+    var search=new URLSearchParams({archived:'true'});
+    if(currentUser.role==='admin') search.set('barangay_id',window.SkBarangay.getSelectedBarangayId());
+    try {
+      var r=await fetch(API+'/admin/documents?'+search.toString(),{credentials:'include'});
+      var d=await r.json();
+      countEl.textContent=(r.ok && d.success && Array.isArray(d.data)) ? d.data.length : '0';
+    } catch(err) { countEl.textContent='0'; }
+  }
+
+  function openArchiveInventory(){
+    var modal=document.getElementById('archiveInventoryModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    loadArchiveInventory();
+  }
+
+  function closeArchiveInventory(){
+    var modal=document.getElementById('archiveInventoryModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  }
+
+  async function loadArchiveInventory(){
+    var body=document.getElementById('archiveInventoryBody');
+    body.innerHTML='<tr><td colspan="6" class="empty">Loading archived documents...</td></tr>';
+    var search=new URLSearchParams({archived:'true'});
+    if(currentUser && currentUser.role==='admin') search.set('barangay_id',window.SkBarangay.getSelectedBarangayId());
+    try{
+      var r=await fetch(API+'/admin/documents?'+search.toString(),{credentials:'include'});
+      var d=await r.json();
+      if(!r.ok||!d.success){
+        body.innerHTML='<tr><td colspan="6" class="empty">'+escapeHtml(d.message||'Unable to load archived documents.')+'</td></tr>';
+        return;
+      }
+      archivedDocs=d.data||[];
+      renderArchiveInventory(archivedDocs);
+    }catch(err){
+      body.innerHTML='<tr><td colspan="6" class="empty">Unable to load archived documents.</td></tr>';
+    }
+  }
+
+  function renderArchiveInventory(docs){
+    var body=document.getElementById('archiveInventoryBody');
+    if(!docs.length){
+      body.innerHTML='<tr><td colspan="6" class="empty">No archived documents.</td></tr>';
+      return;
+    }
+    body.innerHTML=docs.map(function(doc){
+      var archivedBy=doc.archived_by_name ? '<br><span style="font-size:.76rem;color:#64746A;">by '+escapeHtml(doc.archived_by_name)+'</span>' : '';
+      return '<tr>'
+        +'<td><strong style="color:#1A4530;">'+escapeHtml(doc.title)+'</strong><br><span style="font-size:.78rem;color:#64746A;">'+escapeHtml(doc.file_name||'')+'</span></td>'
+        +'<td><span class="badge badge-cat">'+escapeHtml(doc.category_code||'-')+'</span></td>'
+        +'<td>'+escapeHtml(doc.barangay_name||'-')+'</td>'
+        +'<td>'+escapeHtml(String(doc.fiscal_year||'-'))+' / '+escapeHtml(doc.quarter||'Annual')+'</td>'
+        +'<td>'+fmt(doc.archived_at)+archivedBy+'</td>'
+        +'<td><div class="document-menu"><button type="button" class="btn btn-secondary btn-sm document-menu-trigger" aria-label="Archived document actions" aria-expanded="false" onclick="toggleDocumentMenu(this,event)">&#8942;</button><div class="document-menu-list"><button type="button" onclick="openArchivedPreview('+doc.id+')">Preview</button><button type="button" id="restore-'+doc.id+'" onclick="restoreDoc('+doc.id+')">Restore</button><button type="button" class="menu-danger" id="delete-'+doc.id+'" onclick="deleteDoc('+doc.id+')">Delete permanently</button></div></div></td>'
+        +'</tr>';
+    }).join('');
+  }
+
   function renderDocs(docs){
     var tbody=document.getElementById('docsBody');
     if(!docs.length){
-      tbody.innerHTML='<tr><td colspan="9"><div class="empty"><div class="eicon"><span class="ui-icon ui-icon-inbox ui-icon-xxl" aria-hidden="true"></span></div><p>No documents found.</p></div></td></tr>';
+      tbody.innerHTML='<tr><td colspan="11"><div class="empty"><div class="eicon"><span class="ui-icon ui-icon-inbox ui-icon-xxl" aria-hidden="true"></span></div><p>No documents found.</p></div></td></tr>';
       return;
     }
     var isAdmin = currentUser && currentUser.role === 'admin';
@@ -385,48 +631,88 @@
     tbody.innerHTML=docs.map(function(d,i){
       var isPublished = toBool(d.is_published);
       var isRequested = toBool(d.publish_requested);
-      var actions = '<a href="'+API+'/documents/'+d.id+'/download?preview=1" class="btn btn-secondary btn-sm" target="_blank" rel="noopener">Preview</a>';
+      var menuItems = '<button type="button" onclick="openPreviewDoc('+d.id+')">Preview</button>';
       if (canManage) {
         if (showingArchived) {
           if (canArchiveUsers) {
-            actions += '<button class="btn btn-success btn-sm" id="restore-'+d.id+'" onclick="restoreDoc('+d.id+')">Unarchive</button>';
-            actions += '<button class="btn btn-danger btn-sm" id="delete-'+d.id+'" onclick="deleteDoc('+d.id+',\''+escapeHtml(d.title).replace(/'/g,'&#39;')+'\')">Delete</button>';
+            menuItems += '<button type="button" id="restore-'+d.id+'" onclick="restoreDoc('+d.id+')">Restore</button>';
+            menuItems += '<button type="button" class="menu-danger" id="delete-'+d.id+'" onclick="deleteDoc('+d.id+')">Delete permanently</button>';
           }
         } else {
           if (isAdmin) {
-            actions += '<button class="btn '+(isPublished?'btn-warning':'btn-success')+' btn-sm" id="pub-'+d.id+'" onclick="togglePublish('+d.id+','+isPublished+')">'+(isPublished?'Unpublish':'Publish')+'</button>';
+            menuItems += '<button type="button" class="'+(isPublished?'menu-warning':'')+'" id="pub-'+d.id+'" onclick="togglePublish('+d.id+','+isPublished+')">'+(isPublished?'Unpublish':'Publish')+'</button>';
           } else {
             if (isPublished) {
-              actions += '<span class="badge badge-ok" title="Published">&#10003; Published</span>';
             } else if (isRequested) {
-              actions += '<span class="badge badge-draft" title="Pending admin review">Processing...</span>';
             } else {
-              actions += '<button class="btn btn-success btn-sm" id="pub-'+d.id+'" onclick="requestPublish('+d.id+')">Request</button>';
+              menuItems += '<button type="button" id="pub-'+d.id+'" onclick="requestPublish('+d.id+')">Request publication</button>';
             }
           }
           if (canArchiveUsers) {
-            actions += '<button class="btn btn-danger btn-sm" id="archive-'+d.id+'" onclick="archiveDoc('+d.id+')">Archive</button>';
+            menuItems += '<button type="button" class="menu-danger" id="archive-'+d.id+'" onclick="archiveDoc('+d.id+')">Archive</button>';
           }
         }
       }
+      var actions='<div class="document-menu"><button type="button" class="btn btn-secondary btn-sm document-menu-trigger" aria-label="Document actions" aria-expanded="false" onclick="toggleDocumentMenu(this,event)">&#8942;</button><div class="document-menu-list">'+menuItems+'</div></div>';
 
-      return '<tr id="row-'+d.id+'" data-doc-id="'+d.id+'">'
+      var statusBadge, statusText;
+      if (showingArchived) {
+        statusBadge = 'badge-arch';
+        statusText = 'Archived';
+      } else if (isPublished) {
+        statusBadge = 'badge-pub';
+        statusText = 'Published';
+      } else if (isRequested) {
+        statusBadge = 'badge-draft';
+        statusText = 'Requested';
+      } else {
+        statusBadge = 'badge-draft';
+        statusText = 'Draft';
+      }
+
+      return '<tr id="row-'+d.id+'" data-doc-id="'+d.id+'" ondblclick="toggleDocumentSelectionMode(this, event)">'
+        +'<td class="bulk-col"><input type="checkbox" class="bulk-check doc-check" value="'+d.id+'" aria-label="Select document" onchange="updateBulkSelection()"></td>'
         +'<td style="color:#bbb;">'+(i+1)+'</td>'
         +'<td><strong style="color:#1A4530;">'+escapeHtml(d.title)+'</strong></td>'
         +'<td><span class="badge badge-cat">'+escapeHtml(d.category_code)+'</span></td>'
+        +'<td class="barangay-col">'+escapeHtml(d.barangay_name||d.barangay||'-')+'</td>'
         +'<td>'+d.fiscal_year+' · '+d.quarter+'</td>'
         +'<td>'+(isPublished?'<span class="badge badge-pub">Finished</span>':'<span class="badge badge-draft">Ongoing</span>')+'</td>'
         +'<td>'+escapeHtml(d.uploaded_by_name||'-')+'</td>'
         +'<td>'+fmt(showingArchived ? d.archived_at : (d.requested_at || d.created_at))+'</td>'
-        +'<td><span class="badge '+(showingArchived?'badge-arch':(isPublished?'badge-pub':'badge-draft'))+'" id="stat-'+d.id+'">'+(showingArchived?'Archived':(isPublished?'Published':(isAdmin?'Requesting':'Draft')))+'</span></td>'
+        +'<td><span class="badge '+statusBadge+'" id="stat-'+d.id+'">'+statusText+'</span></td>'
         +'<td><div class="action-buttons">' + actions + '</div></td>'
       +'</tr>';
     }).join('');
+    clearBulkSelection();
   }
+
+  function toggleDocumentMenu(trigger,event){
+    event.stopPropagation();
+    var menu=trigger.closest('.document-menu');
+    var open=!menu.classList.contains('open');
+    closeDocumentMenus();
+    menu.classList.toggle('open',open);
+    trigger.setAttribute('aria-expanded',open ? 'true' : 'false');
+  }
+
+  function closeDocumentMenus(){
+    document.querySelectorAll('.document-menu.open').forEach(function(menu){
+      menu.classList.remove('open');
+      var trigger=menu.querySelector('.document-menu-trigger');
+      if(trigger) trigger.setAttribute('aria-expanded','false');
+    });
+  }
+
+  document.addEventListener('click',closeDocumentMenus);
 
 
   function getDocById(id){
     return allDocs.find(function(x){ return Number(x.id) === Number(id); });
+  }
+
+  function getArchivedDocById(id){
+    return archivedDocs.find(function(x){ return Number(x.id) === Number(id); });
   }
 
   function toBool(value){
@@ -435,17 +721,55 @@
 
   function openPreviewDoc(id){
     var doc=getDocById(id);
-    var title=doc && doc.title ? doc.title : 'Document Preview';
+    if(!doc){showAlert('Document not found.','danger');return;}
+    showPreviewDoc(doc);
+  }
+
+  function openArchivedPreview(id){
+    var doc=getArchivedDocById(id);
+    if(!doc){showAlert('Archived document not found.','danger');return;}
+    showPreviewDoc(doc);
+  }
+
+  function showPreviewDoc(doc){
+    var title=doc.title || 'Document Preview';
     document.getElementById('previewModalTitle').textContent=title;
-    document.getElementById('previewFrame').src=API+'/documents/'+id+'/download?preview=1';
+    document.getElementById('previewBody').innerHTML=buildDocViewerHtml(doc);
     document.getElementById('previewModal').classList.add('show');
     document.getElementById('previewModal').setAttribute('aria-hidden','false');
   }
 
   function closePreviewModal(){
-    document.getElementById('previewFrame').src='about:blank';
+    document.getElementById('previewBody').innerHTML='<div style="text-align:center;padding:20px;color:#aaa;">Loading preview…</div>';
     document.getElementById('previewModal').classList.remove('show');
     document.getElementById('previewModal').setAttribute('aria-hidden','true');
+  }
+
+  function buildDocViewerHtml(doc){
+    var fileExt=(doc.file_type||'').toLowerCase().replace(/^\.+/, '');
+    var fileLabel=doc.file_name||doc.title||'Document';
+    var previewUrl=API+'/documents/'+doc.id+'/download?preview=1';
+    var downloadUrl=API+'/documents/'+doc.id+'/download';
+    var viewer='';
+    if (['jpg','jpeg','png','gif','svg','webp','bmp'].includes(fileExt)) {
+      viewer='<img class="doc-viewer-image" src="'+previewUrl+'" alt="'+escapeHtml(fileLabel)+'">';
+    } else if (fileExt==='pdf') {
+      viewer='<iframe class="doc-viewer-frame" src="'+previewUrl+'" title="'+escapeHtml(fileLabel)+'"></iframe>';
+    } else {
+      viewer='<div class="doc-viewer-empty">'
+        +'<span class="ui-icon ui-icon-file ui-icon-xl" aria-hidden="true"></span>'
+        +'<strong>'+escapeHtml(fileExt ? fileExt.toUpperCase() : 'FILE')+' preview is not available in the browser.</strong>'
+        +'<span>Download the file to view its contents.</span>'
+        +'</div>';
+    }
+    return '<div class="doc-viewer-toolbar">'
+      +'<strong>'+(doc.file_name||fileLabel)+'</strong>'
+      +'<div class="doc-viewer-actions">'
+        +'<a class="btn btn-sm" href="'+previewUrl+'" target="_blank" rel="noopener">Open</a>'
+        +'<a class="btn btn-sm" href="'+downloadUrl+'" target="_blank" rel="noopener" download>Download</a>'
+      +'</div>'
+    +'</div>'
+    +'<div class="doc-viewer-frame-wrap">'+viewer+'</div>';
   }
 
   function updateDocumentStats(countLabel){
@@ -453,28 +777,46 @@
     document.getElementById('mTotal').textContent=allDocs.length;
     document.getElementById('mPub').textContent=pub;
     document.getElementById('mDraft').textContent=allDocs.length-pub;
-    var isAdmin = currentUser && currentUser.role === 'admin';
-    if (isAdmin) {
-      var draftLabel = document.querySelector('.smi.o .smi-lbl');
-      if (draftLabel) draftLabel.textContent = 'Requesting';
-    }
     if(countLabel){
       document.getElementById('docCount').textContent=countLabel;
     }
   }
 
   function updateArchiveViewLabels(){
-    document.getElementById('docListTitle').textContent=showingArchived?'Archives':'All Documents';
-    document.getElementById('archiveToggleBtn').textContent=showingArchived?'Back to Documents':'Archives';
+    var title = showingArchived ? 'Archived Documents' : (documentView === 'requests' ? 'Publication Requests' : 'Published Documents');
+    document.getElementById('docListTitle').textContent=title;
+    document.getElementById('pageTitle').textContent=title;
+    document.getElementById('archiveToggleBtn').textContent='Archives';
     document.getElementById('dateColumn').textContent=showingArchived?'Archived Date':'Date';
+    var retentionNote = document.getElementById('archiveRetentionNote');
+    if (retentionNote) retentionNote.style.display = showingArchived ? 'inline' : 'none';
     var stats = document.getElementById('documentStats');
     if (stats) stats.style.display = showingArchived ? 'none' : '';
+  }
+
+  async function setDocumentView(view){
+    documentView = view;
+    showingArchived = view === 'archive';
+    clearFilters();
+    var status = document.getElementById('fStatus');
+    if (status) {
+      // New chairman uploads are drafts. Keep My Documents unfiltered so the
+      // logged-in chairman sees every document from their own account.
+      status.value = currentUser && currentUser.role === 'admin'
+        ? (view === 'published' ? '1' : (view === 'requests' ? 'requested' : ''))
+        : '';
+      status.disabled = true;
+    }
+    updateArchiveViewLabels();
+    document.getElementById('dateColumn').textContent = showingArchived ? 'Archived Date' : (view === 'requests' ? 'Requested Date' : 'Published Date');
+    await loadDocs();
+    if (showingArchived) loadArchivedCount();
   }
 
   function documentActionUrl(id, action){
     var url = API+'/admin/documents/'+id+(action || '');
     if (currentUser.role === 'admin') {
-      var doc = getDocById(id);
+      var doc = getDocById(id) || getArchivedDocById(id);
       var barangayId = doc && doc.barangay_id ? doc.barangay_id : window.SkBarangay.getSelectedBarangayId();
       url += '?barangay_id=' + encodeURIComponent(barangayId);
     }
@@ -536,6 +878,7 @@
   }
 
   async function togglePublish(id, isPublished){
+    if(isPublished && !confirm('Unpublish this document?\n\nIt will no longer be visible on the public documents page.')) return;
     var btn=document.getElementById('pub-'+id);
     btn.disabled=true; btn.textContent='Processing...';
     try{
@@ -586,6 +929,8 @@
         }
         return doc;
       });
+      // Re-render immediately so the action changes to the Requested status.
+      applyFilters();
       showAlert(d.message||'Publish request submitted.','success');
     } else { showAlert(d.message||'Failed to submit request.','danger'); }
     btn.disabled=false;
@@ -603,6 +948,7 @@
       if(r.ok&&d.success){
         showAlert(d.message||'Document archived successfully.','success');
         await loadDocs();
+        loadArchivedCount();
       } else {
         showAlert(d.message||'Archive failed.','danger');
         if(btn){btn.disabled=false;btn.textContent='Archive';}
@@ -614,7 +960,7 @@
   }
 
   async function restoreDoc(id){
-    var doc=getDocById(id);
+    var doc=getDocById(id) || getArchivedDocById(id);
     var title=doc ? doc.title : 'this document';
     if(!confirm('Unarchive "'+title+'"?\n\nThis will return it to the active documents list as a draft.'))return;
     var btn=document.getElementById('restore-'+id);
@@ -624,7 +970,14 @@
       var d=await r.json();
       if(r.ok&&d.success){
         showAlert(d.message||'Document restored successfully.','success');
-        await loadDocs();
+        // Restored doc is no longer archived — leave the Archives view so it
+        // returns to the active documents list.
+        if (showingArchived) {
+          await setDocumentView('published');
+        } else {
+          await loadDocs();
+        }
+        await loadArchiveInventory();
       } else {
         showAlert(d.message||'Unarchive failed.','danger');
         if(btn){btn.disabled=false;btn.textContent='Unarchive';}
@@ -635,7 +988,9 @@
     }
   }
 
-  async function deleteDoc(id, title){
+  async function deleteDoc(id){
+    var doc=getDocById(id) || getArchivedDocById(id);
+    var title=doc ? doc.title : 'this document';
     if(!confirm('Permanently delete "'+title+'"?\n\nThis action cannot be undone and will remove the file from the server.'))return;
     var btn=document.getElementById('delete-'+id);
     if(btn){btn.disabled=true;btn.textContent='Deleting...';}
@@ -645,6 +1000,7 @@
       if(r.ok&&d.success){
         showAlert(d.message||'Document deleted successfully.','success');
         await loadDocs();
+        await loadArchiveInventory();
       } else {
         showAlert(d.message||'Delete failed.','danger');
         if(btn){btn.disabled=false;btn.textContent='Delete';}
@@ -660,12 +1016,27 @@
     var status=document.getElementById('fStatus').value;
     var year=document.getElementById('fYear').value;
     var q=document.getElementById('fSearch').value.trim().toLowerCase();
+    var sort=document.getElementById('fSort').value;
+    updateClearFiltersVisibility();
     var filtered=allDocs.filter(function(d){
       var mCat=!cat||String(d.category_id)===cat;
-      var mStat=status===''||String(toBool(d.is_published)?1:0)===status;
+      var pub=toBool(d.is_published);
+      var req=toBool(d.publish_requested);
+      var mStat;
+      if (status==='') mStat=true;
+      else if (status==='1') mStat=pub;
+      else if (status==='requested') mStat=!pub && req;
+      else if (status==='0') mStat=!pub;
+      else mStat=true;
       var mYear=!year||String(d.fiscal_year)===year;
       var mQ=!q||d.title.toLowerCase().includes(q);
       return mCat&&mStat&&mYear&&mQ;
+    });
+    filtered.sort(function(a,b){
+      if(sort==='title-asc') return String(a.title||'').localeCompare(String(b.title||''));
+      if(sort==='title-desc') return String(b.title||'').localeCompare(String(a.title||''));
+      var aDate=new Date(a.created_at||0).getTime(), bDate=new Date(b.created_at||0).getTime();
+      return sort==='oldest' ? aDate-bDate : bDate-aDate;
     });
     renderDocs(filtered);
     document.getElementById('docCount').textContent=filtered.length+' result(s)';
@@ -673,6 +1044,7 @@
 
   function resetFilters(){
     clearFilters();
+    updateClearFiltersVisibility();
     renderDocs(allDocs);
     document.getElementById('docCount').textContent=allDocs.length+' '+(showingArchived?'archived document(s)':'document(s)');
   }
@@ -681,14 +1053,117 @@
     document.getElementById('fCat').value='';
     document.getElementById('fStatus').value='';
     document.getElementById('fYear').value='';
+    document.getElementById('fSort').value='newest';
     document.getElementById('fSearch').value='';
   }
 
+  function updateClearFiltersVisibility(){
+    var button=document.getElementById('clearFiltersBtn');
+    if(!button) return;
+    button.hidden=!(document.getElementById('fCat').value || document.getElementById('fStatus').value || document.getElementById('fYear').value || document.getElementById('fSearch').value.trim() || document.getElementById('fSort').value !== 'newest');
+  }
+
+  function canBulkManage(){
+    return currentUser && (currentUser.role === 'admin' || currentUser.role === 'chairperson');
+  }
+
+  function updateBulkSelection(){
+    if (!canBulkManage()){
+      document.body.classList.remove('has-bulk-selection');
+      var disabledBtn=document.getElementById('bulkArchiveBtn');
+      if (disabledBtn){ disabledBtn.disabled=true; }
+      return;
+    }
+    var checks=document.querySelectorAll('#docsBody .doc-check:checked');
+    var count=checks.length;
+    document.body.classList.toggle('has-bulk-selection', count > 0);
+    document.querySelectorAll('#docsBody .doc-check').forEach(function(check) {
+      var row = check.closest('tr');
+      if (row) row.classList.toggle('is-bulk-selected', check.checked);
+    });
+    var countBox=document.getElementById('bulkCount');
+    if (countBox) countBox.textContent = count + ' selected';
+
+    var archiveBtn=document.getElementById('bulkArchiveBtn');
+    if (archiveBtn) archiveBtn.disabled = count === 0;
+
+    var all=document.querySelectorAll('#docsBody .doc-check');
+    var selectAll=document.getElementById('selectAllDocs');
+    if (selectAll){
+      selectAll.indeterminate = count > 0 && count < all.length;
+      selectAll.checked = count > 0 && count === all.length;
+    }
+  }
+
+  function toggleSelectAll(cb){
+    var checks=document.querySelectorAll('#docsBody .doc-check');
+    for(var i=0;i<checks.length;i++){ checks[i].checked = cb.checked; }
+    updateBulkSelection();
+  }
+
+  function clearBulkSelection(){
+    var checks=document.querySelectorAll('#docsBody .doc-check');
+    for(var i=0;i<checks.length;i++){ checks[i].checked = false; }
+    var selectAll=document.getElementById('selectAllDocs');
+    if (selectAll){ selectAll.checked=false; selectAll.indeterminate=false; }
+    var tableWrap=document.querySelector('.table-wrap');
+    if (tableWrap) tableWrap.classList.remove('selection-mode');
+    document.querySelectorAll('#docsBody tr.selection-target').forEach(function(row){ row.classList.remove('selection-target'); });
+    updateBulkSelection();
+  }
+
+  function toggleDocumentSelectionMode(row, event){
+    if (!canBulkManage()) return;
+    if (event && event.target.closest('button, a, input, label')) return;
+    var tableWrap=row.closest('.table-wrap');
+    if (!tableWrap) return;
+    var isActive=tableWrap.classList.contains('selection-mode') && row.classList.contains('selection-target');
+    clearBulkSelection();
+    if (isActive) return;
+    tableWrap.classList.add('selection-mode');
+    row.classList.add('selection-target');
+    var checkbox=row.querySelector('.doc-check');
+    if (checkbox) checkbox.checked=true;
+    updateBulkSelection();
+  }
+
+  async function bulkArchiveSelected(){
+    if (!canBulkManage()){
+      showAlert('You do not have permission to archive documents.','danger');
+      return;
+    }
+    var checks=document.querySelectorAll('#docsBody .doc-check:checked');
+    var ids=Array.prototype.map.call(checks, function(cb){ return cb.value; });
+    if (!ids.length){ return; }
+    if (!confirm('Archive '+ids.length+' document(s)?\n\nThis will move the selected items to Archives and remove them from the public site.')) return;
+
+    var btn=document.getElementById('bulkArchiveBtn');
+    if (btn){ btn.disabled=true; btn.textContent='Archiving...'; }
+    try {
+      var body={ ids: ids.map(Number) };
+      if (currentUser.role === 'admin') body.barangay_id = window.SkBarangay.getSelectedBarangayId();
+      var r=await fetch(API+'/admin/documents/bulk/archive', {
+        method:'PATCH',
+        credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+      var d=await r.json();
+      if (r.ok && d.success){
+        showAlert(d.message || ids.length+' document(s) archived successfully.','success');
+        await loadDocs();
+        clearBulkSelection();
+      } else {
+        showAlert(d.message || 'Failed to archive selected documents.','danger');
+      }
+    } catch (err) {
+      showAlert('Archive error: '+err.message,'danger');
+    }
+    if (btn){ btn.disabled=false; btn.textContent='Archive'; }
+  }
+
   async function toggleArchiveView(){
-    showingArchived=!showingArchived;
-    clearFilters();
-    updateArchiveViewLabels();
-    await loadDocs();
+    openArchiveInventory();
   }
 
   async function doLogout(){

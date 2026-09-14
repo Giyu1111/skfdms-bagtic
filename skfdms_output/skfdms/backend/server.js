@@ -15,6 +15,7 @@ const fs        = require('fs');
 
 const apiRoutes = require('./routes/api');
 const { getUploadDir } = require('./config/uploadPath');
+const { purgeExpiredArchivedDocuments } = require('./controllers/DocumentController');
 
 const app  = express();
 const PORT = Number.parseInt(process.env.PORT, 10) || 3000;
@@ -140,9 +141,12 @@ app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
 
   if (err.code === 'LIMIT_FILE_SIZE') {
+    const maxSize = req.path === '/api/admin/documents'
+      ? (Number.parseInt(process.env.MAX_DOCUMENT_FILE_SIZE_MB, 10) || 50)
+      : (Number.parseInt(process.env.MAX_FILE_SIZE_MB, 10) || 10);
     return res.status(400).json({
       success: false,
-      message: 'File too large. Maximum 10MB.',
+      message: `File too large. Maximum ${maxSize}MB.`,
     });
   }
 
@@ -160,8 +164,28 @@ function logStartup(port) {
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}\n`);
 }
 
+function startArchiveRetentionJob() {
+  const runCleanup = async () => {
+    try {
+      const deletedCount = await purgeExpiredArchivedDocuments();
+      if (deletedCount > 0) {
+        console.log(`[OK] Auto-deleted ${deletedCount} archived document(s) older than 5 years.`);
+      }
+    } catch (err) {
+      console.error('[WARN] Archive retention cleanup failed:', err.message);
+    }
+  };
+
+  runCleanup();
+  const timer = setInterval(runCleanup, 24 * 60 * 60 * 1000);
+  if (typeof timer.unref === 'function') timer.unref();
+}
+
 function startServer(port, retriesLeft = MAX_PORT_RETRIES) {
-  const server = app.listen(port, () => logStartup(port));
+  const server = app.listen(port, () => {
+    logStartup(port);
+    startArchiveRetentionJob();
+  });
 
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE' && retriesLeft > 0) {

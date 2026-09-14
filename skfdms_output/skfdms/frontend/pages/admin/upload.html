@@ -45,6 +45,9 @@
     .pv-name{font-weight:700;font-size:1rem;color:#1a3c2e;word-break:break-all;}
     .pv-size{font-size:.84rem;color:#555;margin-top:2px;}
     .rm-btn{background:#C0392B;color:#fff;border:none;border-radius:7px;padding:7px 12px;font-size:.84rem;font-weight:700;cursor:pointer;white-space:nowrap;}
+    .remove-one-btn{width:28px;height:28px;flex:0 0 28px;border:1px solid #efc3be;border-radius:7px;background:#fff5f4;color:#b42318;font-size:1.2rem;line-height:1;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;justify-content:center;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;}
+    .remove-one-btn:hover{background:#c0392b;border-color:#c0392b;color:#fff;transform:scale(1.06);}
+    .remove-one-btn:focus-visible{outline:3px solid rgba(192,57,43,.24);outline-offset:2px;}
     .prog-wrap{margin-top:14px;display:none;}
     .prog-wrap.show{display:block;}
     .prog-bg{height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;}
@@ -121,7 +124,8 @@
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
       <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
       <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
-      <a href="/" class="sidebar-public-link" style="border-top:1px solid rgba(255,255,255,.1);margin-top:8px;padding-top:16px;"><span class="nav-icon" aria-hidden="true"></span><span>Public Site</span></a>
+       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+      <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
     <div class="sb-user"><div class="sb-uname" id="sName">...</div><div class="sb-role" id="sRole"></div></div>
   </aside>
@@ -131,7 +135,6 @@
         <h2>Upload Disclosure Document</h2>
         <select id="barangaySelector" class="barangay-select"></select>
       </div>
-      <button class="logout-btn" id="logoutBtn">Log Out</button>
     </div>
     <div class="content">
       <div id="alertBox"></div>
@@ -139,10 +142,10 @@
         <h3 style="color:#1A4530;margin:0 0 22px;font-size:1.12rem;">New Document Upload</h3>
 
         <div class="drop-zone" id="dropZone">
-          <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple/>
+          <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.zip" multiple/>
           <span class="dz-icon"><span class="ui-icon ui-icon-file ui-icon-xl" aria-hidden="true"></span></span>
           <p>Drag and drop your files here, or <strong style="color:#3D8C62;">click to browse</strong></p>
-          <small>Allowed: PDF, JPG, PNG, DOC, DOCX · Max 10MB per file · Up to 10 files · Max 50MB total</small>
+          <small>Allowed: PDF, JPG, PNG, DOC, DOCX, ZIP · Max 10MB · One file per upload request. Put multiple files in a ZIP archive to submit them together.</small>
         </div>
 
         <div class="preview" id="preview">
@@ -189,7 +192,7 @@
           <textarea id="fDesc" rows="3" placeholder="Brief description..." style="resize:vertical;"></textarea>
         </div>
         <div class="form-actions">
-          <button class="btn-submit" id="uploadBtn" onclick="doUpload()">Upload Document(s)</button>
+          <button class="btn-submit" id="uploadBtn" onclick="doUpload()">Upload Document</button>
           <a href="documents.html" class="btn-cancel">Cancel</a>
         </div>
       </div>
@@ -203,8 +206,9 @@
 <script src="../../js/barangay-context.js"></script>
 <script>
 var API=window.location.origin+'/api', selectedFiles=[], currentUser=null;
-var MAX_FILE_SIZE_MB = 10, MAX_FILE_COUNT = 10, MAX_TOTAL_MB = 50;
-var icons={pdf:'file',jpg:'image',jpeg:'image',png:'image',doc:'note',docx:'note'};
+var MAX_FILE_SIZE_MB = 50, MAX_FILE_COUNT = 10, MAX_TOTAL_SIZE_MB = 50;
+var icons={pdf:'file',jpg:'image',jpeg:'image',png:'image',doc:'note',docx:'note',zip:'file'};
+document.querySelector('#dropZone small').textContent='Allowed: PDF, JPG, PNG, DOC, DOCX, ZIP · Up to 10 files / 50MB total. Multiple files are sent as one ZIP upload request.';
 
 function showA(m,t){var e=document.getElementById('alertBox');e.innerHTML='<div class="alert alert-'+(t==='success'?'s':'e')+'">'+m+'</div>';if(t==='success')setTimeout(function(){e.innerHTML='';},5000);}
 function fsize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
@@ -213,7 +217,7 @@ function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&am
 window.addEventListener('load',async function(){
   var r=await fetch(API+'/auth/me',{credentials:'include'});
   var d=await r.json();
-  if(!d.success){window.location.href='/pages/login';return;}
+  if(!d.success){window.location.href='/pages/login.html';return;}
   currentUser=d.user;
   sessionStorage.setItem('skfdms_current_user', JSON.stringify({
     user: currentUser,
@@ -221,11 +225,13 @@ window.addEventListener('load',async function(){
   }));
   window.dispatchEvent(new CustomEvent('skfdms:user', { detail: currentUser }));
   if (currentUser.role !== 'chairperson') {
-    window.location.href = 'documents';
+    window.location.href = 'documents.html';
     return;
   }
   document.getElementById('sName').textContent=d.user.name;
   document.getElementById('sRole').textContent=d.user.role;
+   window.SkBarangay.renderSidebarUser(currentUser);
+   window.SkBarangay.updateSidebarLogo(currentUser.role);
 
   await window.SkBarangay.init(currentUser);
   window.SkBarangay.populateDropdown(document.getElementById('barangaySelector'));
@@ -250,24 +256,25 @@ dz.addEventListener('dragleave',function(){dz.classList.remove('over');});
 dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files.length)handleFiles(e.dataTransfer.files);});
 
 function handleFiles(fileList){
-  var allowed=['pdf','jpg','jpeg','png','doc','docx'];
+  var allowed=['pdf','jpg','jpeg','png','doc','docx','zip'];
   var files=Array.prototype.slice.call(fileList);
-  if(files.length>MAX_FILE_COUNT){showA('You can upload up to '+MAX_FILE_COUNT+' files at a time.','error');return;}
+  if(files.length>MAX_FILE_COUNT){showA('You can select up to '+MAX_FILE_COUNT+' files at a time.','error');return;}
   var totalBytes=0;
   for(var i=0;i<files.length;i++){
     var ext=files[i].name.split('.').pop().toLowerCase();
-    if(!allowed.includes(ext)){showA('Only PDF, JPG, PNG, DOC, DOCX files allowed.','error');return;}
+    if(!allowed.includes(ext)){showA('Only PDF, JPG, PNG, DOC, DOCX, ZIP files allowed.','error');return;}
     if(files[i].size>MAX_FILE_SIZE_MB*1048576){showA(files[i].name+' is too large. Max '+MAX_FILE_SIZE_MB+'MB per file.','error');return;}
     totalBytes+=files[i].size;
   }
-  if(totalBytes>MAX_TOTAL_MB*1048576){showA('Total selected files exceed '+MAX_TOTAL_MB+'MB. Please reduce the number or size of files.','error');return;}
+  if(totalBytes>MAX_TOTAL_SIZE_MB*1048576){showA('The selected files exceed the '+MAX_TOTAL_SIZE_MB+'MB total limit.','error');return;}
   selectedFiles=files;
   document.getElementById('pvSummary').textContent=files.length+' file'+(files.length===1?'':'s')+' selected ('+fsize(totalBytes)+' total)';
-  document.getElementById('previewList').innerHTML=files.map(function(f){
+  document.getElementById('previewList').innerHTML=files.map(function(f,index){
     var ext=f.name.split('.').pop().toLowerCase();
     return '<div class="preview-item">'
       + '<div class="pv-icon"><span class="ui-icon ui-icon-'+(icons[ext]||'file')+' ui-icon-lg" aria-hidden="true"></span></div>'
       + '<div class="pv-info"><div class="pv-name">'+escapeHtml(f.name)+'</div><div class="pv-size">'+fsize(f.size)+'</div></div>'
+      + '<button type="button" class="remove-one-btn" onclick="removeSelectedFile('+index+')" aria-label="Remove '+escapeHtml(f.name)+'" title="Remove this file">&times;</button>'
       + '</div>';
   }).join('');
   document.getElementById('preview').classList.add('show');
@@ -281,6 +288,102 @@ function clearFile(){
   document.getElementById('preview').classList.remove('show');
   document.getElementById('previewList').innerHTML='';
   dz.style.display='';
+}
+
+function removeSelectedFile(index){
+  selectedFiles.splice(index,1);
+  document.getElementById('fileInput').value='';
+  if(!selectedFiles.length){clearFile();return;}
+  handleFiles(selectedFiles);
+}
+
+function writeUint16(bytes, offset, value){
+  bytes[offset]=value&255;
+  bytes[offset+1]=(value>>>8)&255;
+}
+
+function writeUint32(bytes, offset, value){
+  bytes[offset]=value&255;
+  bytes[offset+1]=(value>>>8)&255;
+  bytes[offset+2]=(value>>>16)&255;
+  bytes[offset+3]=(value>>>24)&255;
+}
+
+function crc32(bytes){
+  var crc=0xFFFFFFFF;
+  for(var i=0;i<bytes.length;i++){
+    crc^=bytes[i];
+    for(var bit=0;bit<8;bit++) crc=(crc>>>1)^((crc&1)?0xEDB88320:0);
+  }
+  return (crc^0xFFFFFFFF)>>>0;
+}
+
+function zipDateParts(date){
+  var year=Math.max(date.getFullYear(),1980);
+  return {
+    time:(date.getHours()<<11)|(date.getMinutes()<<5)|Math.floor(date.getSeconds()/2),
+    date:((year-1980)<<9)|((date.getMonth()+1)<<5)|date.getDate()
+  };
+}
+
+async function createZipFile(files, title){
+  var encoder=new TextEncoder();
+  var localParts=[], centralParts=[], offset=0;
+  var dateParts=zipDateParts(new Date());
+
+  for(var i=0;i<files.length;i++){
+    var file=files[i];
+    var nameBytes=encoder.encode(file.name);
+    var dataBytes=new Uint8Array(await file.arrayBuffer());
+    var crc=crc32(dataBytes);
+    var localHeader=new Uint8Array(30);
+    writeUint32(localHeader,0,0x04034b50);
+    writeUint16(localHeader,4,20);
+    writeUint16(localHeader,6,0x0800);
+    writeUint16(localHeader,8,0);
+    writeUint16(localHeader,10,dateParts.time);
+    writeUint16(localHeader,12,dateParts.date);
+    writeUint32(localHeader,14,crc);
+    writeUint32(localHeader,18,dataBytes.length);
+    writeUint32(localHeader,22,dataBytes.length);
+    writeUint16(localHeader,26,nameBytes.length);
+    writeUint16(localHeader,28,0);
+    localParts.push(localHeader,nameBytes,dataBytes);
+
+    var centralHeader=new Uint8Array(46);
+    writeUint32(centralHeader,0,0x02014b50);
+    writeUint16(centralHeader,4,20);
+    writeUint16(centralHeader,6,20);
+    writeUint16(centralHeader,8,0x0800);
+    writeUint16(centralHeader,10,0);
+    writeUint16(centralHeader,12,dateParts.time);
+    writeUint16(centralHeader,14,dateParts.date);
+    writeUint32(centralHeader,16,crc);
+    writeUint32(centralHeader,20,dataBytes.length);
+    writeUint32(centralHeader,24,dataBytes.length);
+    writeUint16(centralHeader,28,nameBytes.length);
+    writeUint16(centralHeader,30,0);
+    writeUint16(centralHeader,32,0);
+    writeUint16(centralHeader,34,0);
+    writeUint16(centralHeader,36,0);
+    writeUint32(centralHeader,38,0);
+    writeUint32(centralHeader,42,offset);
+    centralParts.push(centralHeader,nameBytes);
+    offset+=localHeader.length+nameBytes.length+dataBytes.length;
+  }
+
+  var centralSize=centralParts.reduce(function(size,part){return size+part.length;},0);
+  var endHeader=new Uint8Array(22);
+  writeUint32(endHeader,0,0x06054b50);
+  writeUint16(endHeader,4,0);
+  writeUint16(endHeader,6,0);
+  writeUint16(endHeader,8,files.length);
+  writeUint16(endHeader,10,files.length);
+  writeUint32(endHeader,12,centralSize);
+  writeUint32(endHeader,16,offset);
+  writeUint16(endHeader,20,0);
+  var archiveName=(title||'documents').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'')||'documents';
+  return new File(localParts.concat(centralParts,[endHeader]),archiveName+'.zip',{type:'application/zip'});
 }
 
 async function doUpload(){
@@ -299,8 +402,14 @@ async function doUpload(){
   document.getElementById('progFill').style.width='40%';
   document.getElementById('progLbl').textContent='Uploading file...';
 
+  try{
+  var uploadFile=selectedFiles[0];
+  if(selectedFiles.length>1){
+    document.getElementById('progLbl').textContent='Creating one ZIP upload...';
+    uploadFile=await createZipFile(selectedFiles,title);
+  }
   var fd=new FormData();
-  selectedFiles.forEach(function(file){ fd.append('file',file); });
+  fd.append('file',uploadFile);
   fd.append('title',title);
   fd.append('category_id',cat);
   fd.append('fiscal_year',year);
@@ -309,7 +418,6 @@ async function doUpload(){
   // important: append barangay_id for admin
   fd.append('barangay_id', window.SkBarangay.getSelectedBarangayId());
 
-  try{
     document.getElementById('progFill').style.width='70%';
     var r=await fetch(API+'/admin/documents',{method:'POST',credentials:'include',body:fd});
     document.getElementById('progFill').style.width='100%';
@@ -317,15 +425,15 @@ async function doUpload(){
     var d=await r.json();
     if(r.ok&&d.success){
       showA((d.message||'Document uploaded successfully!')+' Redirecting...','success');
-      setTimeout(function(){window.location.href='documents';},1500);
+      setTimeout(function(){window.location.href='documents.html';},1500);
     }else{
       showA((d.message||'Upload failed.'),'error');
-      btn.disabled=false;btn.textContent='Upload Document(s)';
+      btn.disabled=false;btn.textContent='Upload Document';
       document.getElementById('progWrap').classList.remove('show');
     }
   }catch(err){
     showA('Upload error: '+err.message,'error');
-    btn.disabled=false;btn.textContent='Upload Document(s)';
+    btn.disabled=false;btn.textContent='Upload Document';
     document.getElementById('progWrap').classList.remove('show');
   }
 }

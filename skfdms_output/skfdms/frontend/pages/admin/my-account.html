@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account</title>
+  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="stylesheet" href="../../css/admin-shell.css" />
+  <style>
+    body { background: #f5f7f6; color: #22342a; }
+    .sidebar { background: #1A4530; min-height: 100vh; position: sticky; top: 0; }
+    .admin-main { flex: 1; min-width: 0; }
+    .admin-topbar { min-height: 66px; padding: 0 30px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #e2e8e5; }
+    .admin-topbar h2 { margin: 0; color: #1a4530; font-size: 1.25rem; }
+    .content { width: min(100%, 820px); min-height: calc(100vh - 66px); margin: 0 auto; padding: 30px; display: flex; flex-direction: column; justify-content: center; }
+    .intro { margin: 0 0 22px; color: #6a786f; text-align: center; }
+    .alert { margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; font-size: .92rem; }
+    .alert-success { color: #17653b; background: #e9f8ee; border: 1px solid #b8e5c6; }
+    .alert-danger { color: #a32222; background: #fff0f0; border: 1px solid #f0c0c0; }
+    .account-card { background: #fff; border: 1px solid #dce5df; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(20, 54, 35, .09); }
+    .account-card + .account-card { margin-top: 20px; }
+    .card-title { padding: 18px 24px; margin: 0; border-bottom: 1px solid #e2e8e5; font-size: 1.22rem; font-weight: 700; color: #263b2f; }
+    .card-body { padding: 26px 32px; }
+    .profile-row { display: flex; align-items: center; gap: 20px; padding-bottom: 26px; border-bottom: 1px solid #e7ece9; margin-bottom: 26px; }
+    .profile-photo { width: 92px; height: 92px; border-radius: 50%; background: #3d8c62; color: #fff; display: grid; place-items: center; overflow: hidden; font-size: 1.8rem; font-weight: 800; flex: 0 0 auto; }
+    .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-row h3 { margin: 0 0 4px; font-size: 1.08rem; color: #1a4530; }
+    .profile-row p { margin: 0; color: #718077; font-size: .9rem; }
+    .button-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn { border: 0; border-radius: 7px; padding: 11px 16px; font: inherit; font-weight: 700; cursor: pointer; background: #295b96; color: #fff; }
+    .btn:hover { background: #20497a; }
+    .btn.secondary { background: #edf2ef; color: #385246; }
+    .btn.danger { background: #fff1f1; color: #9b2727; }
+    .form-section + .form-section { border-top: 1px solid #e7ece9; margin-top: 28px; padding-top: 28px; }
+    .form-section h3 { margin: 0 0 7px; font-size: 1.12rem; color: #273c30; }
+    .form-section > p { margin: 0 0 20px; color: #728078; line-height: 1.5; }
+    label { display: block; margin: 16px 0 7px; font-size: .78rem; font-weight: 800; color: #4b5650; letter-spacing: .06em; text-transform: uppercase; }
+    .required { color: #c92c2c; }
+    input { width: 100%; border: 1.5px solid #b9c7bf; border-radius: 7px; padding: 12px 14px; font: inherit; color: #26352c; outline: none; background: #fff; }
+    input:focus { border-color: #295b96; box-shadow: 0 0 0 3px rgba(41, 91, 150, .12); }
+    .password-field { position: relative; }
+    .password-field input { padding-right: 48px; }
+    .password-toggle { position: absolute; top: 50%; right: 8px; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 6px; transform: translateY(-50%); display: grid; place-items: center; color: #526158; background: transparent; cursor: pointer; }
+    .password-toggle:hover, .password-toggle:focus-visible { color: #295b96; background: #edf3f7; outline: none; }
+    .password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .password-toggle .eye-slash { display: none; }
+    .password-toggle.is-visible .eye-slash { display: block; }
+    .form-actions { display: flex; justify-content: flex-end; margin-top: 22px; }
+    .initial-password { margin: 18px 0 0; padding: 12px 14px; border-left: 3px solid #d4ac0d; background: #fff9df; color: #64551a; font-size: .9rem; line-height: 1.45; }
+    .sidebar-nav { flex: 1; }
+    .sidebar-user { margin-top: auto; padding: 16px 22px; border-top: 1px solid rgba(255,255,255,.12); }
+    @media (max-width: 760px) { .admin-layout { display: block; } .sidebar { position: static; min-height: auto; width: 100% !important; } .content { padding: 20px 16px; } .card-body { padding: 22px 18px; } .admin-topbar { padding: 0 18px; } }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="admin-brand"><span class="admin-brand-logos" aria-hidden="true"><img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" /><img class="admin-brand-logo" src="../../images/favicon.png" alt="" /></span><span class="admin-brand-title"><span class="admin-brand-kabataan">Sangguniang Kabataan</span><span class="admin-brand-rule"></span><span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span></span></div></div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
+      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Post Announcements</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="my-account.html" class="active" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+      <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
+    </nav>
+    <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
+  </aside>
+  <main class="admin-main">
+    <header class="admin-topbar"><h2>My Account</h2></header>
+    <section class="content">
+      <p class="intro">Manage your profile picture, email address, and password.</p>
+      <div id="alertBox"></div>
+      <section class="account-card">
+        <h1 class="card-title">Account Settings</h1>
+        <div class="card-body">
+          <div class="profile-row">
+            <div class="profile-photo" id="profilePreview"></div>
+            <div><h3 id="accountName">SK Chairperson</h3><p>Profile image shown in the sidebar.</p><div class="button-row"><button class="btn" type="button" id="photoBtn">Change Photo</button><button class="btn danger" type="button" id="removePhotoBtn">Remove Photo</button></div><input type="file" id="photoInput" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" hidden /></div>
+          </div>
+          <form id="nameForm" class="form-section">
+            <h3>Account Name</h3><p>This name is displayed in the sidebar and throughout your SK chairperson account.</p>
+            <label for="accountNameInput">Full name <span class="required">*</span></label><input id="accountNameInput" type="text" autocomplete="name" required maxlength="120" />
+            <div class="form-actions"><button class="btn" id="changeNameBtn" type="submit">Change Name</button></div>
+          </form>
+          <form id="emailForm" class="form-section">
+            <h3>Account Email</h3><p>This is the email address where we send account notifications and security details.</p>
+            <label for="accountEmail">Email address <span class="required">*</span></label><input id="accountEmail" type="email" autocomplete="email" required />
+            <div class="form-actions"><button class="btn" id="changeEmailBtn" type="submit">Change Email</button></div>
+          </form>
+          <form id="passwordForm" class="form-section">
+            <h3>Change Password</h3><p>Use your current password to set a new, secure password.</p>
+            <div class="initial-password"><strong>Initial password:</strong> For security, the system does not display a password after it has been created. Use the temporary password supplied during approval, then replace it here with your own password.</div>
+            <label for="currentPassword">Current password <span class="required">*</span></label><div class="password-field"><input id="currentPassword" type="password" autocomplete="current-password" required /><button class="password-toggle" type="button" aria-label="Show current password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.75"></circle><path class="eye-slash" d="M4 4 20 20"></path></svg></button></div>
+            <label for="newPassword">New password <span class="required">*</span></label><div class="password-field"><input id="newPassword" type="password" autocomplete="new-password" minlength="8" required /><button class="password-toggle" type="button" aria-label="Show new password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.75"></circle><path class="eye-slash" d="M4 4 20 20"></path></svg></button></div>
+            <label for="confirmPassword">Confirm new password <span class="required">*</span></label><div class="password-field"><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required /><button class="password-toggle" type="button" aria-label="Show confirmation password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.75"></circle><path class="eye-slash" d="M4 4 20 20"></path></svg></button></div>
+            <div class="form-actions"><button class="btn" type="submit">Update Password</button></div>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+<script src="../../js/api.js"></script>
+<script src="../../js/barangay-context.js"></script>
+<script>
+  let currentUser;
+  function showAlert(message, type) { document.getElementById('alertBox').innerHTML = '<div class="alert alert-' + type + '">' + message + '</div>'; }
+  function initials(name) { return String(name || 'SK').trim().split(/\s+/).slice(0, 2).map(function(part) { return part[0].toUpperCase(); }).join(''); }
+  function renderPhoto() { var box = document.getElementById('profilePreview'); var src = currentUser.profile_image ? Users.profileImageUrl(currentUser.profile_image) : ''; box.innerHTML = src ? '<img src="' + src.replace(/"/g, '&quot;') + '" alt="Profile photo">' : initials(currentUser.name); }
+  function storeUser(user) { currentUser = user; var cached = readAuthCache() || {}; writeAuthCache(Object.assign({}, cached, { user: currentUser, cached_at: Date.now() })); window.SkBarangay.renderSidebarUser(currentUser); renderPhoto(); }
+  async function uploadPhoto(file) { if (!file) return; var form = new FormData(); form.append('image', file); var result = await Users.uploadProfileImage(currentUser.id, form); if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to update profile photo.', 'danger'); storeUser(Object.assign({}, currentUser, { profile_image: result.data.profile_image })); showAlert('Profile photo updated.', 'success'); }
+  async function loadAccount() { var result = await Auth.me(); if (!result.ok || !result.data.success) return window.location.href = '../login.html'; if (result.data.user.role !== 'chairperson') return window.location.href = 'dashboard.html'; await window.SkBarangay.init(result.data.user); storeUser(result.data.user); document.getElementById('accountName').textContent = currentUser.name; document.getElementById('accountNameInput').value = currentUser.name || ''; document.getElementById('accountEmail').value = currentUser.email || ''; }
+  document.getElementById('photoBtn').onclick = function() { document.getElementById('photoInput').click(); };
+  document.getElementById('photoInput').onchange = function(event) { uploadPhoto(event.target.files[0]); event.target.value = ''; };
+  document.querySelectorAll('.password-toggle').forEach(function(button) {
+    button.addEventListener('click', function() {
+      var input = button.parentElement.querySelector('input');
+      var visible = input.type === 'text';
+      var fieldName = button.getAttribute('aria-label').replace(/^(Show|Hide) /, '');
+      input.type = visible ? 'password' : 'text';
+      button.classList.toggle('is-visible', !visible);
+      button.setAttribute('aria-pressed', String(!visible));
+      button.setAttribute('aria-label', (visible ? 'Show ' : 'Hide ') + fieldName);
+    });
+  });
+  document.getElementById('removePhotoBtn').onclick = async function() { if (!currentUser.profile_image || !confirm('Remove your profile photo?')) return; var result = await Users.removeProfileImage(currentUser.id); if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to remove profile photo.', 'danger'); storeUser(Object.assign({}, currentUser, { profile_image: null })); showAlert('Profile photo removed.', 'success'); };
+  document.getElementById('nameForm').onsubmit = async function(event) {
+    event.preventDefault();
+    var input = document.getElementById('accountNameInput');
+    var name = input.value.trim().replace(/\s+/g, ' ');
+    var button = document.getElementById('changeNameBtn');
+    if (name === currentUser.name) return showAlert('Enter a different name to make a change.', 'danger');
+    button.disabled = true;
+    button.textContent = 'Changing...';
+    try {
+      var result = await apiFetch('/auth/account/name', { method: 'PATCH', body: JSON.stringify({ name: name }) });
+      if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to update name.', 'danger');
+      storeUser(result.data.user);
+      document.getElementById('accountName').textContent = currentUser.name;
+      input.value = currentUser.name;
+      showAlert(result.data.message || 'Name updated successfully.', 'success');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Change Name';
+    }
+  };
+  document.getElementById('emailForm').onsubmit = async function(event) {
+    event.preventDefault();
+    var emailInput = document.getElementById('accountEmail');
+    var email = emailInput.value.trim().toLowerCase();
+    var button = document.getElementById('changeEmailBtn');
+    if (!email) return showAlert('Please enter an email address.', 'danger');
+    if (email === String(currentUser.email || '').toLowerCase()) return showAlert('Enter a different email address to make a change.', 'danger');
+    button.disabled = true;
+    button.textContent = 'Changing...';
+    try {
+      var result = await apiFetch('/auth/account/email', { method: 'PATCH', body: JSON.stringify({ email: email }) });
+      if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to update email.', 'danger');
+      // Load the saved account record so the new email remains visible after navigation or refresh.
+      var fresh = await Auth.me();
+      storeUser(fresh.ok && fresh.data.success ? fresh.data.user : result.data.user);
+      emailInput.value = currentUser.email;
+      showAlert(result.data.message || 'Email address updated successfully.', 'success');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Change Email';
+    }
+  };
+  document.getElementById('passwordForm').onsubmit = async function(event) { event.preventDefault(); var password = document.getElementById('newPassword').value; if (password !== document.getElementById('confirmPassword').value) return showAlert('New passwords do not match.', 'danger'); var result = await apiFetch('/auth/account/password', { method: 'PATCH', body: JSON.stringify({ current_password: document.getElementById('currentPassword').value, new_password: password }) }); if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to update password.', 'danger'); event.target.reset(); showAlert(result.data.message, 'success'); };
+  document.getElementById('logoutBtn').onclick = async function() {
+    if (!confirm('Are you sure you want to log out?')) return;
+    await Auth.logout();
+    clearAuthCache();
+    window.location.href = '../login.html';
+  };
+  loadAccount();
+</script>
+</body>
+</html>

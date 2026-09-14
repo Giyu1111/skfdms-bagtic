@@ -21,6 +21,14 @@
     .timeline-item::before { content: ''; position: absolute; left: -28px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--sky); border: 2px solid white; box-shadow: 0 0 0 2px var(--sky-light); }
     .timeline-item h4 { color: var(--navy); margin-bottom: 4px; }
     .timeline-item p  { color: var(--gray-700); font-size: .9rem; }
+
+    @media (max-width: 768px) {
+      .about-hero h1 { font-size: 1.8rem; }
+      .about-hero p { max-width: 100%; }
+      .timeline { padding-left: 22px; }
+      .timeline::before { left: 4px; }
+      .timeline-item::before { left: -24px; width: 12px; height: 12px; }
+    }
   </style>
   <link rel="stylesheet" href="../css/public-nav.css" />
   <script src="../js/public-theme.js" defer></script>
@@ -40,6 +48,9 @@
         <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
       </span>
     </a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="menu-bar"></span>
+    </button>
     <div class="navbar-links">
       <a href="../index.html">Home</a>
       <a href="documents.html">Documents</a>

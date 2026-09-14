@@ -21,15 +21,16 @@
     .stat.gold{border-left-color:var(--gold);}
     .stat-value{color:var(--navy);font-size:1.9rem;font-weight:900;line-height:1;}
     .stat-label{color:var(--gray-400);font-size:.8rem;font-weight:800;margin-top:7px;}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
-    .toolbar h2{font-size:1.15rem;color:var(--navy);}
-    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-    .barangay-select{width:min(100%,260px);border:1.5px solid #dce5df;border-radius:10px;padding:11px 13px;font-family:var(--font);font-size:.92rem;font-weight:700;color:var(--navy);background:white;outline:none;}
+    .toolbar{margin-bottom:16px;}
+    .toolbar h2{font-size:1.15rem;color:var(--navy);margin-bottom:12px;}
+    .filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%;}
+    .barangay-select{width:100%;border:1.5px solid #dce5df;border-radius:10px;padding:11px 13px;font-family:var(--font);font-size:.92rem;font-weight:700;color:var(--navy);background:white;outline:none;}
     .search{width:min(100%,320px);border:1.5px solid #dce5df;border-radius:10px;padding:11px 13px;font-family:var(--font);font-size:.92rem;outline:none;}
     .search:focus,.barangay-select:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(61,140,98,.1);}
-    .fund-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+    .fund-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),320px));justify-content:start;gap:16px;}
     .fund-card{background:white;border:1px solid #e7eee9;border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;flex-direction:column;min-height:100%;}
     .proof{height:190px;background:linear-gradient(135deg,var(--gray-100),#fff);display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:8px;border-bottom:1px solid #edf2ee;overflow:hidden;}
+    .proof.single-proof{grid-template-columns:1fr;}
     .proof-tile{border-radius:9px;background:#f8fbf9;border:1px solid #dce5df;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;overflow:hidden;min-width:0;}
     .proof-tile img{width:100%;height:100%;object-fit:cover;}
     .proof-tile.more{background:rgba(26,69,48,.9);color:#fff;font-size:1.1rem;}
@@ -55,10 +56,13 @@
     .proof-modal-head h3{font-size:1rem;color:var(--navy);font-weight:900;}
     .modal-close{width:34px;height:34px;border:0;border-radius:8px;background:#f1f5f2;color:var(--navy);font-size:1.35rem;cursor:pointer;}
     .proof-modal-body{padding:18px;}
-    .album-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px;}
-    .album-item{min-height:150px;border:1px solid #dce5df;border-radius:10px;background:#f8fbf9;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;text-decoration:none;overflow:hidden;}
-    .album-item img{width:100%;height:170px;object-fit:cover;}
-    .album-file{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+    .proof-preview-stack{display:grid;gap:14px;margin-bottom:18px;}
+    .proof-preview-panel{background:#f8fbf9;border:1px solid #dce5df;border-radius:10px;overflow:hidden;}
+    .proof-preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #edf2ee;color:var(--navy);font-size:.84rem;font-weight:900;}
+    .proof-preview-content{min-height:320px;display:flex;align-items:center;justify-content:center;padding:10px;background:#fff;}
+    .proof-preview-content img{max-width:100%;max-height:520px;object-fit:contain;border-radius:8px;}
+    .proof-preview-embed{width:100%;height:540px;border:1px solid #ddd;border-radius:8px;background:#fff;}
+    .proof-preview-placeholder{padding:34px;color:var(--gray-700);font-size:.95rem;text-align:center;}
     .proof-details{border-top:1px solid #edf2ee;padding:16px 0;position:relative;color:var(--gray-700);line-height:1.65;}
     .proof-details h4{color:var(--navy);font-size:1.05rem;margin-bottom:6px;}
     .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px;}
@@ -81,11 +85,19 @@
     body.dark .proof-modal{background:#111d14;border-color:#1e3325;}
     body.dark .proof-modal-head{border-color:#1e3325;}
     body.dark .proof-modal-head h3,body.dark .proof-details h4{color:#c8e8d4;}
-    body.dark .album-item,body.dark .detail-grid div{background:#1e3325;border-color:#2f4d39;color:#c8e8d4;}
+    body.dark .proof-preview-panel,body.dark .detail-grid div{background:#1e3325;border-color:#2f4d39;color:#c8e8d4;}
+    body.dark .proof-preview-head{border-color:#2f4d39;color:#c8e8d4;}
+    body.dark .proof-preview-content{background:#111d14;}
     body.dark .connected-doc-link{background:#1e3325;border-color:#2f4d39;color:#c8e8d4;}
     body.dark .connected-doc-link:hover{background:#263f2f;border-color:#7acea8;}
     body.dark footer{background:#060f09;}
     @media(max-width:760px){.page-header h1{font-size:1.8rem;}}
+    @media(max-width:768px){
+      .filters{grid-template-columns:1fr;}
+      .summary{grid-template-columns:1fr;}
+      .stat-value{font-size:1.4rem;}
+      .fund-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),320px));}
+    }
   </style>
   <link rel="stylesheet" href="../css/public-nav.css"/>
   <script src="../js/public-theme.js" defer></script>
@@ -104,6 +116,9 @@
         <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
       </span>
     </a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="menu-bar"></span>
+    </button>
     <div class="navbar-links">
       <a href="../index.html">Home</a>
       <a href="documents.html">Documents</a>
@@ -112,7 +127,6 @@
       <a href="contact.html">Contact</a>
       <a href="about.html">About</a>
       <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
-      <a href="login.html" class="btn-admin">Login</a>
     </div>
   </div>
 </nav>
@@ -137,7 +151,12 @@
       <select class="barangay-select" id="barangayFilter" onchange="loadProofs()">
         <option value="all">All Barangays</option>
       </select>
-      <input class="search" id="searchInput" placeholder="Search purpose, title, or category..." oninput="renderProofs()">
+      <select class="barangay-select" id="fiscalYearFilter" aria-label="Fiscal year" onchange="renderProofs()">
+        <option value="">All Fiscal Years</option>
+      </select>
+      <select class="barangay-select" id="categoryFilter" aria-label="Category" onchange="renderProofs()">
+        <option value="">All Categories</option>
+      </select>
     </div>
   </div>
 
@@ -166,9 +185,9 @@ var API = window.location.origin + '/api';
 var proofs = [];
 var selectedBarangayId = new URLSearchParams(window.location.search).get('barangay_id') || 'all';
 var sample = [
-  { id: 0, title: 'Sports equipment for youth league', purpose: 'Basketballs, nets, and basic materials used for the barangay youth sports program.', expense_category: 'Sports Development', amount: 8500, spent_at: '2026-03-12', proof_label: 'Preview', file_type: 'jpg', is_image: false },
-  { id: 0, title: 'Leadership seminar meals and supplies', purpose: 'Food, certificates, and printed materials for SK leadership training participants.', expense_category: 'Youth Training', amount: 6200, spent_at: '2026-02-18', proof_label: 'Preview', file_type: 'pdf', is_image: false },
-  { id: 0, title: 'Clean-up drive materials', purpose: 'Trash bags, gloves, and cleaning tools for youth-led community clean-up activity.', expense_category: 'Environment', amount: 3100, spent_at: '2026-01-28', proof_label: 'Preview', file_type: 'png', is_image: false }
+  { id: 0, title: 'Sports equipment for youth league', purpose: 'Basketballs, nets, and basic materials used for the barangay youth sports program.', expense_category: 'Sports Development', fiscal_year: 2026, amount: 8500, spent_at: '2026-03-12', proof_label: 'Preview', file_type: 'jpg', is_image: false },
+  { id: 0, title: 'Leadership seminar meals and supplies', purpose: 'Food, certificates, and printed materials for SK leadership training participants.', expense_category: 'Youth Training', fiscal_year: 2026, amount: 6200, spent_at: '2026-02-18', proof_label: 'Preview', file_type: 'pdf', is_image: false },
+  { id: 0, title: 'Clean-up drive materials', purpose: 'Trash bags, gloves, and cleaning tools for youth-led community clean-up activity.', expense_category: 'Environment', fiscal_year: 2026, amount: 3100, spent_at: '2026-01-28', proof_label: 'Preview', file_type: 'png', is_image: false }
 ];
 
 function money(value) {
@@ -191,6 +210,32 @@ function fileIconHtml(file) {
   var ext = String((file && file.type) || '').toLowerCase();
   var iconClass = ['jpg','jpeg','png','gif','webp'].includes(ext) ? 'image' : (['doc','docx'].includes(ext) ? 'note' : 'file');
   return '<span class="ui-icon ui-icon-' + iconClass + ' ui-icon-xl" aria-hidden="true"></span>';
+}
+function proofFileExtension(file) {
+  var type = String((file && (file.type || file.file_type)) || '').toLowerCase().replace(/^\.+/, '').split('/')[0];
+  if (type) return type;
+  var name = String((file && file.name) || '');
+  var parts = name.split('.');
+  return parts.length > 1 ? parts.pop().toLowerCase() : 'file';
+}
+function renderProofPreviewFile(item, file, index) {
+  var ext = proofFileExtension(file);
+  var title = file && file.name ? file.name : ('Proof file ' + (index + 1));
+  var previewUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=' + encodeURIComponent(index);
+  var downloadUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?file=' + encodeURIComponent(index);
+  var isImage = file && (file.is_image || ['jpg','jpeg','png','gif','webp','svg'].includes(ext));
+  var content = '';
+  if (isImage) {
+    content = '<img src="' + previewUrl + '" alt="' + escapeHtml(title) + '">';
+  } else if (ext === 'pdf') {
+    content = '<iframe class="proof-preview-embed" src="' + previewUrl + '" title="Preview of ' + escapeHtml(title) + '"></iframe>';
+  } else {
+    content = '<div class="proof-preview-placeholder">' + fileIconHtml(file) + '<p style="margin-top:10px;font-size:.85rem;">Preview not available for this file type.<br>Click Download to access the file.</p></div>';
+  }
+  return '<section class="proof-preview-panel">'
+    + '<div class="proof-preview-head"><span>' + escapeHtml(title) + '</span><a href="' + downloadUrl + '" class="modal-download-btn" target="_blank" rel="noopener" download>Download</a></div>'
+    + '<div class="proof-preview-content">' + content + '</div>'
+    + '</section>';
 }
 function connectedDocuments(item) {
   var docs = Array.isArray(item.connected_documents) ? item.connected_documents : [];
@@ -232,20 +277,54 @@ function loadProofs() {
   if (selectedBarangayId !== 'all') url += '&barangay_id=' + encodeURIComponent(selectedBarangayId);
   fetch(url)
     .then(function(res){ return res.json(); })
-    .then(function(data){ proofs = data.success ? (data.data || []) : sample; renderProofs(); })
-    .catch(function(){ proofs = sample; renderProofs(); });
+    .then(function(data){ proofs = data.success ? (data.data || []) : sample; populateProofFilters(); renderProofs(); })
+    .catch(function(){ proofs = sample; populateProofFilters(); renderProofs(); });
+}
+function populateProofFilters() {
+  var yearSelect = document.getElementById('fiscalYearFilter');
+  var categorySelect = document.getElementById('categoryFilter');
+  if (!yearSelect || !categorySelect) return;
+
+  var selectedYear = yearSelect.value;
+  var selectedCategory = categorySelect.value;
+  var years = proofs.map(function(item) {
+    return String(item.fiscal_year || '').trim();
+  }).filter(function(year, index, all) {
+    return year && all.indexOf(year) === index;
+  }).sort(function(a, b) {
+    return Number(b) - Number(a);
+  });
+  var categories = proofs.map(function(item) {
+    return String(item.expense_category || '').trim();
+  }).filter(function(category, index, all) {
+    return category && all.indexOf(category) === index;
+  }).sort(function(a, b) {
+    return a.localeCompare(b);
+  });
+
+  yearSelect.innerHTML = '<option value="">All Fiscal Years</option>' + years.map(function(year) {
+    return '<option value="' + escapeHtml(year) + '">' + escapeHtml(year) + '</option>';
+  }).join('');
+  categorySelect.innerHTML = '<option value="">All Categories</option>' + categories.map(function(category) {
+    return '<option value="' + escapeHtml(category) + '">' + escapeHtml(category) + '</option>';
+  }).join('');
+  if (years.indexOf(selectedYear) !== -1) yearSelect.value = selectedYear;
+  if (categories.indexOf(selectedCategory) !== -1) categorySelect.value = selectedCategory;
 }
 function renderProofs() {
-  var q = document.getElementById('searchInput').value.trim().toLowerCase();
+  var fiscalYear = document.getElementById('fiscalYearFilter').value;
+  var category = document.getElementById('categoryFilter').value;
   var items = proofs.filter(function(item) {
-    return !q || [item.title, item.purpose, item.expense_category, item.payee, item.barangay].join(' ').toLowerCase().includes(q);
+    var matchesYear = !fiscalYear || String(item.fiscal_year || '') === fiscalYear;
+    var matchesCategory = !category || String(item.expense_category || '').trim() === category;
+    return matchesYear && matchesCategory;
   });
   var total = items.reduce(function(sum, item){ return sum + Number(item.amount || 0); }, 0);
   document.getElementById('totalAmount').textContent = money(total);
   document.getElementById('proofCount').textContent = items.length;
 
   if (!items.length) {
-    document.getElementById('proofGrid').innerHTML = '<div class="empty">No published fund proofs found for the selected barangay or search.</div>';
+    document.getElementById('proofGrid').innerHTML = '<div class="empty">No published fund proofs found for the selected filters.</div>';
     return;
   }
 
@@ -258,7 +337,7 @@ function renderProofs() {
       return '<div class="proof-tile">' + fileIconHtml(file) + '</div>';
     }).join('');
     return '<article class="fund-card">'
-      + '<div class="proof">' + proof + '</div>'
+      + '<div class="proof' + (files.length === 1 ? ' single-proof' : '') + '">' + proof + '</div>'
       + '<div class="body">'
         + '<div class="meta"><span class="category">' + escapeHtml(item.expense_category || 'Expense') + '</span><span class="amount">' + money(item.amount) + '</span></div>'
         + '<div class="title">' + escapeHtml(item.title) + '</div>'
@@ -274,11 +353,8 @@ function openProofAlbum(id) {
   if (!item) return;
   var files = proofFiles(item);
   document.getElementById('proofModalTitle').textContent = item.title || 'Proof Album';
-    document.getElementById('proofModalBody').innerHTML = '<div class="album-grid">' + files.map(function(file, index) {
-      var previewUrl = API + '/fund-proofs/' + item.id + '/download?preview=1&file=' + encodeURIComponent(index);
-      var downloadUrl = API + '/fund-proofs/' + item.id + '/download?file=' + encodeURIComponent(index);
-      if (file.is_image) return '<a class="album-item" href="' + downloadUrl + '" target="_blank" rel="noopener"><img src="' + previewUrl + '" alt="' + escapeHtml(file.name || item.title) + '"></a>';
-      return '<div class="album-item">' + fileIconHtml(file) + '</div>';
+  document.getElementById('proofModalBody').innerHTML = '<div class="proof-preview-stack">' + files.map(function(file, index) {
+      return renderProofPreviewFile(item, file, index);
     }).join('') + '</div>'
       + '<div class="proof-details">'
         + '<h4>' + escapeHtml(item.title || 'Expense details') + '</h4>'

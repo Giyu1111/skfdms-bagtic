@@ -26,4 +26,10 @@ function getUploadDir() {
   return path.join(__dirname, '..', 'uploads');
 }
 
-module.exports = { getUploadDir };
+function getPrivateUploadDir() {
+  const publicDir = getUploadDir();
+  const configuredDir = process.env.PRIVATE_UPLOAD_DIR ? path.resolve(process.env.PRIVATE_UPLOAD_DIR) : '';
+  return configuredDir || path.join(path.dirname(publicDir), 'private-uploads');
+}
+
+module.exports = { getUploadDir, getPrivateUploadDir };

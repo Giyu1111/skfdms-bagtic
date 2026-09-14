@@ -5,66 +5,75 @@ const { logActivity } = require('../utils/logger');
 const { getEffectiveBarangayId } = require('../utils/barangayHelper');
 
 let tableReady = false;
+let tableReadyPromise = null;
 
 async function ensureTable() {
   if (tableReady) return;
+  if (tableReadyPromise) return tableReadyPromise;
 
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS fund_proofs (
-      id SERIAL PRIMARY KEY,
-      barangay_id INTEGER NOT NULL,
-      uploaded_by INTEGER NOT NULL,
-      document_id INTEGER REFERENCES documents(id) ON DELETE SET NULL,
-      title VARCHAR(300) NOT NULL,
-      purpose TEXT NOT NULL,
-      expense_category VARCHAR(120) NOT NULL,
-      payee VARCHAR(180),
-      amount NUMERIC(12,2) NOT NULL DEFAULT 0,
-      fiscal_year INTEGER NOT NULL DEFAULT (EXTRACT(YEAR FROM CURRENT_DATE)),
-      spent_at DATE,
-      proof_label VARCHAR(120) DEFAULT 'Preview',
-      file_path VARCHAR(500) NOT NULL,
-      file_name VARCHAR(255) NOT NULL,
-      file_type VARCHAR(50) NOT NULL,
-      file_size_kb INTEGER NOT NULL,
-      is_published BOOLEAN NOT NULL DEFAULT false,
-      publish_requested BOOLEAN NOT NULL DEFAULT false,
-      requested_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
-      requested_at TIMESTAMP NULL,
-      is_archived BOOLEAN NOT NULL DEFAULT false,
-      archived_at TIMESTAMP NULL,
-      archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
-      published_at TIMESTAMP NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-  await db.query(`
-    ALTER TABLE fund_proofs
-      ADD COLUMN IF NOT EXISTS files JSONB NOT NULL DEFAULT '[]'::jsonb,
-      ADD COLUMN IF NOT EXISTS fiscal_year INTEGER NOT NULL DEFAULT (EXTRACT(YEAR FROM CURRENT_DATE)),
-      ADD COLUMN IF NOT EXISTS document_id INTEGER REFERENCES documents(id) ON DELETE SET NULL,
-      ADD COLUMN IF NOT EXISTS document_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
-      ADD COLUMN IF NOT EXISTS is_published BOOLEAN NOT NULL DEFAULT false,
-      ADD COLUMN IF NOT EXISTS publish_requested BOOLEAN NOT NULL DEFAULT false,
-      ADD COLUMN IF NOT EXISTS requested_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
-      ADD COLUMN IF NOT EXISTS requested_at TIMESTAMP NULL,
-      ADD COLUMN IF NOT EXISTS is_archived BOOLEAN NOT NULL DEFAULT false,
-      ADD COLUMN IF NOT EXISTS archived_at TIMESTAMP NULL,
-      ADD COLUMN IF NOT EXISTS archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
-      ADD COLUMN IF NOT EXISTS published_at TIMESTAMP NULL,
-      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  `);
-  await db.query(`
-    CREATE INDEX IF NOT EXISTS idx_fund_proofs_archive_scope
-      ON fund_proofs (is_archived, barangay_id, created_at DESC)
-  `);
-  await db.query(`
-    CREATE INDEX IF NOT EXISTS idx_fund_proofs_document_id
-      ON fund_proofs (document_id) WHERE document_id IS NOT NULL
-  `);
+  tableReadyPromise = (async () => {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS fund_proofs (
+        id SERIAL PRIMARY KEY,
+        barangay_id INTEGER NOT NULL,
+        uploaded_by INTEGER NOT NULL,
+        document_id INTEGER REFERENCES documents(id) ON DELETE SET NULL,
+        title VARCHAR(300) NOT NULL,
+        purpose TEXT NOT NULL,
+        expense_category VARCHAR(120) NOT NULL,
+        payee VARCHAR(180),
+        amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+        fiscal_year INTEGER NOT NULL DEFAULT (EXTRACT(YEAR FROM CURRENT_DATE)),
+        spent_at DATE,
+        proof_label VARCHAR(120) DEFAULT 'Preview',
+        file_path VARCHAR(500) NOT NULL,
+        file_name VARCHAR(255) NOT NULL,
+        file_type VARCHAR(50) NOT NULL,
+        file_size_kb INTEGER NOT NULL,
+        is_published BOOLEAN NOT NULL DEFAULT false,
+        publish_requested BOOLEAN NOT NULL DEFAULT false,
+        requested_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        requested_at TIMESTAMP NULL,
+        is_archived BOOLEAN NOT NULL DEFAULT false,
+        archived_at TIMESTAMP NULL,
+        archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        published_at TIMESTAMP NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    await db.query(`
+      ALTER TABLE fund_proofs
+        ADD COLUMN IF NOT EXISTS files JSONB NOT NULL DEFAULT '[]'::jsonb,
+        ADD COLUMN IF NOT EXISTS fiscal_year INTEGER NOT NULL DEFAULT (EXTRACT(YEAR FROM CURRENT_DATE)),
+        ADD COLUMN IF NOT EXISTS document_id INTEGER REFERENCES documents(id) ON DELETE SET NULL,
+        ADD COLUMN IF NOT EXISTS document_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
+        ADD COLUMN IF NOT EXISTS is_published BOOLEAN NOT NULL DEFAULT false,
+        ADD COLUMN IF NOT EXISTS publish_requested BOOLEAN NOT NULL DEFAULT false,
+        ADD COLUMN IF NOT EXISTS requested_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        ADD COLUMN IF NOT EXISTS requested_at TIMESTAMP NULL,
+        ADD COLUMN IF NOT EXISTS is_archived BOOLEAN NOT NULL DEFAULT false,
+        ADD COLUMN IF NOT EXISTS archived_at TIMESTAMP NULL,
+        ADD COLUMN IF NOT EXISTS archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        ADD COLUMN IF NOT EXISTS published_at TIMESTAMP NULL,
+        ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    `);
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS idx_fund_proofs_archive_scope
+        ON fund_proofs (is_archived, barangay_id, created_at DESC)
+    `);
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS idx_fund_proofs_document_id
+        ON fund_proofs (document_id) WHERE document_id IS NOT NULL
+    `);
 
-  tableReady = true;
+    tableReady = true;
+  })().catch((err) => {
+    tableReadyPromise = null;
+    throw err;
+  });
+
+  return tableReadyPromise;
 }
 
 function normalizeFiles(row) {
@@ -94,6 +103,24 @@ function parseStoredFiles(row) {
     }];
   }
   return files;
+}
+
+// An SKFED admin may be viewing the combined "all barangays" list.  Action
+// endpoints still need one concrete integer barangay ID for their scoped SQL.
+async function getActionBarangayId(req, proofId) {
+  const barangayId = getEffectiveBarangayId(req);
+  if (barangayId !== 'all') return barangayId;
+
+  const { rows } = await db.query(
+    `SELECT barangay_id FROM fund_proofs WHERE id = $1`,
+    [proofId]
+  );
+  if (!rows.length) {
+    const err = new Error('Fund proof not found.');
+    err.statusCode = 404;
+    throw err;
+  }
+  return rows[0].barangay_id;
 }
 
 function publicFields(row) {
@@ -318,10 +345,11 @@ async function create(req, res) {
       entityType: 'fund_proof',
       entityId: rows[0].id,
       details: `Uploaded fund proof "${title}" worth PHP ${parsedAmount.toFixed(2)}${documentIds.length ? ' (connected to ' + documentIds.length + ' document' + (documentIds.length === 1 ? '' : 's') + ')' : ''}`,
+      barangayId,
       ip: req.ip,
     });
 
-    return res.status(201).json({ success: true, message: 'Fund proof uploaded. Publish it when ready for public viewing.', id: rows[0].id, document_id: documentId, document_ids: documentIds });
+    return res.status(201).json({ success: true, message: 'Fund proof uploaded. Request publication when ready for public viewing.', id: rows[0].id, document_id: documentId, document_ids: documentIds });
   } catch (err) {
     uploadedFiles.forEach(file => { if (fs.existsSync(file.path)) fs.unlinkSync(file.path); });
     if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message });
@@ -333,7 +361,7 @@ async function create(req, res) {
 async function togglePublish(req, res) {
   try {
     await ensureTable();
-    const barangayId = getEffectiveBarangayId(req);
+    const barangayId = await getActionBarangayId(req, req.params.id);
     const isAdmin = req.user.role === 'admin';
 
     const { rows } = await db.query(
@@ -373,6 +401,7 @@ async function togglePublish(req, res) {
         entityType: 'fund_proof',
         entityId: parseInt(req.params.id, 10),
         details: `"${proof.title}" publish requested`,
+        barangayId,
         ip: req.ip,
       });
 
@@ -404,6 +433,7 @@ async function togglePublish(req, res) {
         entityType: 'fund_proof',
         entityId: parseInt(req.params.id, 10),
         details: `"${proof.title}" ${nextStatus ? 'published' : 'unpublished'}`,
+        barangayId,
         ip: req.ip,
       });
 
@@ -426,7 +456,7 @@ async function togglePublish(req, res) {
 async function remove(req, res) {
   try {
     await ensureTable();
-    const barangayId = getEffectiveBarangayId(req);
+    const barangayId = await getActionBarangayId(req, req.params.id);
     const { rows } = await db.query(
       `SELECT id, title, file_path, files FROM fund_proofs WHERE id = $1 AND barangay_id = $2`,
       [req.params.id, barangayId]
@@ -447,6 +477,7 @@ async function remove(req, res) {
       entityType: 'fund_proof',
       entityId: parseInt(req.params.id, 10),
       details: `Deleted fund proof "${rows[0].title}"`,
+      barangayId,
       ip: req.ip,
     });
 
@@ -461,7 +492,7 @@ async function remove(req, res) {
 async function archive(req, res) {
   try {
     await ensureTable();
-    const barangayId = getEffectiveBarangayId(req);
+    const barangayId = await getActionBarangayId(req, req.params.id);
     const { rows } = await db.query(
       `SELECT id, title FROM fund_proofs
         WHERE id = $1 AND barangay_id = $2 AND COALESCE(is_archived, false) = false`,
@@ -490,6 +521,7 @@ async function archive(req, res) {
       entityType: 'fund_proof',
       entityId: parseInt(req.params.id, 10),
       details: `Archived fund proof "${rows[0].title}"`,
+      barangayId,
       ip: req.ip,
     });
 
@@ -504,7 +536,7 @@ async function archive(req, res) {
 async function restore(req, res) {
   try {
     await ensureTable();
-    const barangayId = getEffectiveBarangayId(req);
+    const barangayId = await getActionBarangayId(req, req.params.id);
     const { rows } = await db.query(
       `SELECT id, title FROM fund_proofs
         WHERE id = $1 AND barangay_id = $2 AND COALESCE(is_archived, false) = true`,
@@ -529,6 +561,7 @@ async function restore(req, res) {
       entityType: 'fund_proof',
       entityId: parseInt(req.params.id, 10),
       details: `Restored fund proof "${rows[0].title}" from archive`,
+      barangayId,
       ip: req.ip,
     });
 

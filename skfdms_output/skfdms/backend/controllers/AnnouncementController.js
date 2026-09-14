@@ -8,9 +8,29 @@ const db = require('../config/database');
 const { logActivity } = require('../utils/logger');
 const { getEffectiveBarangayId } = require('../utils/barangayHelper');   // <-- ADDED
 
+let announcementColumnsPromise = null;
+function ensureAnnouncementColumns() {
+  if (!announcementColumnsPromise) {
+    announcementColumnsPromise = db.query(`
+      ALTER TABLE announcements
+        ADD COLUMN IF NOT EXISTS announcement_type VARCHAR(30) NOT NULL DEFAULT 'general',
+        ADD COLUMN IF NOT EXISTS event_date DATE,
+        ADD COLUMN IF NOT EXISTS start_time TIME,
+        ADD COLUMN IF NOT EXISTS end_time TIME,
+        ADD COLUMN IF NOT EXISTS location TEXT,
+        ADD COLUMN IF NOT EXISTS priority VARCHAR(20) NOT NULL DEFAULT 'normal'
+    `).catch((err) => {
+      announcementColumnsPromise = null;
+      throw err;
+    });
+  }
+  return announcementColumnsPromise;
+}
+
 // ── GET /api/announcements  (public) ────────────────────────
 async function listPublic(req, res) {
   try {
+    await ensureAnnouncementColumns();
     const params = [];
     const where = ['a.is_active = true'];
 
@@ -24,7 +44,8 @@ async function listPublic(req, res) {
     }
 
     const { rows } = await db.query(
-      `SELECT a.id, a.barangay_id, a.title, a.body, a.created_at,
+      `SELECT a.id, a.barangay_id, a.title, a.body, a.created_at, a.announcement_type,
+              a.event_date, a.start_time, a.end_time, a.location, a.priority,
               b.name AS barangay_name, u.name AS created_by
          FROM announcements a
          JOIN users u ON u.id = a.created_by
@@ -44,6 +65,7 @@ async function listPublic(req, res) {
 // ── GET /api/admin/announcements  (admin) ───────────────────
 async function listAdmin(req, res) {
   try {
+    await ensureAnnouncementColumns();
     const barangayId = getEffectiveBarangayId(req);   // uses the helper
     const allBarangays = barangayId === 'all';
     const { rows } = await db.query(
@@ -65,17 +87,22 @@ async function listAdmin(req, res) {
 
 // ── POST /api/admin/announcements ───────────────────────────
 async function create(req, res) {
-  const { title, body } = req.body;
+  const { title, body, announcement_type, event_date, start_time, end_time, location, priority } = req.body;
   if (!title || !body) {
     return res.status(400).json({ success: false, message: 'Title and body are required.' });
   }
   try {
+    await ensureAnnouncementColumns();
     const barangayId = getEffectiveBarangayId(req);   // uses helper to get barangay_id (admin sends in body)
+    const validTypes = ['general', 'event', 'meeting', 'deadline'];
+    const validPriorities = ['normal', 'important', 'urgent'];
+    const type = validTypes.includes(announcement_type) ? announcement_type : 'general';
+    const level = validPriorities.includes(priority) ? priority : 'normal';
     const { rows } = await db.query(
-      `INSERT INTO announcements (barangay_id, created_by, title, body) 
-       VALUES ($1, $2, $3, $4) 
+      `INSERT INTO announcements (barangay_id, created_by, title, body, announcement_type, event_date, start_time, end_time, location, priority)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING id`,
-      [barangayId, req.user.id, title.trim(), body.trim()]
+      [barangayId, req.user.id, title.trim(), body.trim(), type, event_date || null, start_time || null, end_time || null, location?.trim() || null, level]
     );
 
     const newAnnouncementId = rows[0].id;
@@ -86,6 +113,7 @@ async function create(req, res) {
       entityType: 'announcement', 
       entityId: newAnnouncementId,
       details: `Posted announcement: "${title}"`, 
+      barangayId,
       ip: req.ip,
     });
     return res.status(201).json({ success: true, message: 'Announcement posted.' });
@@ -102,6 +130,14 @@ async function remove(req, res) {
   try {
     const barangayId = getEffectiveBarangayId(req);   // enforce barangay scope
     const allBarangays = barangayId === 'all';
+    const existing = await db.query(
+      `SELECT id, barangay_id FROM announcements WHERE id = $1${allBarangays ? '' : ' AND barangay_id = $2'}`,
+      allBarangays ? [id] : [id, barangayId]
+    );
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Announcement not found.' });
+    }
+
     const { rowCount } = await db.query(
       `DELETE FROM announcements WHERE id = $1${allBarangays ? '' : ' AND barangay_id = $2'}`,
       allBarangays ? [id] : [id, barangayId]
@@ -117,6 +153,7 @@ async function remove(req, res) {
       entityType: 'announcement', 
       entityId: parseInt(id),
       details: `Deleted announcement #${id}`, 
+      barangayId: existing.rows[0].barangay_id,
       ip: req.ip,
     });
     return res.json({ success: true, message: 'Announcement deleted.' });

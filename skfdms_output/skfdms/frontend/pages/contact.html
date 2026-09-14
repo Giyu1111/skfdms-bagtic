@@ -59,6 +59,10 @@
     .info-card { margin-top: 24px; padding: 20px; }
     .info-card h3 { font-size: .98rem; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
     .info-card p, .info-card div { font-size: .9rem; color: var(--gray-700); line-height: 1.7; }
+    .map-image-link { display: block; margin-top: 14px; overflow: hidden; border: 1px solid #B7D4C2; border-radius: 9px; box-shadow: 0 2px 7px rgba(15, 42, 30, .12); }
+    .map-image-link img { display: block; width: 100%; height: 165px; object-fit: cover; transition: transform .25s ease; }
+    .map-image-link:hover img { transform: scale(1.04); }
+    .map-image-link:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
     footer { background: var(--navy-dark); color: rgba(255, 255, 255, .6); padding: 32px 24px; text-align: center; }
     .footer-brand { color: var(--gold); font-weight: 800; font-size: 1rem; margin-bottom: 8px; }
     footer p { font-size: .82rem; }
@@ -68,8 +72,14 @@
     body.dark .section-title, body.dark .form-title, body.dark .official-name, body.dark .info-card h3 { color: #c8e8d4; }
     body.dark .section-sub, body.dark .form-label, body.dark .official-role, body.dark .info-card p, body.dark .info-card div { color: #7aaa88; }
     body.dark .form-control { background: #0d1810; border-color: #1e3325; color: #d4e8da; }
+    body.dark .map-image-link { border-color: #2A6040; }
     body.dark footer { background: #060f09; }
     @media (max-width: 860px) { .contact-grid, .form-row { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) {
+      .page-header h1 { font-size: 1.8rem; }
+      .page-header p { font-size: .88rem; }
+      .officials-grid { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
   <link rel="stylesheet" href="../css/public-nav.css" />
   <script src="../js/public-theme.js" defer></script>
@@ -89,6 +99,9 @@
         <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
       </span>
     </a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="menu-bar"></span>
+    </button>
     <div class="navbar-links">
       <a href="../index.html">Home</a>
       <a href="documents.html">Documents</a>
@@ -97,7 +110,6 @@
       <a href="contact.html" class="active">Contact</a>
       <a href="about.html">About</a>
       <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
-      <a href="login.html" class="btn-admin">Login</a>
     </div>
   </div>
 </nav>
@@ -105,7 +117,7 @@
 <div class="page-header">
   <div class="inner">
     <h1>Contact SK Officials</h1>
-    <p>Send a message directly to the Sangguniang Kabataan. Choose your barangay so the right SK officials and federated admins can receive the concern.</p>
+    <p>Send a message directly to the Sangguniang Kabataan. Choose your barangay so the right SK chairperson can receive the concern.</p>
   </div>
 </div>
 
@@ -147,7 +159,10 @@
       <div class="info-card">
         <h3>Municipal Address</h3>
         <p>Municipality of Catigbian,<br />Province of Bohol, Region VII<br />Central Visayas, Philippines</p>
-        <div style="margin-top:12px;">Office Hours: Mon-Fri, 8AM-5PM</div>
+        <a class="map-image-link" href="https://www.google.com/maps/search/?api=1&amp;query=9.85934%2C124.00604" target="_blank" rel="noopener noreferrer" aria-label="Open Catigbian Municipal Hall in Google Maps" title="Open Catigbian Municipal Hall in Google Maps">
+          <img src="../images/bg_catigbian.jpg" alt="Municipal Hall of Catigbian, Bohol" loading="lazy" />
+        </a>
+        <div style="margin-top:12px;">New Office Hours: Mon-Thu, 8AM-5PM</div>
       </div>
     </aside>
   </div>
@@ -343,7 +358,7 @@ async function submitContact() {
     return;
   }
 
-  alertEl.innerHTML = '<div class="alert alert-success">Message sent! The SK and SK Federated admins have been notified.</div>';
+  alertEl.innerHTML = '<div class="alert alert-success">Message sent! The SK chairperson has been notified.</div>';
   document.getElementById('ctFname').value = '';
   document.getElementById('ctLname').value = '';
   document.getElementById('ctEmail').value = '';

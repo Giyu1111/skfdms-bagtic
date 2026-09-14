@@ -4,6 +4,8 @@
   var lightIcon = '🌙';
 
   var isAjaxNavigating = false;
+  var adminNotificationTimer = null;
+  var adminMessageFilter = 'all';
 
   function cleanPagePath(pathname) {
     if (!pathname) return '/';
@@ -76,7 +78,7 @@
   }
 
   function loadPage(url, shouldPush) {
-    if (isAjaxNavigating || window.location.protocol === 'file:' || isAdminPageUrl(url)) {
+    if (isAjaxNavigating || window.location.protocol === 'file:') {
       window.location.href = cleanUrl(url);
       return;
     }
@@ -111,6 +113,11 @@
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
     if (link.target && link.target !== '_self') return false;
     if (link.hasAttribute('download')) return false;
+    if (isAdminPageUrl(window.location)) return false;
+
+    var url = sameOriginPageUrl(link.getAttribute('href'));
+    if (url && isAdminPageUrl(url)) return false;
+
     return true;
   }
 
@@ -167,6 +174,55 @@
     applyMode(!document.body.classList.contains('dark'), true);
   };
 
+  function initMobileNav() {
+    var toggle = document.querySelector('.menu-toggle');
+    var links = document.querySelector('.navbar-links');
+    if (!toggle || !links) return;
+
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleMobileMenu();
+    });
+
+    links.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A' && links.classList.contains('mobile-open')) {
+        closeMobileMenu();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 980 && links.classList.contains('mobile-open')) {
+        closeMobileMenu();
+      }
+    });
+  }
+
+  function toggleMobileMenu() {
+    var toggle = document.querySelector('.menu-toggle');
+    var links = document.querySelector('.navbar-links');
+    if (!toggle || !links) return;
+
+    var isOpen = links.classList.contains('mobile-open');
+    links.classList.toggle('mobile-open', !isOpen);
+    toggle.classList.toggle('active', !isOpen);
+    toggle.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+    document.body.classList.toggle('mobile-menu-open', !isOpen);
+  }
+
+  function closeMobileMenu() {
+    var toggle = document.querySelector('.menu-toggle');
+    var links = document.querySelector('.navbar-links');
+    if (!toggle || !links) return;
+
+    links.classList.remove('mobile-open');
+    toggle.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('mobile-menu-open');
+  }
+
+  window.toggleMobileMenu = toggleMobileMenu;
+
   function createToggleButton() {
     var button = document.createElement('button');
     button.type = 'button';
@@ -213,6 +269,15 @@
     return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
   }
 
+  function formatFullMessageDate(value) {
+    if (!value) return '';
+    return new Date(value).toLocaleString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+
+  function senderInitials(name) {
+    return String(name || 'U').split(/\s+/).filter(Boolean).slice(0, 2).map(function (part) { return part.charAt(0).toUpperCase(); }).join('') || 'U';
+  }
+
   function ensureAdminMessagePopup() {
     var popup = document.getElementById('adminMessagePopup');
     if (popup) return popup;
@@ -220,17 +285,28 @@
     popup = document.createElement('div');
     popup.id = 'adminMessagePopup';
     popup.className = 'admin-message-popup';
+    var user = getCachedAdminUser();
+    var isFedAdmin = user && user.role === 'admin';
     popup.innerHTML =
       '<div class="admin-message-popup-head">' +
-        '<div><strong>Contact Messages</strong><span id="adminMessageSummary">Loading...</span></div>' +
+        '<div><strong>' + (isFedAdmin ? 'Inbox' : 'SK Fed Messages') + '</strong><span id="adminMessageSummary">Loading...</span></div>' +
         '<button type="button" class="admin-message-close" aria-label="Close messages">&times;</button>' +
       '</div>' +
+      '<div class="admin-message-toolbar"><div class="admin-message-filters" role="group" aria-label="Message filter"><button type="button" class="is-active" data-filter="all">All</button><button type="button" data-filter="unread">Unread</button></div><button type="button" class="admin-message-refresh" id="adminMessageRefresh" aria-label="Refresh inbox" title="Refresh inbox">&#8635;</button></div>' +
       '<div class="admin-message-popup-list" id="adminMessageList">' +
         '<div class="admin-message-empty">Loading messages...</div>' +
       '</div>';
     document.body.appendChild(popup);
 
     popup.querySelector('.admin-message-close').addEventListener('click', closeAdminMessagePopup);
+    popup.querySelectorAll('[data-filter]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        adminMessageFilter = button.getAttribute('data-filter');
+        popup.querySelectorAll('[data-filter]').forEach(function (item) { item.classList.toggle('is-active', item === button); });
+        loadAdminMessages();
+      });
+    });
+    popup.querySelector('#adminMessageRefresh').addEventListener('click', loadAdminMessages);
     popup.addEventListener('click', function (event) {
       event.stopPropagation();
     });
@@ -275,29 +351,31 @@
     if (!list || !summary) return;
 
     var unreadCount = messages.filter(function (message) { return !message.is_read; }).length;
-    summary.textContent = messages.length + ' total, ' + unreadCount + ' unread';
+    summary.textContent = unreadCount ? unreadCount + ' unread message' + (unreadCount === 1 ? '' : 's') : 'You are all caught up';
     updateNotificationButton(unreadCount);
 
-    if (!messages.length) {
-      list.innerHTML = '<div class="admin-message-empty">No contact messages yet.</div>';
+    var visibleMessages = adminMessageFilter === 'unread' ? messages.filter(function (message) { return !message.is_read; }) : messages;
+    if (!visibleMessages.length) {
+      list.innerHTML = '<div class="admin-message-empty"><span class="ui-icon ui-icon-inbox ui-icon-xl" aria-hidden="true"></span><strong>' + (adminMessageFilter === 'unread' ? 'No unread messages' : 'Your inbox is empty') + '</strong><small>Messages sent through the public contact form will appear here.</small></div>';
       return;
     }
 
-    list.innerHTML = messages.map(function (message) {
+    list.innerHTML = visibleMessages.map(function (message) {
       var sender = messageSender(message);
+      var isPublicMessage = (message.message_source || 'public') === 'public';
       var replySubject = encodeURIComponent('Re: ' + (message.subject || 'Contact message'));
       return '<article class="admin-message-card ' + (message.is_read ? '' : 'is-unread') + '" data-id="' + escapeHtml(message.id) + '">' +
         '<div class="admin-message-card-top">' +
-          '<div><strong>' + escapeHtml(sender) + '</strong><span>' + escapeHtml(message.email) + '</span></div>' +
-          '<time>' + escapeHtml(formatMessageDate(message.created_at)) + '</time>' +
+          '<div class="admin-message-sender"><span class="admin-message-avatar" aria-hidden="true">' + escapeHtml(senderInitials(sender)) + '</span><div><strong>' + escapeHtml(sender) + '</strong><span>' + escapeHtml(message.email) + '</span></div></div>' +
+          '<div class="admin-message-time"><time title="' + escapeHtml(formatFullMessageDate(message.created_at)) + '">' + escapeHtml(formatMessageDate(message.created_at)) + '</time>' + (message.is_read ? '' : '<i aria-label="Unread"></i>') + '</div>' +
         '</div>' +
-        '<div class="admin-message-subject">' + escapeHtml(message.subject) + '</div>' +
-        '<p>' + escapeHtml(message.message) + '</p>' +
+        '<div class="admin-message-subject">' + escapeHtml(message.subject || 'No subject') + '</div>' +
+        '<p class="admin-message-preview">' + escapeHtml(message.message) + '</p>' +
         '<div class="admin-message-card-foot">' +
           '<span>' + escapeHtml(message.barangay_name || 'Barangay') + '</span>' +
           '<div>' +
             (message.is_read ? '' : '<button type="button" class="admin-message-read-btn" data-id="' + escapeHtml(message.id) + '">Mark read</button>') +
-            '<a href="mailto:' + encodeURIComponent(message.email) + '?subject=' + replySubject + '">Reply</a>' +
+            (isPublicMessage ? '<a href="mailto:' + encodeURIComponent(message.email) + '?subject=' + replySubject + '">Reply</a>' : '') +
             '<button type="button" class="admin-message-delete-btn" data-id="' + escapeHtml(message.id) + '" aria-label="Delete message" title="Delete message"><span class="ui-icon ui-icon-trash" aria-hidden="true"></span></button>' +
           '</div>' +
         '</div>' +
@@ -313,6 +391,14 @@
     list.querySelectorAll('.admin-message-delete-btn').forEach(function (button) {
       button.addEventListener('click', function () {
         deleteAdminMessage(button.getAttribute('data-id'));
+      });
+    });
+
+    list.querySelectorAll('.admin-message-card').forEach(function (card) {
+      card.addEventListener('click', function (event) {
+        if (event.target.closest('button, a')) return;
+        card.classList.toggle('is-expanded');
+        if (card.classList.contains('is-unread')) markAdminMessageRead(card.getAttribute('data-id'));
       });
     });
   }
@@ -378,16 +464,74 @@
       });
   }
 
-  function ensureAdminToggle() {
+  function showChairpersonMessageForm() {
+    var form = document.getElementById('adminMessageComposeForm');
+    if (!form) return;
+    form.hidden = false;
+    form.innerHTML = '<div class="admin-message-empty">Loading SK Chairpersons...</div>';
+    fetch(window.location.origin + '/api/admin/users', { credentials: 'include' })
+      .then(function (response) { return response.ok ? response.json() : null; })
+      .then(function (result) {
+        var chairs = result && result.success && Array.isArray(result.data)
+          ? result.data.filter(function (user) { return user.role === 'chairperson' && user.is_active !== false; }) : [];
+        if (!chairs.length) {
+          form.innerHTML = '<div class="admin-message-empty">No active SK Chairpersons found.</div>';
+          return;
+        }
+        form.innerHTML = '<select id="chairpersonMessageRecipient"><option value="">Choose SK Chairperson</option>' + chairs.map(function (chair) {
+          return '<option value="' + escapeHtml(chair.id) + '">' + escapeHtml(chair.name) + ' — ' + escapeHtml(chair.barangay_name || chair.barangay || 'Barangay') + '</option>';
+        }).join('') + '</select><input id="chairpersonMessageSubject" maxlength="160" placeholder="Subject"><textarea id="chairpersonMessageBody" maxlength="3000" placeholder="Write a message..."></textarea><div><button type="button" class="admin-message-send" id="chairpersonMessageSend">Send Message</button><button type="button" class="admin-message-read-btn" id="chairpersonMessageCancel">Cancel</button></div>';
+        document.getElementById('chairpersonMessageCancel').addEventListener('click', function () { form.hidden = true; });
+        document.getElementById('chairpersonMessageSend').addEventListener('click', sendChairpersonMessage);
+      })
+      .catch(function () { form.innerHTML = '<div class="admin-message-empty">Unable to load SK Chairpersons.</div>'; });
+  }
+
+  function sendChairpersonMessage() {
+    var recipient = document.getElementById('chairpersonMessageRecipient');
+    var subject = document.getElementById('chairpersonMessageSubject');
+    var body = document.getElementById('chairpersonMessageBody');
+    if (!recipient || !subject || !body || !recipient.value || !subject.value.trim() || !body.value.trim()) return;
+    fetch(window.location.origin + '/api/admin/contact-messages', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recipient_user_id: recipient.value, subject: subject.value.trim(), message: body.value.trim() })
+    }).then(function (response) { return response.json(); }).then(function (result) {
+      if (!result || !result.success) throw new Error((result && result.message) || 'Unable to send message.');
+      var form = document.getElementById('adminMessageComposeForm');
+      if (form) form.hidden = true;
+    }).catch(function (error) { alert(error.message || 'Unable to send message.'); });
+  }
+
+  function startAdminNotificationPolling(user) {
+    if (!userCanSeeContactMessages(user) || adminNotificationTimer) return;
+    refreshAdminNotifications();
+    if (document.querySelector('.admin-message-button')) {
+      adminNotificationTimer = window.setInterval(refreshAdminNotifications, 30000);
+    }
+  }
+
+  function removeAdminMessageUi() {
+    document.querySelectorAll('.admin-message-button').forEach(function (button) {
+      button.remove();
+    });
+    closeAdminMessagePopup();
+  }
+
+  function userCanSeeContactMessages(user) {
+    return user && ['admin', 'chairperson'].includes(user.role);
+  }
+
+  function ensureAdminToggle(user) {
+    var canSeeMessages = userCanSeeContactMessages(user);
     document.querySelectorAll('.admin-topbar, .topbar').forEach(function (topbar) {
-      if (topbar.querySelector('.dark-toggle') && topbar.querySelector('.admin-message-button')) return;
+      if (topbar.querySelector('.dark-toggle') && (!canSeeMessages || topbar.querySelector('.admin-message-button'))) return;
 
       var button = createToggleButton();
-      var notification = createNotificationButton();
+      var notification = canSeeMessages ? createNotificationButton() : null;
       var actions = topbar.querySelector('.topbar-actions');
 
       if (actions) {
-        if (!actions.querySelector('.admin-message-button')) actions.insertBefore(notification, actions.firstChild);
+        if (canSeeMessages && !actions.querySelector('.admin-message-button')) actions.insertBefore(notification, actions.firstChild);
         if (!actions.querySelector('.dark-toggle')) {
           var existingNotification = actions.querySelector('.admin-message-button');
           actions.insertBefore(button, existingNotification ? existingNotification.nextSibling : actions.firstChild);
@@ -402,20 +546,22 @@
 
       if (actionChildren.length === 1 && actionChildren[0].tagName === 'DIV') {
         actionChildren[0].classList.add('topbar-actions');
-        actionChildren[0].insertBefore(notification, actionChildren[0].firstChild);
-        actionChildren[0].insertBefore(button, notification.nextSibling);
+        if (canSeeMessages) actionChildren[0].insertBefore(notification, actionChildren[0].firstChild);
+        actionChildren[0].insertBefore(button, canSeeMessages ? notification.nextSibling : actionChildren[0].firstChild);
         return;
       }
 
       actions = document.createElement('div');
       actions.className = 'topbar-actions';
       topbar.appendChild(actions);
-      actions.appendChild(notification);
+      if (canSeeMessages) actions.appendChild(notification);
       actions.appendChild(button);
       actionChildren.forEach(function (child) {
         actions.appendChild(child);
       });
     });
+
+    if (!canSeeMessages) removeAdminMessageUi();
   }
 
   function getCachedAdminUser() {
@@ -498,15 +644,14 @@
   }
 
   function initTheme() {
+    var cachedUser = getCachedAdminUser();
     bindAjaxNavigation();
-    applyAdminSidebarState(getCachedAdminUser());
+    applyAdminSidebarState(cachedUser);
     bindAdminSidebarClicks();
-    ensureAdminToggle();
+    ensureAdminToggle(cachedUser);
+    initMobileNav();
     applyMode(getSavedMode(), false);
-    refreshAdminNotifications();
-    if (document.querySelector('.admin-message-button')) {
-      window.setInterval(refreshAdminNotifications, 30000);
-    }
+    startAdminNotificationPolling(cachedUser);
   }
 
   if (document.readyState === 'loading') {
@@ -516,12 +661,24 @@
   }
 
   document.addEventListener('click', closeAdminMessagePopup);
+  document.addEventListener('click', function (event) {
+    var links = document.querySelector('.navbar-links');
+    var toggle = document.querySelector('.menu-toggle');
+    if (links && links.classList.contains('mobile-open') && toggle && !toggle.contains(event.target) && !links.contains(event.target)) {
+      closeMobileMenu();
+    }
+  });
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') closeAdminMessagePopup();
+    if (event.key === 'Escape' && document.querySelector('.navbar-links.mobile-open')) {
+      closeMobileMenu();
+    }
   });
 
   window.addEventListener('skfdms:user', function (event) {
     applyAdminSidebarState(event.detail);
+    ensureAdminToggle(event.detail);
+    startAdminNotificationPolling(event.detail);
   });
 
   window.addEventListener('storage', function (event) {

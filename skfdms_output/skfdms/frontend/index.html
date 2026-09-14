@@ -140,9 +140,9 @@
     }
     .announcements-shell {
       background:
-        linear-gradient(135deg, rgba(255,255,255,.82), rgba(232,242,236,.72));
-      border: 1px solid rgba(26, 69, 48, .14);
-      border-radius: 8px;
+        linear-gradient(135deg, #ffffff, #f3f8f4);
+      border: 1px solid rgba(26, 69, 48, .16);
+      border-radius: 16px;
       padding: clamp(22px, 4vw, 34px);
       box-shadow: 0 24px 70px rgba(15, 42, 30, .14);
       backdrop-filter: blur(18px) saturate(130%);
@@ -156,7 +156,7 @@
       flex-wrap: wrap;
     }
     .announcements-header h2 {
-      color: #000;
+      color: var(--navy);
       font-size: clamp(2rem, 4vw, 2.6rem);
       margin: 0 0 8px;
     }
@@ -224,9 +224,9 @@
       display: block;
     }
     .barangay-announcements {
-      background: rgba(255,255,255,.72);
-      border: 1px solid rgba(26, 69, 48, .13);
-      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(26, 69, 48, .14);
+      border-radius: 12px;
       padding: clamp(18px, 3vw, 28px);
       min-height: 280px;
       box-shadow: 0 10px 26px rgba(15, 42, 30, .08);
@@ -253,10 +253,10 @@
     }
     .announcement-list { position: relative; min-height: 190px; }
     .announcement-card {
-      background: rgba(255,255,255,.46);
-      border: 1px solid rgba(26, 69, 48, .1);
-      border-left: 4px solid var(--gold);
-      border-radius: 8px;
+      background: linear-gradient(135deg, #ffffff, #fafcfb);
+      border: 1px solid rgba(26, 69, 48, .12);
+      border-left: 5px solid var(--gold);
+      border-radius: 10px;
       padding: clamp(18px, 4vw, 26px);
       min-height: 190px;
       display: none;
@@ -289,6 +289,12 @@
       font-size: .78rem;
       font-weight: 700;
     }
+    .announcement-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px;}
+    .announcement-type{display:inline-flex;align-items:center;gap:6px;background:#edf6f0;color:#1a4530;border:1px solid #d7e9dd;border-radius:999px;padding:5px 10px;font-size:.72rem;font-weight:850;letter-spacing:.05em;text-transform:uppercase;}
+    .announcement-notice{font-size:.74rem;font-weight:800;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;}
+    .announcement-schedule{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px;padding:12px;border:1px solid #dcebe1;border-radius:8px;background:#f5faf6;}
+    .announcement-schedule span{background:#fff;color:var(--navy);border:1px solid #d8e8dd;border-radius:6px;padding:6px 9px;font-size:.78rem;font-weight:750;}
+    .announcement-priority{color:#b45309!important;background:#fff7df!important;}
     .announcement-empty {
       background: rgba(255,255,255,.64);
       border: 1px dashed rgba(26, 69, 48, .24);
@@ -454,6 +460,23 @@
       box-shadow: 0 8px 24px rgba(15, 42, 30, .08);
       backdrop-filter: blur(16px) saturate(125%);
     }
+    .map-image-link {
+      display: block;
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(26, 69, 48, .22);
+      border-radius: 8px;
+      box-shadow: 0 2px 7px rgba(15, 42, 30, .12);
+    }
+    .map-image-link img {
+      display: block;
+      width: 100%;
+      height: 165px;
+      object-fit: cover;
+      transition: transform .25s ease;
+    }
+    .map-image-link:hover img { transform: scale(1.04); }
+    .map-image-link:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
     .doc-row {
       display: flex;
       gap: 16px;
@@ -491,6 +514,30 @@
       line-height: 1.65;
       font-size: .9rem;
     }
+    .doc-engagement {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .doc-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: rgba(245, 249, 246, .9);
+      border: 1px solid rgba(26, 69, 48, .14);
+      color: var(--gray-700);
+      font-size: .76rem;
+      font-weight: 900;
+    }
+    .doc-stat svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+    }
     .doc-actions {
       display: flex;
       gap: 8px;
@@ -512,8 +559,14 @@
       font-family: inherit;
       cursor: pointer;
     }
+    .home-link.preview {
+      background: #3D8C62;
+      color: #fff;
+    }
+    .home-link.preview:hover { background: #1A4530; }
     .fund-grid {
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 320px));
+      justify-content: start;
     }
     .fund-card {
       overflow: hidden;
@@ -530,6 +583,7 @@
       font-weight: 900;
       color: var(--navy);
     }
+    .fund-proof.single-proof { grid-template-columns: 1fr; }
     .fund-tile {
       border-radius: 8px;
       background: rgba(248,251,249,.8);
@@ -783,6 +837,7 @@
       border-color: rgba(114, 226, 168, .14);
       box-shadow: none;
     }
+    body.dark .map-image-link { border-color: rgba(114, 226, 168, .28); }
     body.dark .home-input,
     body.dark .home-select,
     body.dark .form-control {
@@ -818,13 +873,60 @@
       .hero-inner { grid-template-columns: 1fr; }
       .hero p { margin: 0 0 28px; }
     }
-    @media (max-width: 640px) {
-      .hero-panel { padding: 24px; }
-      .announcements-shell { padding: 18px; }
-      .announcement-toolbar { grid-template-columns: 1fr; }
-      .form-row,
-      .two-col,
-      .about-grid { grid-template-columns: 1fr; }
+     @media (max-width: 640px) {
+       .hero-panel { padding: 24px; }
+       .announcements-shell { padding: 18px; }
+       .announcement-toolbar { grid-template-columns: 1fr; }
+       .form-row,
+       .two-col,
+       .about-grid { grid-template-columns: 1fr; }
+     }
+
+     @media (max-width: 768px) {
+       .home-toolbar {
+         flex-direction: column;
+         align-items: stretch;
+       }
+       .home-field { flex: 1 1 auto; }
+       .home-field:last-child { flex: 0 1 auto; }
+       .announcement-toolbar { grid-template-columns: 1fr; }
+     }
+
+     @media (max-width: 640px) {
+       .hero-badge { font-size: .75rem; padding: 8px 14px; }
+       .hero h1 { font-size: clamp(2rem, 6vw, 2.8rem); }
+       .hero p { font-size: 1rem; }
+       .hero-panel h2 { font-size: .9rem; }
+       .announcement-card { padding: clamp(18px, 4vw, 22px); }
+       .announcement-title { font-size: clamp(1rem, 2.5vw, 1.3rem); }
+       .announcement-body { font-size: .88rem; }
+       .connected-doc-link { font-size: .68rem; padding: 4px 7px; }
+     }
+    .hero-panel,
+    .announcements-shell,
+    .doc-row,
+    .fund-card,
+    .feedback-card,
+    .form-card,
+    .official-card,
+    .info-block,
+    .info-card {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .scroll-hint .scroll-arrow,
+      .barangay-announcements.is-playing .announcement-progress span {
+        animation: none;
+      }
+      *,
+      *::before,
+      *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
     }
   </style>
   
@@ -897,12 +999,30 @@
 
     @media (max-width: 760px) {
       body.public-home .brand-title {
-        display: none;
+        display: grid;
+        gap: 2px;
+        align-items: start;
+      }
+
+      body.public-home .brand-kabataan {
+        font-size: .62rem;
+        white-space: normal;
+        line-height: 1.2;
+      }
+
+      body.public-home .brand-text {
+        font-size: .7rem;
+        white-space: normal;
+        line-height: 1.2;
       }
 
       body.public-home .brand-logo {
-        width: 46px;
-        height: 46px;
+        width: 36px;
+        height: 36px;
+      }
+
+      body.public-home .navbar-brand {
+        gap: 8px;
       }
     }
 
@@ -917,19 +1037,20 @@
 
 <nav class="navbar">
   <div class="navbar-inner">
-    <span class="navbar-brand">
-      <a href="index.html" class="brand-home" aria-label="Home">
-        <span class="brand-logos" aria-hidden="true">
-          <img class="brand-logo" src="images/cLogo.jpg" alt="" />
-          <img class="brand-logo" src="images/favicon.png" alt="" />
-        </span>
-      </a>
+    <a href="index.html" class="navbar-brand" aria-label="Home">
+      <span class="brand-logos" aria-hidden="true">
+        <img class="brand-logo" src="images/cLogo.jpg" alt="" />
+        <img class="brand-logo" src="images/favicon.png" alt="" />
+      </span>
       <span class="brand-title">
-        <a href="pages/login.html" class="brand-kabataan" style="text-decoration:none">Sangguniang Kabataan</a>
+        <span class="brand-kabataan">Sangguniang Kabataan</span>
         <span class="brand-rule"></span>
         <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
       </span>
-    </span>
+    </a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="menu-bar"></span>
+    </button>
     <div class="navbar-links">
       <a href="#home" class="active" data-scroll-nav="home">Home</a>
       <a href="#documents" data-scroll-nav="documents">Documents</a>
@@ -988,8 +1109,8 @@
         <div class="faq-a">All published SK documents are available on the Documents page without login. You can search by category, fiscal year, or keyword and download files directly.</div>
       </div>
       <div class="faq-item">
-        <button type="button" class="faq-q" onclick="toggleFaq(this)">What does SK-FDMS do?<span class="faq-icon">+</span></button>
-        <div class="faq-a">SK-FDMS provides an online portal for posting SK disclosures, announcements, community updates, and fund proof records from Barangay Catigbian.</div>
+        <button type="button" class="faq-q" onclick="toggleFaq(this)">What does FDTMS-SK do?<span class="faq-icon">+</span></button>
+        <div class="faq-a">FDTMS-SK provides an online portal for posting SK disclosures, announcements, community updates, and fund proof records from Barangay Catigbian.</div>
       </div>
     </div>
   </div>
@@ -1006,11 +1127,7 @@
         <a class="more-faqs" href="pages/community.html">Community page -&gt;</a>
       </div>
       <div class="announcement-toolbar">
-        <div class="announcement-field">
-          <label for="announcementSearch">Search Barangay</label>
-          <input class="announcement-search" id="announcementSearch" list="announcementBarangayList" placeholder="Type a barangay name..." oninput="handleAnnouncementSearch()" />
-          <datalist id="announcementBarangayList"></datalist>
-        </div>
+        
         <div class="announcement-field">
           <label for="announcementBarangay">Barangay</label>
           <select class="announcement-select" id="announcementBarangay" onchange="selectAnnouncementBarangay(this.value)">
@@ -1068,8 +1185,12 @@
         <select class="home-select" id="homeProofBarangay" onchange="loadHomeProofs()"><option value="all">All Barangays</option></select>
       </div>
       <div class="home-field">
-        <label for="homeProofSearch">Search Proofs</label>
-        <input class="home-input" id="homeProofSearch" placeholder="Search purpose, title, or category..." oninput="renderHomeProofs()" />
+        <label for="homeProofFiscalYear">Fiscal Year</label>
+        <select class="home-select" id="homeProofFiscalYear" onchange="renderHomeProofs()"><option value="">All Fiscal Years</option></select>
+      </div>
+      <div class="home-field">
+        <label for="homeProofCategory">Category</label>
+        <select class="home-select" id="homeProofCategory" onchange="renderHomeProofs()"><option value="">All Categories</option></select>
       </div>
     </div>
     <div class="fund-grid" id="homeProofGrid"><div class="empty-state">Loading fund proof records...</div></div>
@@ -1111,7 +1232,7 @@
     <div class="linked-header">
       <div>
         <h2>Contact SK Officials</h2>
-        <p>Send a direct message to the selected barangay SK officials and federated admins.</p>
+        <p>Send a direct message to the selected barangay SK chairperson.</p>
       </div>
       <a class="more-faqs" href="pages/contact.html">Open full page -&gt;</a>
     </div>
@@ -1123,7 +1244,7 @@
         </div>
         <div class="form-group"><label class="form-label" for="ctEmail">Email Address *</label><input type="email" class="form-control" id="ctEmail" placeholder="juan@email.com" /></div>
         <div class="form-group"><label class="form-label" for="ctBarangay">Barangay *</label><select class="form-control" id="ctBarangay"><option value="">Loading barangays...</option></select></div>
-        <div class="form-group"><label class="form-label" for="ctSubject">Subject *</label><select class="form-control" id="ctSubject"><option value="">Select a topic...</option><option>General Inquiry</option><option>Document Request</option><option>Fund Concern</option><option>Program Suggestion</option><option>Report an Issue</option><option>Volunteer Offer</option></select></div>
+        <div class="form-group"><label class="form-label" for="ctSubject">Subject *</label><select class="form-control" id="ctSubject"><option value="">Select a topic...</option><option>General Inquiry</option><option>Document Request</option><option>Fund Concern</option><option>Program Suggestion</option><option>Report an Issue</option><option>Others</option></select></div>
         <div class="form-group"><label class="form-label" for="ctMsg">Message *</label><textarea class="form-control" id="ctMsg" rows="6" placeholder="Type your message here..."></textarea></div>
         <button class="btn-submit" type="button" onclick="submitContact()">Send Message</button>
         <div id="ctAlert"></div>
@@ -1134,7 +1255,10 @@
         <div class="info-card" style="padding:20px;margin-top:24px;">
           <div class="form-title">Municipal Address</div>
           <p style="color:var(--gray-700);line-height:1.7;">Municipality of Catigbian,<br>Province of Bohol, Region VII<br>Central Visayas, Philippines</p>
-          <p style="color:var(--gray-700);margin-top:12px;">Office Hours: Mon-Fri, 8AM-5PM</p>
+          <a class="map-image-link" href="https://www.google.com/maps/search/?api=1&amp;query=9.85934%2C124.00604" target="_blank" rel="noopener noreferrer" aria-label="Open Catigbian Municipal Hall in Google Maps" title="Open Catigbian Municipal Hall in Google Maps">
+            <img src="images/bg_catigbian.jpg" alt="Municipal Hall of Catigbian, Bohol" loading="lazy" />
+          </a>
+          <p style="color:var(--gray-700);margin-top:12px;">New Office Hours: Mon-Fri, 8AM-5PM</p>
         </div>
       </aside>
     </div>
@@ -1145,15 +1269,15 @@
   <div class="container">
     <div class="linked-header">
       <div>
-        <h2>About SK-FDMS</h2>
+        <h2>About FDTMS-SK</h2>
         <p>The Sangguniang Kabataan Full Disclosure Management System of Catigbian, Bohol promotes transparent, accountable, and accessible youth governance.</p>
       </div>
       <a class="more-faqs" href="pages/about.html">Open full page -&gt;</a>
     </div>
     <div class="about-grid">
       <div>
-        <h3 class="form-title">What is SK-FDMS?</h3>
-        <p style="color:var(--gray-700);line-height:1.8;">SK-FDMS is a web-based platform that allows SK officials to upload, organize, publish, and maintain official documents online so residents can access disclosure records anytime.</p>
+        <h3 class="form-title">What is FDTMS-SK?</h3>
+        <p style="color:var(--gray-700);line-height:1.8;">FDTMS-SK is a web-based platform that allows SK officials to upload, organize, publish, and maintain official documents online so residents can access disclosure records anytime.</p>
         <p style="color:var(--gray-700);line-height:1.8;margin-top:12px;">The system supports the DILG Full Disclosure Policy by making budgets, reports, resolutions, meeting minutes, and project documents easier to find.</p>
       </div>
       <div>
@@ -1181,6 +1305,16 @@
   </div>
 </div>
 
+<div class="proof-modal-backdrop" id="homeDocPreviewModal" aria-hidden="true">
+  <div class="proof-modal" role="dialog" aria-modal="true" aria-labelledby="homeDocPreviewTitle">
+    <div class="proof-modal-head">
+      <h3 id="homeDocPreviewTitle">Document Preview</h3>
+      <button class="proof-modal-close" type="button" onclick="closeHomeDocPreview()" aria-label="Close">&times;</button>
+    </div>
+    <div class="proof-modal-body" id="homeDocPreviewBody"></div>
+  </div>
+</div>
+
 <script src="js/public-theme.js" defer></script>
 <script>
   function toggleFaq(button) {
@@ -1205,6 +1339,21 @@
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  function announcementScheduleHtml(item) {
+    var parts=[];
+    if(item.event_date) parts.push(new Date(item.event_date+'T00:00:00').toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'}));
+    if(item.start_time) parts.push(item.start_time.slice(0,5)+(item.end_time?' - '+item.end_time.slice(0,5):''));
+    if(item.location) parts.push(item.location);
+    if(item.priority&&item.priority!=='normal') parts.push(String(item.priority).charAt(0).toUpperCase()+String(item.priority).slice(1));
+    if(!parts.length)return '';
+    return '<div class="announcement-schedule">'+parts.map(function(part,index){return '<span'+((index===parts.length-1&&item.priority&&item.priority!=='normal')?' class="announcement-priority"':'')+'>'+escapeHtml(part)+'</span>';}).join('')+'</div>';
+  }
+
+  function announcementTypeLabel(value) {
+    var labels={general:'Public notice',event:'Event notice',meeting:'Meeting notice',deadline:'Deadline notice'};
+    return labels[value] || labels.general;
   }
 
   var allAnnouncements = [];
@@ -1307,9 +1456,11 @@
         + '<div class="announcement-list">'
         + announcementSlides.map(function(item, index) {
           return '<div class="announcement-card' + (index === announcementIndex ? ' is-active' : '') + '">'
+            + '<div class="announcement-card-top"><span class="announcement-type">' + escapeHtml(announcementTypeLabel(item.announcement_type)) + '</span><span class="announcement-notice">Official SK notice</span></div>'
             + '<div class="announcement-title">' + escapeHtml(item.title) + '</div>'
             + '<div class="announcement-body">' + escapeHtml(item.body) + '</div>'
-            + '<div class="announcement-meta">Brgy. ' + escapeHtml(announcementBarangayName(item)) + ' - ' + escapeHtml(item.created_by || 'SK Chairperson') + ' - ' + formatAnnouncementDate(item.created_at) + '</div>'
+            + announcementScheduleHtml(item)
+            + '<div class="announcement-meta">Barangay ' + escapeHtml(announcementBarangayName(item)) + ' - ' + escapeHtml(item.created_by || 'SK Chairperson') + ' - ' + formatAnnouncementDate(item.created_at) + '</div>'
             + '</div>';
         }).join('')
         + '</div>'
@@ -1333,9 +1484,9 @@
     var select = document.getElementById('announcementBarangay');
     var search = document.getElementById('announcementSearch');
     if (select && select.value !== 'all' && select.selectedIndex >= 0) {
-      return 'Brgy. ' + select.options[select.selectedIndex].textContent;
+      return 'Barangay ' + select.options[select.selectedIndex].textContent;
     }
-    if (search && search.value.trim()) return 'Brgy. ' + search.value.trim();
+    if (search && search.value.trim()) return 'Barangay ' + search.value.trim();
     return 'All Barangays';
   }
 
@@ -1560,19 +1711,40 @@
 
     list.innerHTML = docs.slice(0, 12).map(function(doc) {
       var ext = String(doc.file_type || 'pdf').toLowerCase();
-      var previewable = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext);
-      return '<article class="doc-row">'
+      return '<article class="doc-row" data-document-id="' + Number(doc.id) + '">'
         + '<div class="doc-icon">' + fileIconHtml(ext) + '</div>'
         + '<div>'
           + '<div class="doc-title">' + escapeHtml(doc.title) + '</div>'
-          + '<div class="doc-meta">' + escapeHtml(doc.category_name || 'Document') + ' · FY ' + escapeHtml(doc.fiscal_year || '—') + ' · ' + escapeHtml(doc.quarter || '—') + ' · ' + formatSize(doc.file_size_kb) + ' · ' + formatDate(doc.published_at) + '</div>'
+          + '<div class="doc-meta">' + escapeHtml(doc.category_name || 'Document') + ' ·  ' + escapeHtml(doc.fiscal_year || '—') + ' · ' + escapeHtml(doc.quarter || '—') + ' · ' + formatSize(doc.file_size_kb) + ' · ' + formatDate(doc.published_at) + '</div>'
           + '<div class="doc-actions">'
-            + (previewable ? '<a class="home-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download?preview=1" target="_blank" rel="noopener">Preview</a>' : '')
-            + '<a class="home-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download" target="_blank" rel="noopener">Download</a>'
+            + '<button class="home-link preview" type="button" onclick="openHomeDocPreview(' + Number(doc.id) + ')">Preview</button>'
+            + '<a class="home-link" href="' + API + '/documents/' + encodeURIComponent(doc.id) + '/download" target="_blank" rel="noopener" onclick="recordHomeDocumentDownload(' + Number(doc.id) + ')">Download</a>'
           + '</div>'
+          + documentStatsHtml(doc)
         + '</div>'
       + '</article>';
     }).join('');
+  }
+
+  function formatCount(value) {
+    var count = Number(value) || 0;
+    if (count >= 1000000) return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (count >= 1000) return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(count);
+  }
+
+  function statIcon(name) {
+    if (name === 'download') {
+      return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>';
+  }
+
+  function documentStatsHtml(doc) {
+    return '<div class="doc-engagement">'
+      + '<span class="doc-stat" title="Document previews">' + statIcon('eye') + formatCount(doc.preview_count) + ' </span>'
+      + '<span class="doc-stat" title="File downloads">' + statIcon('download') + formatCount(doc.download_count) + ' </span>'
+      + '</div>';
   }
 
   var fileTypeColors = {
@@ -1658,6 +1830,81 @@
     renderHomeDocs();
   }
 
+  function refreshHomeDocumentStats(doc) {
+    document.querySelectorAll('[data-document-id="' + Number(doc.id) + '"] .doc-engagement').forEach(function(element) {
+      element.innerHTML = documentStatsHtml(doc).replace(/^<div class="doc-engagement">|<\/div>$/g, '');
+    });
+  }
+
+  function recordHomeDocumentPreview(doc) {
+    fetch(API + '/documents/' + encodeURIComponent(doc.id) + '/engagement', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'preview' })
+    }).then(function(response) { return response.json(); }).then(function(result) {
+      if (!result.success || !result.data) return;
+      doc.preview_count = result.data.preview_count;
+      doc.download_count = result.data.download_count;
+      refreshHomeDocumentStats(doc);
+    }).catch(function() {});
+  }
+
+  function recordHomeDocumentDownload(id) {
+    var doc = homeDocs.find(function(item) { return Number(item.id) === Number(id); });
+    if (!doc) return;
+    doc.download_count = (Number(doc.download_count) || 0) + 1;
+    refreshHomeDocumentStats(doc);
+  }
+
+  function documentExtension(doc) {
+    var type = String(doc.file_type || '').toLowerCase().trim().replace(/^\.+/, '');
+    if (type && type.indexOf('/') === -1) return type;
+    var fileName = String(doc.file_name || '').toLowerCase();
+    var match = fileName.match(/\.([a-z0-9]+)$/);
+    return match ? match[1] : (type.split('/').pop() || '');
+  }
+
+  function openHomeDocPreview(id) {
+    var doc = homeDocs.find(function(item) { return Number(item.id) === Number(id); });
+    if (!doc) return;
+
+    var ext = documentExtension(doc);
+    recordHomeDocumentPreview(doc);
+    var previewUrl = API + '/documents/' + encodeURIComponent(doc.id) + '/download?preview=1&tracked=1';
+    var downloadUrl = API + '/documents/' + encodeURIComponent(doc.id) + '/download';
+    var title = doc.title || 'Document Preview';
+    var content;
+
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+      content = '<img src="' + previewUrl + '" alt="' + escapeHtml(title) + '">';
+    } else if (ext === 'pdf') {
+      content = '<iframe class="proof-preview-embed" src="' + previewUrl + '" title="Preview of ' + escapeHtml(title) + '"></iframe>';
+    } else {
+      content = '<div class="proof-preview-placeholder">' + fileIconHtml(ext || 'file') + '<p style="margin-top:10px;font-size:.85rem;">Preview is not available for this file type.<br>Use Download to access the document.</p></div>';
+    }
+
+    document.getElementById('homeDocPreviewTitle').textContent = title;
+    document.getElementById('homeDocPreviewBody').innerHTML = '<section class="proof-preview-panel">'
+      + '<div class="proof-preview-head"><span>' + escapeHtml(title) + '</span><a href="' + downloadUrl + '" class="modal-download-btn" target="_blank" rel="noopener" download onclick="recordHomeDocumentDownload(' + Number(doc.id) + ')">Download</a></div>'
+      + '<div class="proof-preview-content">' + content + '</div>'
+      + '</section>';
+    document.getElementById('homeDocPreviewModal').classList.add('show');
+    document.getElementById('homeDocPreviewModal').setAttribute('aria-hidden', 'false');
+  }
+
+  function closeHomeDocPreview() {
+    var modal = document.getElementById('homeDocPreviewModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    document.getElementById('homeDocPreviewBody').innerHTML = '';
+  }
+
+  document.getElementById('homeDocPreviewModal').addEventListener('click', function(event) {
+    if (event.target === this) closeHomeDocPreview();
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && document.getElementById('homeDocPreviewModal').classList.contains('show')) closeHomeDocPreview();
+  });
+
   async function loadHomeProofs() {
     var select = document.getElementById('homeProofBarangay');
     var barangayId = select ? select.value : 'all';
@@ -1667,18 +1914,54 @@
       var response = await fetch(url);
       var result = await response.json();
       homeProofs = result.success ? (result.data || []) : [];
+      populateHomeProofFilters();
       renderHomeProofs();
     } catch (error) {
       document.getElementById('homeProofGrid').innerHTML = '<div class="empty-state">Fund proof records are unavailable right now.</div>';
     }
   }
 
+  function populateHomeProofFilters() {
+    var yearSelect = document.getElementById('homeProofFiscalYear');
+    var categorySelect = document.getElementById('homeProofCategory');
+    if (!yearSelect || !categorySelect) return;
+
+    var selectedYear = yearSelect.value;
+    var selectedCategory = categorySelect.value;
+    var years = homeProofs.map(function(item) {
+      return String(item.fiscal_year || '').trim();
+    }).filter(function(year, index, all) {
+      return year && all.indexOf(year) === index;
+    }).sort(function(a, b) {
+      return Number(b) - Number(a);
+    });
+    var categories = homeProofs.map(function(item) {
+      return String(item.expense_category || '').trim();
+    }).filter(function(category, index, all) {
+      return category && all.indexOf(category) === index;
+    }).sort(function(a, b) {
+      return a.localeCompare(b);
+    });
+
+    yearSelect.innerHTML = '<option value="">All Fiscal Years</option>' + years.map(function(year) {
+      return '<option value="' + escapeHtml(year) + '">FY ' + escapeHtml(year) + '</option>';
+    }).join('');
+    categorySelect.innerHTML = '<option value="">All Categories</option>' + categories.map(function(category) {
+      return '<option value="' + escapeHtml(category) + '">' + escapeHtml(category) + '</option>';
+    }).join('');
+    if (years.indexOf(selectedYear) !== -1) yearSelect.value = selectedYear;
+    if (categories.indexOf(selectedCategory) !== -1) categorySelect.value = selectedCategory;
+  }
+
   function renderHomeProofs() {
     var grid = document.getElementById('homeProofGrid');
     if (!grid) return;
-    var query = document.getElementById('homeProofSearch').value.trim().toLowerCase();
+    var fiscalYear = document.getElementById('homeProofFiscalYear').value;
+    var category = document.getElementById('homeProofCategory').value;
     var proofs = homeProofs.filter(function(item) {
-      return !query || [item.title, item.purpose, item.expense_category, item.payee, item.barangay].join(' ').toLowerCase().includes(query);
+      var matchesYear = !fiscalYear || String(item.fiscal_year || '') === fiscalYear;
+      var matchesCategory = !category || String(item.expense_category || '').trim() === category;
+      return matchesYear && matchesCategory;
     });
     if (!proofs.length) {
       grid.innerHTML = '<div class="empty-state">No published fund proofs found.</div>';
@@ -1686,7 +1969,6 @@
     }
     grid.innerHTML = proofs.slice(0, 9).map(function(item) {
       var files = proofFiles(item);
-      var firstPreviewUrl = item.id ? API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=0' : '';
       var proof = files.slice(0, 4).map(function(file, index) {
         var proofUrl = item.id ? API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=' + encodeURIComponent(index) : '';
         if (index === 3 && files.length > 4) return '<div class="fund-tile more">+' + (files.length - 3) + '</div>';
@@ -1694,13 +1976,13 @@
         return '<div class="fund-tile">' + proofFileIconHtml(file) + '</div>';
       }).join('');
       return '<article class="fund-card">'
-        + '<div class="fund-proof">' + proof + '</div>'
+        + '<div class="fund-proof' + (files.length === 1 ? ' single-proof' : '') + '">' + proof + '</div>'
         + '<div class="fund-body">'
           + '<div class="fund-meta"><span>' + escapeHtml(item.expense_category || 'Expense') + '</span><strong>' + money(item.amount) + '</strong></div>'
           + '<div class="fund-title">' + escapeHtml(item.title || 'Fund proof') + '</div>'
           + '<div class="fund-purpose">' + escapeHtml(item.purpose || '') + '</div>'
           + connectedDocumentsHtml(item, 2)
-          + '<div class="fund-meta"><span>' + escapeHtml(item.barangay || 'Barangay') + ' - ' + formatDate(item.spent_at) + '</span>' + (firstPreviewUrl ? '<a class="home-link" href="' + firstPreviewUrl + '" target="_blank" rel="noopener">Preview</a>' : '') + '</div>'
+          + '<div class="fund-meta"><span>' + escapeHtml(item.barangay || 'Barangay') + ' - ' + formatDate(item.spent_at) + '</span>' + (item.id ? '<button class="home-link" type="button" onclick="openHomeProofAlbum(' + Number(item.id) + ')">Preview</button>' : '') + '</div>'
         + '</div>'
       + '</article>';
     }).join('');
@@ -1848,7 +2130,7 @@
     var title = document.getElementById('officialsTitle');
     var colors = ['var(--navy)', 'var(--sky)', 'var(--green)', 'var(--gold)'];
     if (!grid) return;
-    if (title) title.textContent = 'SK Officials - Brgy. ' + barangayName;
+    if (title) title.textContent = 'SK Officials - Barangay ' + barangayName;
     officials = officials.filter(function(official) { return official.role === 'chairperson'; });
     grid.innerHTML = officials.map(function(official, index) {
       var email = official.email || '';
@@ -1915,7 +2197,7 @@
       alertEl.innerHTML = '<div class="alert alert-error">' + escapeHtml(error.message || 'Unable to send message.') + '</div>';
       return;
     }
-    alertEl.innerHTML = '<div class="alert alert-success">Message sent! The SK and SK Federated admins have been notified.</div>';
+    alertEl.innerHTML = '<div class="alert alert-success">Message sent! The SK chairperson has been notified.</div>';
     document.getElementById('ctFname').value = '';
     document.getElementById('ctLname').value = '';
     document.getElementById('ctEmail').value = '';
@@ -1926,12 +2208,19 @@
   function initScrollHint(){
     var hint=document.getElementById('scrollHint');
     if(!hint)return;
+    var ticking=false;
     function checkHint(){
+      ticking=false;
       var scrollable=document.documentElement.scrollHeight>window.innerHeight+2;
       if(!scrollable||window.scrollY>80){hint.classList.add('hide');}else{hint.classList.remove('hide');}
     }
-    window.addEventListener('scroll',checkHint);
-    window.addEventListener('resize',checkHint);
+    function requestCheck(){
+      if(ticking)return;
+      ticking=true;
+      window.requestAnimationFrame(checkHint);
+    }
+    window.addEventListener('scroll',requestCheck,{passive:true});
+    window.addEventListener('resize',requestCheck);
     checkHint();
   }
 
@@ -1939,17 +2228,62 @@
     var sections = Array.from(document.querySelectorAll('[data-scroll-section]'));
     var navLinks = Array.from(document.querySelectorAll('[data-scroll-nav]'));
     if (!sections.length || !navLinks.length) return;
+
+    function setActiveNav(id) {
+      navLinks.forEach(function(link) {
+        var isActive = link.getAttribute('data-scroll-nav') === id;
+        link.classList.toggle('active', isActive);
+        if (isActive) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    function scrollToSection(id, shouldUpdateUrl) {
+      var section = sections.find(function(item) {
+        return item.getAttribute('data-scroll-section') === id;
+      });
+      if (!section) return;
+
+      var navbar = document.querySelector('.navbar');
+      var offset = (navbar ? navbar.offsetHeight : 0) + 8;
+      var top = section.getBoundingClientRect().top + window.pageYOffset - offset;
+      setActiveNav(id);
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+
+      if (shouldUpdateUrl && window.history && window.history.pushState) {
+        window.history.pushState(null, '', '#' + id);
+      }
+    }
+
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function(event) {
+        var id = link.getAttribute('data-scroll-nav');
+        if (!id) return;
+        event.preventDefault();
+        scrollToSection(id, true);
+        if (link.scrollIntoView) link.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      });
+    });
+
     var observer = new IntersectionObserver(function(entries) {
       var visible = entries
         .filter(function(entry) { return entry.isIntersecting; })
         .sort(function(a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
       if (!visible) return;
       var id = visible.target.getAttribute('data-scroll-section');
-      navLinks.forEach(function(link) {
-        link.classList.toggle('active', link.getAttribute('data-scroll-nav') === id);
-      });
+      setActiveNav(id);
     }, { rootMargin: '-32% 0px -55% 0px', threshold: [0, .2, .5, .8] });
     sections.forEach(function(section) { observer.observe(section); });
+
+    if (window.location.hash) {
+      var initialId = window.location.hash.replace(/^#/, '');
+      window.setTimeout(function() { scrollToSection(initialId, false); }, 0);
+    } else {
+      setActiveNav('home');
+    }
   }
 
   async function initializeConnectedHome() {

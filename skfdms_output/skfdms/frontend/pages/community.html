@@ -55,7 +55,7 @@
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
 
     /* TABS */
-    .tab-nav{display:flex;gap:0;border-bottom:2px solid #eee;margin-bottom:32px;overflow-x:auto;}
+    .tab-nav{display:flex;gap:0;border-bottom:2px solid #eee;margin-bottom:32px;overflow:visible;}
     .tab-btn{padding:12px 24px;font-size:.92rem;font-weight:700;color:var(--gray-400);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;font-family:var(--font);transition:all .2s;}
     .tab-btn:hover{color:var(--navy);}
     .tab-btn.active{color:var(--sky);border-bottom-color:var(--sky);}
@@ -130,7 +130,14 @@
     .footer-brand{color:var(--gold);font-weight:800;font-size:1rem;margin-bottom:8px;}
     footer p{font-size:.82rem;}
 
-    @media(max-width:768px){.grid-2{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}.navbar-links a:not(.btn-admin){display:none;}}
+    @media(max-width:768px){.grid-2{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}}
+
+    @media(max-width:560px) {
+      .cal-grid { grid-auto-rows: 36px; }
+      .tab-nav { overflow: visible; flex-wrap: wrap; }
+      .event-row { flex-direction: column; gap: 10px; }
+      .ev-date { min-width: 56px; }
+    }
 
     /* ===================== DARK MODE ===================== */
     body.dark {
@@ -214,6 +221,9 @@
         <span class="brand-text">MUNICIPALITY OF CATIGBIAN</span>
       </span>
     </a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="menu-bar"></span>
+    </button>
     <div class="navbar-links">
       <a href="../index.html">Home</a>
       <a href="documents.html">Documents</a>
@@ -222,7 +232,6 @@
       <a href="contact.html">Contact</a>
       <a href="about.html">About</a>
       <button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode"><span class="ui-icon ui-icon-moon" aria-hidden="true"></span></button>
-      <a href="login.html" class="btn-admin">Login</a>
     </div>
   </div>
 </nav>
