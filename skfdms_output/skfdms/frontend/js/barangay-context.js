@@ -17,6 +17,7 @@ window.SkBarangay = (function() {
         .forEach(className => document.body.classList.remove(className));
       document.body.classList.add('role-' + String(user.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
     }
+    setupChairpersonMobileMenu(user);
     if (user.role === 'admin') {
       try {
         const res = await fetch('/api/barangays');
@@ -458,6 +459,56 @@ window.SkBarangay = (function() {
     } catch (err) {
       notify('Cannot connect to server.', 'danger');
     }
+  }
+
+  function setupChairpersonMobileMenu(user) {
+    const sidebar = document.querySelector('.sidebar, .sb');
+    const logo = document.querySelector('.sidebar-logo, .sb-logo');
+    const nav = document.querySelector('.sidebar-nav, .sb-nav');
+    if (!sidebar || !logo || !nav) return;
+
+    const existingButton = logo.querySelector('.chair-mobile-menu-toggle');
+    if (!user || user.role !== 'chairperson') {
+      document.body.classList.remove('chair-mobile-menu-open');
+      if (existingButton) existingButton.remove();
+      return;
+    }
+    if (existingButton) return;
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'chair-mobile-menu-toggle';
+    button.setAttribute('aria-label', 'Open chairman menu');
+    button.setAttribute('aria-controls', nav.id || 'sidebarNav');
+    button.setAttribute('aria-expanded', 'false');
+    button.innerHTML = '<span></span><span></span><span></span>';
+    logo.insertBefore(button, logo.firstChild);
+
+    const closeMenu = () => {
+      document.body.classList.remove('chair-mobile-menu-open');
+      button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-label', 'Open chairman menu');
+    };
+
+    button.addEventListener('click', () => {
+      const isOpen = document.body.classList.toggle('chair-mobile-menu-open');
+      button.setAttribute('aria-expanded', String(isOpen));
+      button.setAttribute('aria-label', isOpen ? 'Close chairman menu' : 'Open chairman menu');
+    });
+
+    nav.addEventListener('click', event => {
+      if (event.target.closest('a, button')) closeMenu();
+    });
+
+    document.addEventListener('click', event => {
+      if (document.body.classList.contains('chair-mobile-menu-open') && !sidebar.contains(event.target)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeMenu();
+    });
   }
 
   function updateEditableSidebarLogo(user) {
