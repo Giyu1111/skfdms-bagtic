@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Account</title>
-  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
   <link rel="stylesheet" href="../../css/admin-shell.css" />
   <style>
     body { background: #f5f7f6; color: #22342a; }
@@ -57,12 +57,13 @@
   <aside class="sidebar">
     <div class="sidebar-logo"><div class="admin-brand"><span class="admin-brand-logos" aria-hidden="true"><img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" /><img class="admin-brand-logo" src="../../images/favicon.png" alt="" /></span><span class="admin-brand-title"><span class="admin-brand-kabataan">Sangguniang Kabataan</span><span class="admin-brand-rule"></span><span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span></span></div></div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
-      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
-      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
-      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Post Announcements</span></a>
+      <a href="dashboard.html"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
+      <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
+      <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
+      <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
       <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
-      <a href="my-account.html" class="active" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
       <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
     <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
@@ -111,7 +112,32 @@
   function renderPhoto() { var box = document.getElementById('profilePreview'); var src = currentUser.profile_image ? Users.profileImageUrl(currentUser.profile_image) : ''; box.innerHTML = src ? '<img src="' + src.replace(/"/g, '&quot;') + '" alt="Profile photo">' : initials(currentUser.name); }
   function storeUser(user) { currentUser = user; var cached = readAuthCache() || {}; writeAuthCache(Object.assign({}, cached, { user: currentUser, cached_at: Date.now() })); window.SkBarangay.renderSidebarUser(currentUser); renderPhoto(); }
   async function uploadPhoto(file) { if (!file) return; var form = new FormData(); form.append('image', file); var result = await Users.uploadProfileImage(currentUser.id, form); if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to update profile photo.', 'danger'); storeUser(Object.assign({}, currentUser, { profile_image: result.data.profile_image })); showAlert('Profile photo updated.', 'success'); }
-  async function loadAccount() { var result = await Auth.me(); if (!result.ok || !result.data.success) return window.location.href = '../login.html'; if (result.data.user.role !== 'chairperson') return window.location.href = 'dashboard.html'; await window.SkBarangay.init(result.data.user); storeUser(result.data.user); document.getElementById('accountName').textContent = currentUser.name; document.getElementById('accountNameInput').value = currentUser.name || ''; document.getElementById('accountEmail').value = currentUser.email || ''; }
+  function applyChairpersonSidebar() {
+    var nav = document.getElementById('sidebarNav');
+    if (!nav) return;
+    var documentsLink = nav.querySelector('a[href^="documents.html"]');
+    var accomplishmentsLink = nav.querySelector('a[href^="transparency.html"]');
+    var announcementsLink = nav.querySelector('a[href="announcements.html"]');
+    var uploadLink = nav.querySelector('a[href="upload.html"]');
+    var accountLink = nav.querySelector('a[href="my-account.html"]');
+    if (documentsLink) documentsLink.classList.remove('active');
+    if (accountLink) accountLink.classList.add('active');
+    if (documentsLink) documentsLink.querySelector('span:last-child').textContent = 'My Documents';
+    if (accomplishmentsLink) accomplishmentsLink.querySelector('span:last-child').textContent = 'My Accomplishments';
+    if (announcementsLink) announcementsLink.querySelector('span:last-child').textContent = 'Post Announcements';
+    if (uploadLink) uploadLink.style.display = 'none';
+    nav.querySelectorAll('a[href]').forEach(function(link) {
+      if (link.dataset.accountActiveStateBound) return;
+      link.dataset.accountActiveStateBound = 'true';
+      link.addEventListener('click', function() {
+        nav.querySelectorAll('a.active').forEach(function(activeLink) {
+          activeLink.classList.remove('active');
+        });
+        link.classList.add('active');
+      });
+    });
+  }
+  async function loadAccount() { var result = await Auth.me(); if (!result.ok || !result.data.success) return window.location.href = '../login.html'; if (result.data.user.role !== 'chairperson') return window.location.href = 'dashboard.html'; await window.SkBarangay.init(result.data.user); applyChairpersonSidebar(); storeUser(result.data.user); document.getElementById('accountName').textContent = currentUser.name; document.getElementById('accountNameInput').value = currentUser.name || ''; document.getElementById('accountEmail').value = currentUser.email || ''; }
   document.getElementById('photoBtn').onclick = function() { document.getElementById('photoInput').click(); };
   document.getElementById('photoInput').onchange = function(event) { uploadPhoto(event.target.files[0]); event.target.value = ''; };
   document.querySelectorAll('.password-toggle').forEach(function(button) {
@@ -170,7 +196,7 @@
   };
   document.getElementById('passwordForm').onsubmit = async function(event) { event.preventDefault(); var password = document.getElementById('newPassword').value; if (password !== document.getElementById('confirmPassword').value) return showAlert('New passwords do not match.', 'danger'); var result = await apiFetch('/auth/account/password', { method: 'PATCH', body: JSON.stringify({ current_password: document.getElementById('currentPassword').value, new_password: password }) }); if (!result.ok || !result.data.success) return showAlert(result.data.message || 'Unable to update password.', 'danger'); event.target.reset(); showAlert(result.data.message, 'success'); };
   document.getElementById('logoutBtn').onclick = async function() {
-    if (!confirm('Are you sure you want to log out?')) return;
+    if (!await window.SkBarangay.confirmLogout()) return;
     await Auth.logout();
     clearAuthCache();
     window.location.href = '../login.html';

@@ -157,33 +157,7 @@
       gap: 6px;
     }
 
-    /* REGISTRATION MODAL */
-    .register-link { text-align: center; margin-top: 14px; font-size: .88rem; }
-    .register-link a { color: #3D8C62; text-decoration: none; font-weight: 700; cursor: pointer; }
-    .register-link a:hover { text-decoration: underline; }
-
-    .register-modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.55); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 200; }
-    .register-modal-backdrop.show { display: flex; }
-    .register-modal { width: min(100%, 760px); max-height: 92vh; background: #fff; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 24px 70px rgba(15,23,42,.24); overflow: hidden; display: flex; flex-direction: column; }
-    .register-modal-header { padding: 18px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
-    .register-modal-header h3 { font-size: 1.1rem; color: #0F2A1E; font-weight: 900; }
-    .register-modal-close { width: 34px; height: 34px; border: none; border-radius: 8px; background: #F1F5F9; color: #0F2A1E; font-size: 1.35rem; line-height: 1; cursor: pointer; }
     @media(max-width:480px){.login-logos{flex-direction:column;gap:8px;}.login-logos img{height:60px;width:60px;}}
-    .register-modal-body { padding: 20px; overflow-y: auto; }
-    .register-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
-    .register-grid .form-group.full { grid-column: 1 / -1; }
-    input[type="date"], textarea.form-control, select.form-control { width: 100%; padding: 12px 14px; border: 1.5px solid #C8D8CE; border-radius: 10px; font-size: 0.95rem; outline: none; background: #fff; color: #0F172A; font-family: inherit; box-sizing: border-box; }
-    textarea.form-control { min-height: 88px; resize: vertical; }
-    .file-control { width: 100%; padding: 10px; border: 1.5px dashed #93B8A2; border-radius: 10px; background: #F7FBF8; color: #3A4A3E; font: inherit; }
-    .register-section { grid-column: 1 / -1; margin: 6px 0 14px; padding-bottom: 10px; border-bottom: 1px solid #E2E8F0; color: #1A4530; font-size: .9rem; font-weight: 900; }
-    .register-hint { margin-top: 6px; color: #6B7B6E; font-size: .78rem; line-height: 1.45; }
-    .register-required { color: #B42318; }
-    .register-btn { width: 100%; padding: 13px; background: #3D8C62; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; font-family: inherit; transition: background .2s; margin-top: 6px; }
-    .register-btn:hover { background: #1A4530; }
-    .register-btn:disabled { background: #C8D8CE; cursor: not-allowed; }
-    .register-cancel-btn { flex: 1; padding: 13px; background: #EEF2F7; color: #334155; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; font-family: inherit; }
-    .register-cancel-btn:hover { background: #E2E8F0; }
-    @media(max-width:620px){.register-grid{grid-template-columns:1fr;}.register-modal-body{padding:16px;}}
   </style>
   <link rel="stylesheet" href="../css/public-nav.css" />
   <style>
@@ -360,10 +334,6 @@
 
      <button class="btn-login" id="loginBtn"> Log In</button>
 
-     <div class="register-link">
-       <a href="#" id="registerLink">Register for an account</a>
-     </div>
-
      <div class="divider"></div>
     <div class="back-link">
       <a href="/">&larr; Back to public site</a>
@@ -373,92 +343,6 @@
    <div class="secure-note"><span class="ui-icon ui-icon-lock" aria-hidden="true"></span> Security : <i>Authorized Users Allowed</i></div>
 </div>
 
-<div class="register-modal-backdrop" id="registerModal" aria-hidden="true">
-  <div class="register-modal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
-    <div class="register-modal-header">
-      <h3 id="registerTitle">SK Chairperson Registration</h3>
-      <button type="button" class="register-modal-close" onclick="closeRegisterModal()" aria-label="Close">&times;</button>
-    </div>
-    <div class="register-modal-body">
-      <div id="registerAlertBox"></div>
-      <div class="register-grid">
-      <div class="register-section">Personal and appointment details</div>
-      <div class="form-group">
-        <label>First Name <span class="register-required">*</span></label>
-        <input type="text" class="form-control" id="rFirstName" autocomplete="given-name" placeholder="e.g. Juan" />
-      </div>
-      <div class="form-group">
-        <label>Last Name <span class="register-required">*</span></label>
-        <input type="text" class="form-control" id="rLastName" autocomplete="family-name" placeholder="e.g. Dela Cruz" />
-      </div>
-      <div class="form-group">
-        <label>Date of Birth <span class="register-required">*</span></label>
-        <input type="date" class="form-control" id="rBirthDate" />
-      </div>
-      <div class="form-group">
-        <label>Gender <span class="register-required">*</span></label>
-        <select class="form-control" id="rGender">
-          <option value="">Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Barangay <span class="register-required">*</span></label>
-        <select class="form-control" id="rBarangay">
-          <option value="">Loading barangays...</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Contact Information <span class="register-required">*</span></label>
-        <input type="tel" class="form-control" id="rContact" placeholder="e.g. 0912-345-6789" />
-      </div>
-      <div class="form-group full">
-        <label>Email Address <span class="register-required">*</span></label>
-        <input type="email" class="form-control" id="rEmail" placeholder="juan@skbagtic.gov.ph" />
-      </div>
-      <div class="form-group full">
-        <label>House No. and Street <span class="register-required">*</span></label>
-        <input type="text" class="form-control" id="rStreetAddress" autocomplete="street-address" placeholder="e.g. 123 Rizal Street" />
-      </div>
-      <div class="form-group">
-        <label>Purok <span class="register-required">*</span></label>
-        <input type="text" class="form-control" id="rPurok" placeholder="e.g. Purok 3" />
-      </div>
-      <div class="form-group">
-        <label>Municipality / City <span class="register-required">*</span></label>
-        <input type="text" class="form-control" id="rMunicipality" autocomplete="address-level2" placeholder="e.g. Bagtic" />
-      </div>
-      <div class="form-group full">
-        <label>Province <span class="register-required">*</span></label>
-        <input type="text" class="form-control" id="rProvince" autocomplete="address-level1" placeholder="e.g. Negros Oriental" />
-      </div>
-      <div class="register-section">Chairperson term and verification</div>
-      <div class="form-group">
-        <label>Basis of Authority <span class="register-required">*</span></label>
-        <select class="form-control" id="rAppointmentBasis"><option value="">Select basis</option><option value="Elected">Elected SK Chairperson</option><option value="Appointed">Appointed SK Chairperson</option></select>
-      </div>
-      <div class="form-group">
-        <label>Term Start <span class="register-required">*</span></label>
-        <input type="date" class="form-control" id="rTermStart" />
-      </div>
-      <div class="form-group">
-        <label>Term End <span class="register-required">*</span></label>
-        <input type="date" class="form-control" id="rTermEnd" />
-      </div>
-      <div class="form-group full">
-        <label>Supporting Document <span class="register-required">*</span></label>
-        <input type="file" class="file-control" id="rSupportingDocument" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx" />
-        <p class="register-hint">Upload a Certificate of Candidacy, appointment document, barangay certification, or other official proof of SK chairperson authority. PDF, image, or document files up to 10 MB are accepted.</p>
-      </div>
-      </div>
-      <div style="display:flex; gap:10px;">
-        <button type="button" class="register-cancel-btn" onclick="closeRegisterModal()">Cancel</button>
-        <button class="register-btn" id="registerSubmitBtn" onclick="submitRegistration()">Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
 </main>
 
 <script>
@@ -580,141 +464,6 @@
     }
   }
 
-  // ---------- REGISTRATION MODAL ----------
-  (function() {
-    var registerLink = document.getElementById('registerLink');
-    if (registerLink) {
-      registerLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        openRegisterModal();
-      });
-    }
-  })();
-
-  function openRegisterModal() {
-    var modal = document.getElementById('registerModal');
-    if (!modal) return;
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', 'false');
-    loadRegisterBarangays();
-  }
-
-  function closeRegisterModal() {
-    var modal = document.getElementById('registerModal');
-    if (!modal) return;
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
-    var alertBox = document.getElementById('registerAlertBox');
-    if (alertBox) alertBox.innerHTML = '';
-    document.getElementById('rFirstName').value = '';
-    document.getElementById('rLastName').value = '';
-    document.getElementById('rBirthDate').value = '';
-    document.getElementById('rGender').value = '';
-    document.getElementById('rBarangay').value = '';
-    document.getElementById('rContact').value = '';
-    document.getElementById('rEmail').value = '';
-    document.getElementById('rStreetAddress').value = '';
-    document.getElementById('rPurok').value = '';
-    document.getElementById('rMunicipality').value = '';
-    document.getElementById('rProvince').value = '';
-    document.getElementById('rAppointmentBasis').value = '';
-    document.getElementById('rTermStart').value = '';
-    document.getElementById('rTermEnd').value = '';
-    document.getElementById('rSupportingDocument').value = '';
-    var submitBtn = document.getElementById('registerSubmitBtn');
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Submit';
-  }
-
-  async function loadRegisterBarangays() {
-    var select = document.getElementById('rBarangay');
-    if (!select) return;
-    select.innerHTML = '<option value="">Loading barangays...</option>';
-    try {
-      var r = await fetch(API + '/barangays', { credentials: 'include' });
-      var d = await r.json();
-      if (!r.ok || !d.success) throw new Error(d.message || 'Unable to load barangays.');
-      select.innerHTML = '<option value="">Select barangay</option>' + (d.data || []).map(function(b) {
-        return '<option value="' + escapeHtml(b.id) + '">' + escapeHtml(b.name) + '</option>';
-      }).join('');
-    } catch (err) {
-      select.innerHTML = '<option value="">Unable to load barangays</option>';
-      showRegisterAlert(err.message || 'Unable to load barangays.', 'danger');
-    }
-  }
-
-  function showRegisterAlert(msg, type) {
-    var el = document.getElementById('registerAlertBox');
-    if (!el) return;
-    el.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
-  }
-
-  async function submitRegistration() {
-    var firstName = document.getElementById('rFirstName').value.trim();
-    var lastName = document.getElementById('rLastName').value.trim();
-    var name = [firstName, lastName].filter(Boolean).join(' ');
-    var gender = document.getElementById('rGender').value;
-    var barangayId = document.getElementById('rBarangay').value;
-    var contact = document.getElementById('rContact').value.trim();
-    var email = document.getElementById('rEmail').value.trim();
-    var birthDate = document.getElementById('rBirthDate').value;
-    var streetAddress = document.getElementById('rStreetAddress').value.trim();
-    var purok = document.getElementById('rPurok').value.trim();
-    var municipality = document.getElementById('rMunicipality').value.trim();
-    var province = document.getElementById('rProvince').value.trim();
-    var barangayName = document.getElementById('rBarangay').selectedOptions[0].text.trim();
-    var address = [streetAddress, purok, barangayName, municipality, province].filter(Boolean).join(', ');
-    var appointmentBasis = document.getElementById('rAppointmentBasis').value;
-    var termStart = document.getElementById('rTermStart').value;
-    var termEnd = document.getElementById('rTermEnd').value;
-    var supportingDocument = document.getElementById('rSupportingDocument').files[0];
-    var btn = document.getElementById('registerSubmitBtn');
-
-    if (!firstName || !lastName || !gender || !barangayId || !contact || !email || !birthDate || !streetAddress || !purok || !municipality || !province || !appointmentBasis || !termStart || !termEnd || !supportingDocument) {
-      showRegisterAlert('All fields are required.', 'danger');
-      return;
-    }
-    if (supportingDocument.size > 10 * 1024 * 1024) {
-      showRegisterAlert('The supporting document must be 10 MB or smaller.', 'danger');
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
-
-    try {
-      var formData = new FormData();
-      formData.append('full_name', name);
-      formData.append('gender', gender);
-      formData.append('barangay_id', barangayId);
-      formData.append('contact', contact);
-      formData.append('email', email);
-      formData.append('birth_date', birthDate);
-      formData.append('residential_address', address);
-      formData.append('appointment_basis', appointmentBasis);
-      formData.append('term_start', termStart);
-      formData.append('term_end', termEnd);
-      formData.append('supporting_document', supportingDocument);
-      var response = await fetch(API + '/auth/register-request', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      });
-      var data = await response.json();
-      if (response.ok && data.success) {
-        showRegisterAlert('Registration submitted! Your request is pending review by the SK Federated Admin.', 'success');
-        setTimeout(function() { closeRegisterModal(); }, 3000);
-      } else {
-        showRegisterAlert(data.message || 'Registration failed. Please try again.', 'danger');
-        btn.disabled = false;
-        btn.textContent = 'Submit';
-      }
-    } catch (err) {
-      showRegisterAlert('Cannot connect to server. Make sure the server is running (npm run dev).', 'danger');
-      btn.disabled = false;
-      btn.textContent = 'Submit';
-    }
-  }
 </script>
 </body>
 </html>

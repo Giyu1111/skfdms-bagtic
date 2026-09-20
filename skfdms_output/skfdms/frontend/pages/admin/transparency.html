@@ -49,7 +49,7 @@
     .stat-card{position:relative;overflow:hidden;background:#fff;border:1px solid #e6ece8;border-left:4px solid #3D8C62;border-radius:13px;padding:19px 20px;box-shadow:0 2px 7px rgba(15,42,30,.055);}
     .stat-card::after{content:'';position:absolute;right:-18px;bottom:-26px;width:90px;height:90px;border-radius:50%;background:rgba(61,140,98,.06);}
     .stat-card.gold{border-left-color:#D4AC0D;}
-    .stat-card.red{border-left-color:#C0392B;}
+    .stat-card.blue{border-left-color:#2563EB;}
     .stat-num{font-size:2rem;font-weight:900;color:#1A4530;line-height:1;}
     .stat-label{font-size:.82rem;color:#7d8780;font-weight:700;margin-top:7px;}
     .grid{display:grid;grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr);gap:20px;align-items:start;}
@@ -89,10 +89,11 @@
     .file-selected{font-size:.82rem;color:#7d8780;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .table-wrap{overflow-x:auto;scrollbar-color:#b8c9bd transparent;scrollbar-width:thin;}
     table{width:100%;min-width:980px;border-collapse:collapse;table-layout:fixed;}
-    col.col-select{width:4%;} col.col-details{width:25%;} col.col-category{width:11%;} col.col-date{width:11%;}
-    col.col-amount{width:12%;} col.col-proof{width:13%;} col.col-status{width:10%;} col.col-actions{width:14%;}
+    col.col-select{width:4%;} col.col-number{width:4%;} col.col-details{width:22%;} col.col-category{width:10%;} col.col-date{width:10%;}
+    col.col-amount{width:11%;} col.col-proof{width:12%;} col.col-status{width:10%;} col.col-actions{width:13%;}
     th{background:#1A4530;color:white;text-align:left;font-size:.8rem;padding:11px 10px;white-space:nowrap;}
     td{padding:14px 10px;border-bottom:1px solid #edf2ee;font-size:.88rem;color:#46524a;vertical-align:middle;}
+    th.proof-number,td.proof-number{text-align:center;color:#6d7b72;}
     tbody tr{transition:background .16s ease;}
     tbody tr:hover{background:#f4fbf6;}
     .badge{display:inline-flex;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800;}
@@ -117,13 +118,13 @@
     .proof-menu-list button:hover{background:#eaf7ef;color:#1A4530;}.proof-menu-list .menu-danger{color:#C0392B;}.proof-menu-list .menu-warning{color:#9A7500;}
     .proof-thumb-stack{display:flex;align-items:center;gap:4px;}.proof-thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;border:1px solid #dce5df;background:#f8fbf9;}
     .proof-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;border-top:1px solid #edf2ee;flex-wrap:wrap;background:#fcfdfc;}.proof-pagination span{font-size:.8rem;color:#738078;font-weight:700;}.proof-pagination-controls{display:flex;gap:6px;}
-    .proof-bulk-tools{display:none;align-items:center;gap:8px;padding:11px 22px;border-bottom:1px solid #eadfb9;background:#fff9e9;color:#6b5714;}.proof-bulk-tools.show{display:flex;}.proof-bulk-tools #proofBulkCount{margin-right:2px;font-size:.84rem;font-weight:900;}.proof-check{width:17px;height:17px;accent-color:#3D8C62;}
+    .proof-bulk-tools{display:none;align-items:center;justify-content:space-between;gap:14px;padding:10px 14px;background:#1A6B46;color:#fff;border-radius:10px 10px 0 0;box-shadow:0 5px 14px rgba(15,72,46,.16);}.proof-bulk-tools.show{display:flex;}.proof-bulk-tools #proofBulkCount{font-size:.84rem;font-weight:800;white-space:nowrap;}.bulk-selection-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;}.proof-bulk-tools .btn{min-height:32px;padding:6px 12px;border:1px solid transparent;font-size:.8rem;font-weight:800;transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;}.proof-bulk-tools .btn:hover{transform:translateY(-1px);}.proof-bulk-tools .bulk-archive-button{background:#fff;color:#1A4530;border-color:#fff;}.proof-bulk-tools .bulk-archive-button:hover{background:#E8F5EB;box-shadow:0 3px 8px rgba(0,0,0,.16);}.proof-bulk-tools .bulk-clear-button{background:transparent;color:#fff;border-color:rgba(255,255,255,.7);}.proof-bulk-tools .bulk-clear-button:hover{background:rgba(255,255,255,.14);box-shadow:0 3px 8px rgba(0,0,0,.12);}.proof-bulk-tools .bulk-cancel-button{background:transparent;color:#fff;border-color:transparent;}.proof-bulk-tools .bulk-cancel-button:hover{background:rgba(255,255,255,.14);box-shadow:0 3px 8px rgba(0,0,0,.12);}.bulk-action-divider{width:1px;height:24px;background:rgba(255,255,255,.45);margin:0 2px;}.proof-check{appearance:none;-webkit-appearance:none;width:19px;height:19px;margin:0;display:inline-grid;place-content:center;vertical-align:middle;border:1.5px solid rgba(26,69,48,.34);border-radius:5px;background-color:rgba(255,255,255,.92);background-position:center;background-repeat:no-repeat;background-size:12px 12px;box-shadow:inset 0 1px 1px rgba(15,42,30,.04);cursor:pointer;transition:background .14s,border-color .14s,box-shadow .14s;}.proof-check:hover{border-color:#3D8C62;box-shadow:0 0 0 3px rgba(61,140,98,.10);}.proof-check:focus-visible{outline:3px solid rgba(61,140,98,.22);outline-offset:2px;}.proof-check:checked{background-color:#2F7D55;border-color:#2F7D55;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7.2 5.8 10 11 4' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");}.proof-check:indeterminate{background-color:#2F7D55;border-color:#2F7D55;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.2 7h7.6' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round'/%3E%3C/svg%3E");}
     #proofSelectionHead,.proof-selection-cell{display:none;}
     .table-wrap.proof-selection-mode #proofSelectionHead,.table-wrap.proof-selection-mode .proof-selection-cell{display:table-cell;}
     .table-wrap:not(.proof-selection-mode) .col-select{display:none;}
     .proof-selection-target{background:#E2F4E8!important;}
     @media(max-width:1080px){.proof-filter-row,body.role-admin .proof-filter-row{grid-template-columns:repeat(3,minmax(0,1fr));}.proof-filter-row .btn{justify-self:start;}}
-    @media(max-width:680px){.page-intro{align-items:flex-start;flex-direction:column;}.proof-filter-row,body.role-admin .proof-filter-row{grid-template-columns:1fr;}.proof-pagination{align-items:flex-start;flex-direction:column;}.proof-bulk-tools{align-items:flex-start;flex-wrap:wrap;}.card-header{padding:16px 18px;}.proof-filter-row{padding:14px 18px;}}
+    @media(max-width:680px){.page-intro{align-items:flex-start;flex-direction:column;}.proof-filter-row,body.role-admin .proof-filter-row{grid-template-columns:1fr;}.proof-pagination{align-items:flex-start;flex-direction:column;}.proof-bulk-tools{align-items:flex-start;flex-direction:column;}.bulk-selection-actions{justify-content:flex-start;}.card-header{padding:16px 18px;}.proof-filter-row{padding:14px 18px;}}
     .alert{padding:11px 15px;border-radius:8px;margin-bottom:14px;font-size:.92rem;}
     .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
     .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
@@ -236,19 +237,13 @@
     <main class="content">
       <div id="alertBox"></div>
 
-      <section class="page-intro" aria-labelledby="pageTitle">
-        <div>
-          <h1 id="pageTitle">Accomplishment records</h1>
-          <p>Organize completed SK projects, attach proof files, and decide which accomplishments are published for the community.</p>
-        </div>
-        <span class="page-intro-note">Records with proof</span>
-      </section>
+      
 
       <section class="stat-grid soft-stat-cards">
         <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total proof records</div></div>
         <div class="stat-card"><div class="stat-num" id="statPublished">0</div><div class="stat-label">Visible on homepage</div></div>
         <div class="stat-card gold"><div class="stat-num" id="statDraft">0</div><div class="stat-label">Draft proof records</div></div>
-        <div class="stat-card red"><div class="stat-num" id="statAmount">₱0</div><div class="stat-label">Published amount with proof</div></div>
+        <div class="stat-card blue"><div class="stat-num" id="statAmount">₱0</div><div class="stat-label">Published amount with proof</div></div>
       </section>
 
       <section class="grid read-only">
@@ -347,9 +342,8 @@
           <div class="card-header">
             <div><h3 id="proofTableTitle">Manage Proofs</h3><div class="card-sub" id="proofTableSub">Publish records to make them visible on the homepage</div></div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-              <button type="button" class="btn btn-primary" id="addAccomplishmentBtn" onclick="toggleAccomplishmentForm()" aria-expanded="false" style="display:none;">+ Add Accomplishment</button>
               <button type="button" class="btn btn-warning btn-sm" id="archiveToggleBtn" onclick="openArchiveInventory()" style="display:none;">Archives</button>
-              <span id="proofCount" style="font-size:.84rem;color:#7d8780;"></span>
+              <button type="button" class="btn btn-primary" id="addAccomplishmentBtn" onclick="toggleAccomplishmentForm()" aria-expanded="false" style="display:none;">+ Add Accomplishment</button>
             </div>
           </div>
           <div class="proof-filter-row">
@@ -361,14 +355,13 @@
             <select id="proofStatus" hidden aria-hidden="true" tabindex="-1"><option value="">All statuses</option><option value="published">Published</option><option value="draft">Draft</option><option value="requested">Requested</option></select>
             <div><div class="filter-label">Fiscal Year</div><select id="proofYear"><option value="">All years</option></select></div>
             <div><div class="filter-label">Category</div><select id="proofCategory"><option value="">All categories</option></select></div>
-            <button type="button" class="btn btn-secondary btn-sm" id="clearProofFilters" onclick="clearProofFilters()" hidden>Clear Filters</button>
           </div>
-          <div class="proof-bulk-tools" id="proofBulkTools"><span id="proofBulkCount"></span><button type="button" class="btn btn-danger btn-sm" onclick="bulkArchiveProofs()">Archive selected</button><button type="button" class="btn btn-secondary btn-sm" onclick="clearProofSelection()">Clear</button></div>
+          <div class="proof-bulk-tools" id="proofBulkTools" aria-live="polite"><span id="proofBulkCount"></span><div class="bulk-selection-actions"><button type="button" class="btn bulk-archive-button" onclick="bulkArchiveProofs()">Archive</button><button type="button" class="btn bulk-clear-button" onclick="clearProofSelection()">Clear selection</button><span class="bulk-action-divider" aria-hidden="true"></span><button type="button" class="btn bulk-cancel-button" onclick="clearProofSelection()">Cancel</button></div></div>
           <div class="table-wrap">
             <table>
-              <colgroup><col class="col-select"><col class="col-details"><col class="col-category"><col class="col-date"><col class="col-amount"><col class="col-proof"><col class="col-status"><col class="col-actions"></colgroup>
-              <thead><tr><th id="proofSelectionHead"><input id="selectAllProofs" class="proof-check" type="checkbox" aria-label="Select visible accomplishments" onchange="toggleSelectAllProofs(this)"></th><th>Accomplishment</th><th>Category</th><th>Date</th><th>Budget</th><th>Proofs</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody id="proofRows"><tr><td colspan="8" class="empty">Loading proof records...</td></tr></tbody>
+              <colgroup><col class="col-select"><col class="col-number"><col class="col-details"><col class="col-category"><col class="col-date"><col class="col-amount"><col class="col-proof"><col class="col-status"><col class="col-actions"></colgroup>
+              <thead><tr><th id="proofSelectionHead"><input id="selectAllProofs" class="proof-check" type="checkbox" aria-label="Select visible accomplishments" onchange="toggleSelectAllProofs(this)"></th><th class="proof-number">#</th><th>Accomplishment</th><th>Category</th><th>Date</th><th>Budget</th><th>Proofs</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="proofRows"><tr><td colspan="9" class="empty">Loading proof records...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -759,7 +752,6 @@ function filteredProofs() {
   var status = document.getElementById('proofStatus').value;
   var year = document.getElementById('proofYear').value;
   var category = document.getElementById('proofCategory').value;
-  document.getElementById('clearProofFilters').hidden = !(search || year || category);
   return proofs.filter(function(item){
     var requested=toBool(item.publish_requested), published=toBool(item.is_published);
     var statusMatch=!status || (status==='published' && published) || (status==='requested' && !published && requested) || (status==='draft' && !published && !requested);
@@ -767,8 +759,6 @@ function filteredProofs() {
     return (!search || text.includes(search)) && (!year || String(item.fiscal_year)===year) && (!category || item.expense_category===category) && statusMatch;
   });
 }
-
-function clearProofFilters(){ ['proofSearch','proofYear','proofCategory'].forEach(function(id){ document.getElementById(id).value=''; }); renderProofs(); }
 
 function setProofView(view, shouldRender) {
   proofView = view === 'requested' ? 'requested' : 'published';
@@ -795,7 +785,6 @@ function renderProofs() {
   document.getElementById('statAmount').textContent = money(publishedAmount);
   var filtered = filteredProofs();
   var pageItems = filtered;
-  document.getElementById('proofCount').textContent = filtered.length + ' record' + (filtered.length === 1 ? '' : 's');
 
   if (!filtered.length) {
     var emptyText = showingArchived
@@ -807,13 +796,13 @@ function renderProofs() {
           : (canSubmitProofs()
             ? 'No proof records yet. Upload the first receipt or proof file.'
             : 'No proof records uploaded yet.')));
-    document.getElementById('proofRows').innerHTML = '<tr><td colspan="8" class="empty">' + emptyText + '</td></tr>';
+    document.getElementById('proofRows').innerHTML = '<tr><td colspan="9" class="empty">' + emptyText + '</td></tr>';
     return;
   }
 
   var canManage = canManageProofs();
   var isAdmin = currentUser && currentUser.role === 'admin';
-  document.getElementById('proofRows').innerHTML = pageItems.map(function(item) {
+  document.getElementById('proofRows').innerHTML = pageItems.map(function(item, index) {
     var isPublished = toBool(item.is_published);
     var isRequested = toBool(item.publish_requested);
     var files = proofFiles(item);
@@ -837,6 +826,7 @@ function renderProofs() {
     var actions = '<button class="btn btn-primary btn-sm" onclick="previewProof(' + item.id + ')">Preview</button><div class="proof-menu"><button class="btn btn-secondary btn-sm proof-menu-trigger" type="button" onclick="toggleProofMenu(this,event)" aria-label="More actions" aria-expanded="false">&#8942;</button><div class="proof-menu-list">'+menuItems+'</div></div>';
     return '<tr ondblclick="toggleProofSelectionMode(this,event)">'
       + '<td class="proof-selection-cell"><input class="proof-check proof-row-check" type="checkbox" value="'+item.id+'" '+(selectedProofIds[item.id] ? 'checked' : '')+' onchange="updateProofSelection()"></td>'
+      + '<td class="proof-number">' + (index + 1) + '</td>'
       + '<td><div class="proof-title">' + escapeHtml(item.title) + '</div></td>'
       + '<td><span class="badge badge-draft">' + escapeHtml(item.expense_category || 'Uncategorized') + '</span></td>'
       + '<td>' + fmtDate(item.spent_at || item.created_at) + '<br><span class="file-count">FY ' + escapeHtml(item.fiscal_year || '-') + '</span></td>'

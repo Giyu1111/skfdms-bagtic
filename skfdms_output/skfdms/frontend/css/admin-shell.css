@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600&display=swap');
 
 :root {
   --admin-sidebar-width: 330px;
-  --admin-shell-font: 'DM Sans', system-ui, sans-serif;
+  --admin-shell-font: 'Inter', Arial, Helvetica, sans-serif;
+  --admin-sidebar-font: 'Poppins', Arial, Helvetica, sans-serif;
   --admin-nav-font-size: 16px;
   --admin-logo-font-size: 25px;
   --admin-icon-box: 22px;
@@ -28,7 +29,8 @@ html {
 
 body {
   margin: 0;
-  font-family: var(--admin-shell-font);
+  font-family: var(--admin-shell-font) !important;
+  font-weight: 400;
 }
 
 .admin-layout,
@@ -54,7 +56,7 @@ body {
 .sidebar-logo .sk-badge,
 .sb-badge {
   font-size: var(--admin-logo-font-size) !important;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 2px;
   line-height: 1.2 !important;
 }
@@ -102,7 +104,7 @@ body {
 .admin-brand-kabataan {
   color: #D8BB55;
   font-size: .62rem;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: .18em;
   text-transform: uppercase;
 }
@@ -116,7 +118,7 @@ body {
 .admin-brand-text {
   color: #fff;
   font-size: .78rem;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: .07em;
   text-transform: uppercase;
 }
@@ -140,7 +142,7 @@ body {
   border-left: 3px solid transparent !important;
   font-family: var(--admin-shell-font) !important;
   font-size: var(--admin-nav-font-size) !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
   line-height: 1.2 !important;
   text-decoration: none;
   transition: all .18s;
@@ -150,7 +152,7 @@ body {
 .sb-nav a > span:not(.nav-icon) {
   font-family: var(--admin-shell-font) !important;
   font-size: var(--admin-nav-font-size) !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
   line-height: 1.2 !important;
 }
 
@@ -393,8 +395,8 @@ body {
 .ui-icon-xxl { --icon-size: 3rem; }
 .ui-icon-file,
 .nav-icon.icon-file,
-.sidebar-nav a[href$="documents.html"] .nav-icon,
-.sb-nav a[href$="documents.html"] .nav-icon,
+.sidebar-nav a[href^="documents.html"] .nav-icon,
+.sb-nav a[href^="documents.html"] .nav-icon,
 .sidebar-nav a.document-nav-toggle .nav-icon { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 2h8l5 5v15H6zM13 3.5V8h4.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .ui-icon-folder { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 6h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
 .ui-icon-image { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='5' width='18' height='14' rx='2' fill='none' stroke='black' stroke-width='2'/%3E%3Ccircle cx='8' cy='10' r='2' fill='black'/%3E%3Cpath d='m4 18 5-5 4 4 3-3 4 4' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
@@ -416,8 +418,8 @@ body {
 .sidebar-nav a[href$="upload.html"] .nav-icon,
 .sb-nav a[href$="upload.html"] .nav-icon { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21V10m0 0-4 4m4-4 4 4M4 4h16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 .ui-icon-receipt,
-.sidebar-nav a[href$="transparency.html"] .nav-icon,
-.sb-nav a[href$="transparency.html"] .nav-icon,
+.sidebar-nav a[href^="transparency.html"] .nav-icon,
+.sb-nav a[href^="transparency.html"] .nav-icon,
 .sidebar-nav a.accomplishment-nav-toggle .nav-icon { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h4' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
 .ui-icon-megaphone,
 .sidebar-nav a[href$="announcements.html"] .nav-icon,
@@ -1678,44 +1680,44 @@ body.dark .btn-warning {
 
 .sidebar-nav a[href$="dashboard.html"] .nav-icon::before,
 .sb-nav a[href$="dashboard.html"] .nav-icon::before {
-  color: #7DD3FC !important;
+  color: #fff !important;
 }
 
-.sidebar-nav a[href$="documents.html"] .nav-icon::before,
-.sb-nav a[href$="documents.html"] .nav-icon::before,
+.sidebar-nav a[href^="documents.html"] .nav-icon::before,
+.sb-nav a[href^="documents.html"] .nav-icon::before,
 .sidebar-nav a.document-nav-toggle .nav-icon::before {
-  color: #FDE68A !important;
+  color: #fff !important;
 }
 
 .sidebar-nav a[href$="upload.html"] .nav-icon::before,
 .sb-nav a[href$="upload.html"] .nav-icon::before {
-  color: #86EFAC !important;
+  color: #fff !important;
 }
 
-.sidebar-nav a[href$="transparency.html"] .nav-icon::before,
-.sb-nav a[href$="transparency.html"] .nav-icon::before,
+.sidebar-nav a[href^="transparency.html"] .nav-icon::before,
+.sb-nav a[href^="transparency.html"] .nav-icon::before,
 .sidebar-nav a.accomplishment-nav-toggle .nav-icon::before {
-  color: #FCA5A5 !important;
+  color: #fff !important;
 }
 
 .sidebar-nav a[href$="announcements.html"] .nav-icon::before,
 .sb-nav a[href$="announcements.html"] .nav-icon::before {
-  color: #FBBF24 !important;
+  color: #fff !important;
 }
 
 .sidebar-nav a[href$="users.html"] .nav-icon::before,
 .sb-nav a[href$="users.html"] .nav-icon::before {
-  color: #C4B5FD !important;
+  color: #fff !important;
 }
 
 .sidebar-nav a[href$="activity-log.html"] .nav-icon::before,
 .sb-nav a[href$="activity-log.html"] .nav-icon::before {
-  color: #67E8F9 !important;
+  color: #fff !important;
 }
 
 .sidebar-nav a.sidebar-public-link .nav-icon::before,
 .sb-nav a.sidebar-public-link .nav-icon::before {
-  color: #A7F3D0 !important;
+  color: #fff !important;
 }
 
 @media (max-width: 900px) {
@@ -2089,8 +2091,14 @@ body.dark .toggle-btn {
 .soft-stat-cards .stat-card:nth-child(4),
 .soft-stat-cards .smi:nth-child(4),
 .soft-stat-cards .stat-pill:nth-child(4) {
-  background: linear-gradient(135deg, #FDECEC 0%, #FFF7F5 100%) !important;
-  border-left-color: #C0392B !important;
+  background: linear-gradient(135deg, #EFF6FF 0%, #F8FBFF 100%) !important;
+  border-left-color: #2563EB !important;
+}
+
+/* A review is awaiting attention, not an error. */
+.dashboard-stat-cards .stat-card:nth-child(4) {
+  background: linear-gradient(135deg, #EFF6FF 0%, #F8FBFF 100%) !important;
+  border-left-color: #2563EB !important;
 }
 
 .dashboard-stat-cards .stat-card .stat-num,
@@ -2162,7 +2170,7 @@ body.dark .toggle-btn {
 
 .sidebar-nav .sidebar-logout-link .nav-icon::before,
 .sb-nav .sidebar-logout-link .nav-icon::before {
-  color: #FCA5A5 !important;
+  color: #fff !important;
 }
 
 .sidebar-nav .sidebar-logout-link > span:not(.nav-icon),
@@ -2583,7 +2591,7 @@ body.dark .toggle-btn {
   padding: 8px 14px 8px 56px;
   color: rgba(255,255,255,.92) !important;
   font-size: .88rem;
-  font-weight: 600;
+  font-weight: 400;
   text-decoration: none;
 }
 
@@ -2604,6 +2612,21 @@ body.dark .toggle-btn {
 .document-submenu-icon-request {
   --document-submenu-icon-color: #7DD3FC;
   --document-submenu-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 4h12v16H6zM9 8h6M9 12h3M17 16a3 3 0 1 1-2-2.83V11' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Use white glyphs only; navigation icon containers stay transparent. */
+.sidebar-nav .nav-icon::before,
+.sb-nav .nav-icon::before {
+  color: #fff !important;
+}
+
+.document-submenu-icon {
+  background-color: #fff !important;
+}
+
+.sidebar-nav .nav-dropdown-arrow,
+.sb-nav .nav-dropdown-arrow {
+  color: #fff !important;
 }
 
 .document-nav-submenu a:hover,
@@ -2918,4 +2941,502 @@ textarea,
 .admin-main .table-wrap th,
 .main .table-wrap th {
   color: #fff !important;
+}
+
+/* Reserved, businesslike admin typography. */
+button,
+input,
+select,
+textarea {
+  font-family: var(--admin-shell-font) !important;
+}
+
+.admin-main h1,
+.admin-main h2,
+.admin-main h3,
+.admin-main h4,
+.main h1,
+.main h2,
+.main h3,
+.main h4 {
+  font-weight: 600 !important;
+}
+
+.admin-main p,
+.admin-main small,
+.admin-main td,
+.main p,
+.main small,
+.main td {
+  font-weight: 400 !important;
+}
+
+.admin-main label,
+.admin-main .form-label,
+.main label,
+.main .form-label,
+.admin-main th,
+.main th,
+.admin-main .btn,
+.main .btn,
+.admin-main .badge,
+.main .badge {
+  font-weight: 500 !important;
+}
+
+.sidebar-user .uname,
+.sb-uname {
+  font-weight: 500 !important;
+}
+
+.sidebar-user .urole,
+.sb-role {
+  font-weight: 400 !important;
+}
+
+.admin-main .user-info .name,
+.main .user-info .name,
+.admin-main .stat-pill strong,
+.main .stat-pill strong,
+.admin-main .alert,
+.main .alert {
+  font-weight: 500 !important;
+}
+
+/* Keep the admin screens plain and formal: no bold display typography. */
+.sidebar *,
+.sb *,
+.admin-main *,
+.main * {
+  font-family: var(--admin-shell-font) !important;
+  font-weight: 400 !important;
+}
+
+/* Sidebar navigation typography: Poppins only, with clear parent/submenu hierarchy. */
+.sidebar-nav a,
+.sidebar-nav button,
+.sb-nav a,
+.sb-nav button,
+.sidebar-nav a > span:not(.nav-icon),
+.sb-nav a > span:not(.nav-icon) {
+  font-family: var(--admin-sidebar-font) !important;
+  font-weight: 600 !important;
+}
+
+.sidebar-nav .document-nav-submenu a,
+.sb-nav .document-nav-submenu a {
+  font-family: var(--admin-sidebar-font) !important;
+  font-size: .88rem !important;
+  font-weight: 500 !important;
+}
+
+.sidebar-nav .document-nav-submenu a > span:not(.document-submenu-icon),
+.sb-nav .document-nav-submenu a > span:not(.document-submenu-icon) {
+  font-family: var(--admin-sidebar-font) !important;
+  font-size: .88rem !important;
+  font-weight: 500 !important;
+}
+
+.sidebar-nav .sidebar-logout-link,
+.sb-nav .sidebar-logout-link,
+.sidebar-nav .sidebar-logout-link > span:not(.nav-icon),
+.sb-nav .sidebar-logout-link > span:not(.nav-icon) {
+  font-family: var(--admin-sidebar-font) !important;
+  font-weight: 600 !important;
+}
+
+.sidebar-nav,
+.sb-nav {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visually nest document and accomplishment views beneath their parent item. */
+.sidebar-nav .document-nav-submenu,
+.sb-nav .document-nav-submenu {
+  position: relative;
+  padding-top: 9px !important;
+}
+
+.sidebar-nav .document-nav-submenu::before,
+.sb-nav .document-nav-submenu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 56px;
+  right: 20px;
+  height: 1px;
+  background: rgba(255, 255, 255, .22);
+}
+
+.sidebar-nav .document-nav-submenu a,
+.sb-nav .document-nav-submenu a {
+  padding-left: 76px !important;
+}
+
+/* Application logout confirmation modal. */
+.logout-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 42, 30, .56);
+}
+
+.logout-confirm-backdrop.is-open { display: flex; }
+
+.logout-confirm-modal {
+  width: min(100%, 380px);
+  padding: 28px;
+  border: 1px solid #DCE7DF;
+  border-radius: 14px;
+  background: #fff;
+  color: #173A29;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+  text-align: center;
+}
+
+.logout-confirm-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #FFF4E5;
+  color: #A65F00;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.logout-confirm-modal h2 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+.logout-confirm-modal p { margin: 8px 0 22px; color: #5F6F65; font-size: .92rem; line-height: 1.5; }
+.logout-confirm-actions { display: flex; justify-content: center; gap: 10px; }
+.logout-confirm-actions button { min-width: 112px; padding: 10px 14px; border: 0; border-radius: 8px; font: 700 .88rem inherit; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease; }
+.logout-cancel { background: #EEF3EF; color: #294538; }
+.logout-approve { background: #B42318; color: #fff; }
+.logout-cancel:hover { background: #DCE9E0; box-shadow: 0 5px 12px rgba(27, 65, 45, .16); transform: translateY(-2px); }
+.logout-approve:hover { background: #8F1D15; box-shadow: 0 6px 14px rgba(180, 35, 24, .34); transform: translateY(-2px); }
+.logout-confirm-actions button:active { transform: translateY(0); box-shadow: none; }
+.logout-confirm-actions button:focus-visible { outline: 3px solid rgba(61, 140, 98, .42); outline-offset: 3px; }
+
+/* Inter typography for all admin content. Sidebar menus retain Poppins above. */
+.admin-main,
+.admin-main *,
+.main,
+.main *,
+.modal,
+.modal *,
+.modal-backdrop,
+.modal-backdrop *,
+#alertBox,
+#alertBox *,
+.toast,
+.toast * {
+  font-family: var(--admin-shell-font) !important;
+  font-weight: 400 !important;
+}
+
+.admin-main h2,
+.admin-main h3,
+.admin-main h4,
+.admin-main h5,
+.admin-main h6,
+.main h2,
+.main h3,
+.main h4,
+.main h5,
+.main h6,
+.modal h2,
+.modal h3,
+.modal h4,
+.admin-main th,
+.main th {
+  font-weight: 600 !important;
+}
+
+.admin-main h1,
+.main h1,
+.modal h1,
+.admin-main .topbar h2,
+.main .topbar h2,
+.admin-main .admin-topbar h2,
+.main .admin-topbar h2,
+.admin-main .page-title,
+.main .page-title,
+.admin-main .dashboard-greeting h1,
+.main .dashboard-greeting h1,
+.admin-main .hero-strip h1,
+.main .hero-strip h1 {
+  font-weight: 700 !important;
+}
+
+.admin-main button,
+.admin-main .btn,
+.admin-main label,
+.admin-main .form-label,
+.admin-main .badge,
+.main button,
+.main .btn,
+.main label,
+.main .form-label,
+.main .badge,
+.modal button,
+.modal .btn,
+.modal label,
+.modal .form-label {
+  font-weight: 500 !important;
+}
+
+.admin-main .stat-num,
+.admin-main .smi-num,
+.main .stat-num,
+.main .smi-num {
+  font-weight: 700 !important;
+}
+
+/* Archive inventory tables use the active theme's readable text colors. */
+.archive-modal .archive-table thead th,
+.archive-inventory-modal .archive-inventory-table thead th {
+  color: #fff !important;
+}
+
+.archive-modal .archive-table tbody td,
+.archive-inventory-modal .archive-inventory-table tbody td {
+  color: var(--admin-text-secondary) !important;
+}
+
+.archive-modal .archive-table tbody td strong,
+.archive-modal .archive-table .user-info .name,
+.archive-inventory-modal .archive-inventory-table tbody td strong,
+.archive-inventory-modal .archive-inventory-table .proof-title,
+.archive-inventory-modal .archive-inventory-table .amount {
+  color: var(--admin-text-primary) !important;
+}
+
+.archive-modal .archive-table .user-info .meta,
+.archive-modal .archive-table tbody td span[style],
+.archive-inventory-modal .archive-inventory-table tbody td span[style] {
+  color: var(--admin-text-secondary) !important;
+}
+
+/* Chairperson admin mobile layout. Desktop keeps the existing sidebar workspace. */
+@media (max-width: 768px) {
+  :root {
+    --admin-mobile-brand-height: 56px;
+    --admin-mobile-nav-height: 58px;
+    --admin-mobile-shell-height: calc(var(--admin-mobile-brand-height) + var(--admin-mobile-nav-height));
+  }
+
+  .admin-layout,
+  .layout {
+    display: block !important;
+  }
+
+  .sidebar,
+  .sb {
+    position: fixed !important;
+    inset: 0 0 auto 0 !important;
+    z-index: 100 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: var(--admin-mobile-shell-height) !important;
+    min-height: var(--admin-mobile-shell-height) !important;
+    overflow: hidden !important;
+  }
+
+  .sidebar-logo,
+  .sb-logo {
+    display: flex !important;
+    align-items: center !important;
+    height: var(--admin-mobile-brand-height) !important;
+    padding: 8px 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, .12) !important;
+  }
+
+  .admin-brand {
+    gap: 8px !important;
+  }
+
+  .admin-brand-logo {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+  }
+
+  .admin-brand-logos {
+    gap: 4px !important;
+  }
+
+  .admin-brand-kabataan {
+    font-size: 8px !important;
+  }
+
+  .admin-brand-text {
+    font-size: 11px !important;
+  }
+
+  .sidebar-nav,
+  .sb-nav {
+    display: flex !important;
+    align-items: stretch !important;
+    gap: 2px !important;
+    width: 100% !important;
+    height: var(--admin-mobile-nav-height) !important;
+    min-height: var(--admin-mobile-nav-height) !important;
+    padding: 5px 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar-nav::-webkit-scrollbar,
+  .sb-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-nav > a,
+  .sidebar-nav > button,
+  .sb-nav > a,
+  .sb-nav > button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: auto !important;
+    min-width: max-content !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 0 !important;
+    border-bottom: 3px solid transparent !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+  }
+
+  .sidebar-nav > a.active,
+  .sb-nav > a.active {
+    border-bottom-color: var(--sk-gold) !important;
+    box-shadow: none !important;
+  }
+
+  .sidebar-nav .nav-icon,
+  .sb-nav .nav-icon {
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+  }
+
+  .sidebar-user,
+  .sb-user {
+    display: none !important;
+  }
+
+  .admin-main,
+  .main {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    padding-top: calc(var(--admin-mobile-shell-height) + var(--admin-topbar-height)) !important;
+  }
+
+  .admin-topbar,
+  .topbar {
+    position: fixed !important;
+    top: var(--admin-mobile-shell-height) !important;
+    right: 0 !important;
+    left: 0 !important;
+    z-index: 90 !important;
+    width: 100% !important;
+    min-height: var(--admin-topbar-height) !important;
+    height: var(--admin-topbar-height) !important;
+    padding: 0 16px !important;
+  }
+
+  .topbar h1,
+  .topbar h2,
+  .admin-topbar h1,
+  .admin-topbar h2 {
+    overflow: hidden;
+    font-size: 1rem !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topbar-actions,
+  .admin-topbar-actions {
+    gap: 8px !important;
+  }
+
+  .content,
+  .admin-content {
+    padding: 18px 14px !important;
+  }
+
+  .page-intro {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .page-intro h1 {
+    font-size: 1.4rem !important;
+  }
+
+  .stat-grid,
+  .stats-grid,
+  .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .card-header,
+  .card-body {
+    padding-right: 14px !important;
+    padding-left: 14px !important;
+  }
+
+  .form-row,
+  .form-row.three {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-backdrop {
+    padding: 12px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-brand-kabataan,
+  .admin-brand-rule {
+    display: none !important;
+  }
+
+  .admin-brand-text {
+    font-size: 10px !important;
+  }
+
+  .sidebar-nav > a,
+  .sidebar-nav > button,
+  .sb-nav > a,
+  .sb-nav > button {
+    padding: 0 10px !important;
+    font-size: .78rem !important;
+  }
+
+  .stat-grid,
+  .stats-grid,
+  .dashboard-stats {
+    grid-template-columns: 1fr !important;
+  }
 }

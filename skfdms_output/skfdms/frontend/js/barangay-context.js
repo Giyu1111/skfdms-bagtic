@@ -170,8 +170,25 @@ window.SkBarangay = (function() {
     if (!nav) return;
     const existing = nav.querySelector('.document-nav-submenu');
     const documentsLink = nav.querySelector('a[href="documents.html"]');
-    if (!documentsLink || !user || user.role !== 'admin') {
+    if (!documentsLink || !user || !['admin', 'chairperson'].includes(user.role)) {
       if (existing) existing.remove();
+      return;
+    }
+    // Chairpersons have one unified personal list, so this is a direct link.
+    // Only SKFED admins need the Published / Requests navigation dropdown.
+    if (user.role === 'chairperson') {
+      if (existing) existing.remove();
+      documentsLink.href = 'documents.html?view=published';
+      documentsLink.classList.remove('document-nav-toggle');
+      documentsLink.removeAttribute('aria-expanded');
+      documentsLink.removeAttribute('aria-controls');
+      const documentsArrow = documentsLink.querySelector('.nav-dropdown-arrow');
+      if (documentsArrow) documentsArrow.remove();
+      const documentsLabel = documentsLink.querySelector('span:last-child');
+      if (documentsLabel) {
+        documentsLabel.textContent = 'My Documents';
+        documentsLabel.classList.remove('document-nav-label');
+      }
       return;
     }
     if (existing) return;
@@ -181,6 +198,7 @@ window.SkBarangay = (function() {
     documentsLink.classList.add('document-nav-toggle');
     const documentsLabel = documentsLink.querySelector('span:last-child');
     if (documentsLabel) {
+      documentsLabel.textContent = user.role === 'admin' ? 'Manage Documents' : 'My Documents';
       documentsLabel.classList.add('document-nav-label');
       documentsLabel.insertAdjacentHTML('afterend', '<span class="nav-dropdown-arrow" aria-hidden="true"></span>');
     }
@@ -208,8 +226,10 @@ window.SkBarangay = (function() {
     submenu.id = 'documentNavSubmenu';
     submenu.className = 'document-nav-submenu';
     submenu.hidden = !window.location.pathname.endsWith('/documents.html');
-    submenu.innerHTML = '<a href="documents.html?view=published"><span class="document-submenu-icon document-submenu-icon-published" aria-hidden="true"></span><span>Published</span></a>'
-      + '<a href="documents.html?view=requests"><span class="document-submenu-icon document-submenu-icon-request" aria-hidden="true"></span><span>Request</span></a>';
+    submenu.innerHTML = user.role === 'admin'
+      ? '<a href="documents.html?view=published"><span class="document-submenu-icon document-submenu-icon-published" aria-hidden="true"></span><span>Published</span></a>'
+        + '<a href="documents.html?view=requests"><span class="document-submenu-icon document-submenu-icon-request" aria-hidden="true"></span><span>Requests</span></a>'
+      : '<a href="documents.html?view=published"><span class="document-submenu-icon document-submenu-icon-published" aria-hidden="true"></span><span>My Documents</span></a>';
     const selectDocumentView = function(view) {
       submenu.querySelectorAll('a[href]').forEach(function(item) {
         item.classList.toggle('is-selected', new URL(item.href).searchParams.get('view') === view);
@@ -221,13 +241,16 @@ window.SkBarangay = (function() {
       const link = event.target.closest('a[href]');
       if (!link) return;
       const view = new URL(link.href).searchParams.get('view');
-      if (!view || typeof window.setDocumentView !== 'function') return;
       event.preventDefault();
+      event.stopPropagation();
+      if (!view) return;
+      if (typeof window.setDocumentView !== 'function') {
+        window.location.assign(link.href);
+        return;
+      }
       history.replaceState(null, '', link.href);
       selectDocumentView(view);
       window.setDocumentView(view);
-      documentsLink.setAttribute('aria-expanded', 'false');
-      submenu.hidden = true;
     });
     documentsLink.insertAdjacentElement('afterend', submenu);
   }
@@ -237,8 +260,25 @@ window.SkBarangay = (function() {
     if (!nav) return;
     const existing = nav.querySelector('.accomplishment-nav-submenu');
     const link = nav.querySelector('a[href="transparency.html"]');
-    if (!link || !user || user.role !== 'admin') {
+    if (!link || !user || !['admin', 'chairperson'].includes(user.role)) {
       if (existing) existing.remove();
+      return;
+    }
+    // A chairperson opens one personal accomplishment list in a single click.
+    // The expandable Published / Requested views are reserved for SKFED admins.
+    if (user.role === 'chairperson') {
+      if (existing) existing.remove();
+      link.href = 'transparency.html?view=published';
+      link.classList.remove('document-nav-toggle', 'accomplishment-nav-toggle');
+      link.removeAttribute('aria-expanded');
+      link.removeAttribute('aria-controls');
+      const accomplishmentArrow = link.querySelector('.nav-dropdown-arrow');
+      if (accomplishmentArrow) accomplishmentArrow.remove();
+      const accomplishmentLabel = link.querySelector('span:last-child');
+      if (accomplishmentLabel) {
+        accomplishmentLabel.textContent = 'My Accomplishments';
+        accomplishmentLabel.classList.remove('document-nav-label');
+      }
       return;
     }
     if (existing) return;
@@ -248,6 +288,7 @@ window.SkBarangay = (function() {
     link.classList.add('document-nav-toggle', 'accomplishment-nav-toggle');
     const label = link.querySelector('span:last-child');
     if (label) {
+      label.textContent = user.role === 'admin' ? 'Manage Accomplishments' : 'My Accomplishments';
       label.classList.add('document-nav-label');
       label.insertAdjacentHTML('afterend', '<span class="nav-dropdown-arrow" aria-hidden="true"></span>');
     }
@@ -275,8 +316,10 @@ window.SkBarangay = (function() {
     submenu.id = 'accomplishmentNavSubmenu';
     submenu.className = 'document-nav-submenu accomplishment-nav-submenu';
     submenu.hidden = !window.location.pathname.endsWith('/transparency.html');
-    submenu.innerHTML = '<a href="transparency.html?view=published"><span class="document-submenu-icon document-submenu-icon-published" aria-hidden="true"></span><span>Published</span></a>'
-      + '<a href="transparency.html?view=requested"><span class="document-submenu-icon document-submenu-icon-request" aria-hidden="true"></span><span>Requested</span></a>';
+    submenu.innerHTML = user.role === 'admin'
+      ? '<a href="transparency.html?view=published"><span class="document-submenu-icon document-submenu-icon-published" aria-hidden="true"></span><span>Published</span></a>'
+        + '<a href="transparency.html?view=requested"><span class="document-submenu-icon document-submenu-icon-request" aria-hidden="true"></span><span>Requested</span></a>'
+      : '<a href="transparency.html?view=published"><span class="document-submenu-icon document-submenu-icon-published" aria-hidden="true"></span><span>My Accomplishments</span></a>';
     const selectView = function(view) {
       submenu.querySelectorAll('a[href]').forEach(function(item) {
         item.classList.toggle('is-selected', new URL(item.href).searchParams.get('view') === view);
@@ -288,13 +331,16 @@ window.SkBarangay = (function() {
       const item = event.target.closest('a[href]');
       if (!item) return;
       const view = new URL(item.href).searchParams.get('view');
-      if (!view || typeof window.setProofView !== 'function') return;
       event.preventDefault();
+      event.stopPropagation();
+      if (!view) return;
+      if (typeof window.setProofView !== 'function') {
+        window.location.assign(item.href);
+        return;
+      }
       history.replaceState(null, '', item.href);
       selectView(view);
       window.setProofView(view, true);
-      link.setAttribute('aria-expanded', 'false');
-      submenu.hidden = true;
     });
     link.insertAdjacentElement('afterend', submenu);
   }
@@ -418,5 +464,42 @@ window.SkBarangay = (function() {
     // Profile photos are managed from My Account, keeping the sidebar uncluttered.
   }
 
-  return { init, getSelectedBarangayId, setSelectedBarangayId, populateDropdown, getBarangayName, getSelectedBarangayName, updateSidebarCaption, renderSidebarUser, updateSidebarLogo, validateLogoFile };
+  function confirmLogout() {
+    return new Promise(function(resolve) {
+      let modal = document.getElementById('logoutConfirmModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'logoutConfirmModal';
+        modal.className = 'logout-confirm-backdrop';
+        modal.setAttribute('role', 'presentation');
+        modal.innerHTML = '<section class="logout-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle">'
+          + '<div class="logout-confirm-icon" aria-hidden="true">↪</div>'
+          + '<h2 id="logoutConfirmTitle">Log out?</h2>'
+          + '<p>You will need to sign in again to access your account.</p>'
+          + '<div class="logout-confirm-actions"><button type="button" class="logout-cancel">Cancel</button><button type="button" class="logout-approve">Log out</button></div>'
+          + '</section>';
+        document.body.appendChild(modal);
+      }
+
+      const close = function(confirmed) {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.removeEventListener('keydown', onKeydown);
+        resolve(confirmed);
+      };
+      const onKeydown = function(event) {
+        if (event.key === 'Escape') close(false);
+      };
+
+      modal.querySelector('.logout-cancel').onclick = function() { close(false); };
+      modal.querySelector('.logout-approve').onclick = function() { close(true); };
+      modal.onclick = function(event) { if (event.target === modal) close(false); };
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.addEventListener('keydown', onKeydown);
+      modal.querySelector('.logout-cancel').focus();
+    });
+  }
+
+  return { init, getSelectedBarangayId, setSelectedBarangayId, populateDropdown, getBarangayName, getSelectedBarangayName, updateSidebarCaption, renderSidebarUser, updateSidebarLogo, validateLogoFile, confirmLogout };
 })();

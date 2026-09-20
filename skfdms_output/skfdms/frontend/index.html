@@ -339,28 +339,6 @@
       width: 24px;
       background: var(--gold);
     }
-    .announcement-progress {
-      height: 3px;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 999px;
-      background: rgba(26, 69, 48, .12);
-      margin-top: 16px;
-    }
-    .announcement-progress span {
-      display: block;
-      height: 100%;
-      width: 100%;
-      transform-origin: left center;
-      background: var(--gold);
-    }
-    .barangay-announcements.is-playing .announcement-progress span {
-      animation: announcementProgress 4.5s linear infinite;
-    }
-    @keyframes announcementProgress {
-      from { transform: scaleX(0); }
-      to { transform: scaleX(1); }
-    }
     html { scroll-behavior: smooth; }
     .scroll-section { scroll-margin-top: 112px; }
     .linked-section {
@@ -799,9 +777,6 @@
     body.dark .announcement-dot.is-active {
       background: #D8BB55;
     }
-    body.dark .announcement-progress {
-      background: rgba(216, 230, 220, .14);
-    }
     body.dark .linked-section {
       background: rgba(7, 21, 13, .80) !important;
       border-top-color: rgba(114, 226, 168, .12);
@@ -916,8 +891,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .scroll-hint .scroll-arrow,
-      .barangay-announcements.is-playing .announcement-progress span {
+      .scroll-hint .scroll-arrow {
         animation: none;
       }
       *,
@@ -1359,9 +1333,7 @@
   var allAnnouncements = [];
   var announcementSlides = [];
   var announcementIndex = 0;
-  var announcementTimer = null;
   var announcementSearchTimer = null;
-  var ANNOUNCEMENT_SLIDE_MS = 4500;
 
   function announcementBarangayName(item) {
     return item.barangay_name || item.barangay || 'Barangay';
@@ -1384,36 +1356,6 @@
     if (grid) grid.innerHTML = '<div class="announcement-empty">' + escapeHtml(message) + '</div>';
   }
 
-  function stopAnnouncementSlideshow() {
-    if (announcementTimer) window.clearInterval(announcementTimer);
-    announcementTimer = null;
-  }
-
-  function startAnnouncementSlideshow() {
-    stopAnnouncementSlideshow();
-    if (announcementSlides.length < 2) return;
-    var shell = document.querySelector('.barangay-announcements');
-    if (shell) shell.classList.add('is-playing');
-    announcementTimer = window.setInterval(function() {
-      showAnnouncementSlide(announcementIndex + 1);
-    }, ANNOUNCEMENT_SLIDE_MS);
-  }
-
-  function pauseAnnouncementSlideshow() {
-    var shell = document.querySelector('.barangay-announcements');
-    if (shell) shell.classList.remove('is-playing');
-    stopAnnouncementSlideshow();
-  }
-
-  function setupAnnouncementSlideshowControls() {
-    var shell = document.querySelector('.barangay-announcements');
-    if (!shell || announcementSlides.length < 2) return;
-    shell.addEventListener('mouseenter', pauseAnnouncementSlideshow);
-    shell.addEventListener('mouseleave', startAnnouncementSlideshow);
-    shell.addEventListener('focusin', pauseAnnouncementSlideshow);
-    shell.addEventListener('focusout', startAnnouncementSlideshow);
-  }
-
   function showAnnouncementSlide(nextIndex) {
     if (!announcementSlides.length) return;
     announcementIndex = (nextIndex + announcementSlides.length) % announcementSlides.length;
@@ -1429,12 +1371,10 @@
 
   function moveAnnouncementSlide(direction) {
     showAnnouncementSlide(announcementIndex + direction);
-    startAnnouncementSlideshow();
   }
 
   function jumpAnnouncementSlide(index) {
     showAnnouncementSlide(index);
-    startAnnouncementSlideshow();
   }
 
   function renderAnnouncements(items) {
@@ -1443,7 +1383,6 @@
 
     if (!items.length) {
       announcementSlides = [];
-      stopAnnouncementSlideshow();
       grid.innerHTML = '<div class="announcement-empty">No public announcements found for the selected barangay.</div>';
       return;
     }
@@ -1474,10 +1413,7 @@
           }).join('') + '</div>'
           + '<div class="announcement-meta" id="announcementStatus">' + (announcementIndex + 1) + ' of ' + announcementSlides.length + '</div>'
         + '</div>'
-        + (announcementSlides.length > 1 ? '<div class="announcement-progress" aria-hidden="true"><span></span></div>' : '')
         + '</article>';
-    setupAnnouncementSlideshowControls();
-    startAnnouncementSlideshow();
   }
 
   function currentAnnouncementBarangayLabel() {

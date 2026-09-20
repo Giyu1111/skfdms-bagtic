@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Users-Admin</title>
   <link rel="stylesheet" href="../../css/style.css"/>
-  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{display:flex;flex-direction:column;min-height:100vh;background:#F0F4F8;font-family:'DM Sans',system-ui,sans-serif;color:#143225;}
@@ -88,7 +88,6 @@
     .badge-pending{background:#FEF3C7;color:#92400E;}
     .badge-rejected{background:#FEE2E2;color:#991B1B;}
     .badge-role{background:#EEF2FF;color:#3730A3;}
-    .credential-lock{width:20px;height:20px;display:inline-block;vertical-align:middle;object-fit:contain;}
     .action-stack{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-start;align-items:center;}
     .action-stack .btn-sm{padding-left:9px;padding-right:9px;}
     .user-menu{position:relative;display:inline-block;}
@@ -178,7 +177,7 @@
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
-      <a href="users.html" class="active" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
+      <a href="users.html" class="active" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>User Management</span></a>
       <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
 
       <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
@@ -217,6 +216,7 @@
               <small id="listSub">Pending registration requests and approved SK officials</small>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <button class="btn btn-primary" type="button" id="createChairpersonBtn" onclick="openCreateChairpersonModal()">+ Account</button>
               <button class="btn btn-warning btn-sm" type="button" onclick="openArchiveInventory()">Archived Users <span id="archiveCount" aria-label="archived users count">0</span></button>
             </div>
           </div>
@@ -228,10 +228,9 @@
                    <col style="width:17%;">
                    <col style="width:8%;">
                    <col style="width:14%;">
-                   <col style="width:12%;">
-                   <col style="width:8%;">
-                   <col style="width:9%;">
                    <col style="width:14%;">
+                   <col style="width:11%;">
+                   <col style="width:18%;">
                  </colgroup>
                 <thead>
                   <tr>
@@ -240,7 +239,6 @@
                     <th>Gender</th>
                     <th>Barangay</th>
                     <th>Contact Info</th>
-                    <th>Credentials</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -253,6 +251,26 @@
        </div>
      </main>
   </div>
+</div>
+
+<div class="modal-backdrop" id="createChairpersonModal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="createChairpersonTitle">
+    <div class="modal-header">
+      <div><h3 id="createChairpersonTitle">Create SK Chairperson Account</h3><small>A temporary password is generated securely after creation.</small></div>
+      <button type="button" class="modal-close" onclick="closeCreateChairpersonModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="createChairpersonForm" class="form-grid">
+        <div class="form-group"><label class="form-label" for="createChairpersonName">Full name <span class="required">*</span></label><input class="form-control" id="createChairpersonName" required></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonEmail">Email address <span class="required">*</span></label><input class="form-control" id="createChairpersonEmail" type="email" required></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonGender">Gender <span class="required">*</span></label><select class="form-control" id="createChairpersonGender" required><option value="">Select gender</option><option value="male">Male</option><option value="female">Female</option></select></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonContact">Contact information</label><input class="form-control" id="createChairpersonContact" type="tel"></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonBarangay">Barangay <span class="required">*</span></label><select class="form-control" id="createChairpersonBarangay" required><option value="">Loading barangays...</option></select></div>
+        <p class="form-note">The temporary password is shown only once. Copy it and share it privately with the chairperson.</p>
+        <div style="display:flex;justify-content:flex-end;gap:10px;"><button class="btn btn-muted" type="button" onclick="closeCreateChairpersonModal()">Cancel</button><button class="btn btn-primary" id="createChairpersonSubmit" type="submit">Create Account</button></div>
+      </form>
+    </div>
+  </section>
 </div>
 
 <div class="modal-backdrop" id="registrationReviewModal" aria-hidden="true">
@@ -469,7 +487,7 @@
     var d=await r.json();
     var container=document.getElementById('userList');
     if(!d.success){
-      container.innerHTML='<tr><td colspan="8" class="empty">'+escapeHtml(d.message || 'Unable to load users.')+'</td></tr>';
+      container.innerHTML='<tr><td colspan="7" class="empty">'+escapeHtml(d.message || 'Unable to load users.')+'</td></tr>';
       return;
     }
 
@@ -484,7 +502,7 @@
 
 
     if(!users.length){
-      container.innerHTML='<tr><td colspan="8" class="empty">No users found.</td></tr>';
+      container.innerHTML='<tr><td colspan="7" class="empty">No users found.</td></tr>';
       return;
     }
 
@@ -518,7 +536,6 @@
       +'<td>'+escapeHtml(genderLabel(u.gender))+'</td>'
       +'<td>'+escapeHtml(u.barangay_name || '-')+'</td>'
       +'<td>'+escapeHtml(u.contact || '-')+'</td>'
-      +'<td><img class="credential-lock" src="../../images/lock.png" alt="Protected credentials" title="Protected credentials"></td>'
       +'<td><span class="badge '+sBadge+'">'+sLabel+'</span></td>'
       +'<td>'+actions+'</td>'
       +'</tr>';
@@ -546,6 +563,66 @@
   }
 
   document.addEventListener('click',closeUserMenus);
+
+  function openCreateChairpersonModal(){
+    if(!currentUser || currentUser.role !== 'admin'){
+      showAlert('Only the SK Federated Admin can create Chairperson accounts.','danger');
+      return;
+    }
+    var modal=document.getElementById('createChairpersonModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    loadCreateChairpersonBarangays();
+  }
+
+  function closeCreateChairpersonModal(){
+    var modal=document.getElementById('createChairpersonModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+    document.getElementById('createChairpersonForm').reset();
+  }
+
+  async function loadCreateChairpersonBarangays(){
+    var select=document.getElementById('createChairpersonBarangay');
+    select.innerHTML='<option value="">Loading barangays...</option>';
+    try{
+      var r=await fetch(API+'/barangays',{credentials:'include'});
+      var d=await r.json();
+      if(!r.ok||!d.success)throw new Error(d.message||'Unable to load barangays.');
+      select.innerHTML='<option value="">Select barangay</option>'+(d.data||[]).map(function(b){return '<option value="'+escapeHtml(b.id)+'">'+escapeHtml(b.name)+'</option>';}).join('');
+    }catch(err){
+      select.innerHTML='<option value="">Unable to load barangays</option>';
+      showAlert(err.message||'Unable to load barangays.','danger');
+    }
+  }
+
+  document.getElementById('createChairpersonForm').addEventListener('submit',async function(event){
+    event.preventDefault();
+    var submit=document.getElementById('createChairpersonSubmit');
+    var payload={
+      name:document.getElementById('createChairpersonName').value.trim(),
+      email:document.getElementById('createChairpersonEmail').value.trim(),
+      gender:document.getElementById('createChairpersonGender').value,
+      contact:document.getElementById('createChairpersonContact').value.trim(),
+      barangay_id:document.getElementById('createChairpersonBarangay').value,
+      role:'chairperson'
+    };
+    submit.disabled=true;
+    submit.textContent='Creating...';
+    try{
+      var r=await fetch(API+'/admin/users',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var d=await r.json();
+      if(!r.ok||!d.success)throw new Error(d.message||'Unable to create the account.');
+      closeCreateChairpersonModal();
+      showRawAlert('Account created for <span class="temp-password">'+escapeHtml(payload.email)+'</span>.<br>Temporary password: <span class="temp-password">'+escapeHtml(d.temp_password)+'</span><br><small>Copy and share this password privately. It will not be shown again.</small>','success');
+      loadUsers();
+    }catch(err){
+      showAlert(err.message||'Unable to create the account.','danger');
+    }finally{
+      submit.disabled=false;
+      submit.textContent='Create Account';
+    }
+  });
 
   function reviewValue(value){ return value ? escapeHtml(value) : '-'; }
   function reviewDate(value){ return value ? fmt(value) : '-'; }
@@ -861,7 +938,7 @@
   }
 
   async function doLogout(){
-    if(!confirm('Are you sure you want to log out?'))return;
+    if(!await window.SkBarangay.confirmLogout())return;
     await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
     window.location.href='/';
   }
@@ -881,7 +958,7 @@
   function updateSidebarLinks(role) {
     var links = document.querySelectorAll('#sidebarNav a[data-role]');
     links.forEach(function(link) {
-      var span = link.querySelector('span:last-child');
+      var span = link.querySelector('.document-nav-label, span:last-child');
       if (!span) return;
       var href = link.getAttribute('href');
       if (role === 'chairperson') {

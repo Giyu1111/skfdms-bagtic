@@ -58,7 +58,7 @@
     .filter-row select:focus{border-color:#3D8C62;}
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
-  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
   <script src="../../js/public-theme.js" defer></script>
 </head>
 <body>
@@ -84,7 +84,7 @@
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
       <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
-      <a href="activity-log.html" class="active" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="activity-log.html" class="active" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Logs</span></a>
       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
       <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
       
@@ -95,7 +95,7 @@
   <div class="admin-main">
     <div class="topbar">
       <div class="topbar-left">
-        <h2>Activity Log</h2>
+        <h2>Activity Logs</h2>
         <select id="barangaySelector" class="barangay-select"></select>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
@@ -281,7 +281,7 @@
   });
 
   async function doLogout(){
-    if(!confirm('Are you sure you want to log out?'))return;
+    if(!await window.SkBarangay.confirmLogout())return;
     await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
     window.location.href='/';
   }
@@ -301,7 +301,7 @@
   function updateSidebarLinks(role) {
     var links = document.querySelectorAll('#sidebarNav a[data-role]');
     links.forEach(function(link) {
-      var span = link.querySelector('span:last-child');
+      var span = link.querySelector('.document-nav-label, span:last-child');
       if (!span) return;
       var href = link.getAttribute('href');
       if (role === 'chairperson') {

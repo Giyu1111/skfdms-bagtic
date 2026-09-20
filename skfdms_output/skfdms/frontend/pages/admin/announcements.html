@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Announcements</title>
-  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
   <link rel="stylesheet" href="../../css/style.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
@@ -297,7 +297,7 @@
   }
 
   async function doLogout(){
-    if(!confirm('Are you sure you want to log out?'))return;
+    if(!await window.SkBarangay.confirmLogout())return;
     await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});
     window.location.href='/';
   }
@@ -317,7 +317,7 @@
   function updateSidebarLinks(role) {
     var links = document.querySelectorAll('#sidebarNav a[data-role]');
     links.forEach(function(link) {
-      var span = link.querySelector('span:last-child');
+      var span = link.querySelector('.document-nav-label, span:last-child');
       if (!span) return;
       var href = link.getAttribute('href');
       if (role === 'chairperson') {

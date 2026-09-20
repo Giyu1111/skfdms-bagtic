@@ -54,23 +54,22 @@
     .table-wrap{overflow:visible;}
     table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;}
     thead tr{background:#1A4530;}
-    thead th{color:#fff;font-size:.76rem;font-weight:700;padding:12px 9px;text-align:left;white-space:normal;line-height:1.25;}
+    thead th{color:#fff;font-size:.78rem;font-weight:800;padding:12px 10px;text-align:left;white-space:nowrap;line-height:1.25;}
     tbody tr{border-bottom:1px solid #f2f2f2;transition:background .15s;}
     .table-wrap tbody tr:hover{background:#E7F8EE!important;}
-    tbody td{padding:12px 9px;font-size:.82rem;color:#444;vertical-align:middle;line-height:1.4;overflow-wrap:anywhere;word-break:break-word;}
-    #docsBody td:nth-child(1){width:4%;}
-    #docsBody td:nth-child(2){width:4%;}
-    #docsBody td:nth-child(3){width:19%;min-width:0;}
-    #docsBody td:nth-child(4){width:9%;}
-    #docsBody td:nth-child(5){width:10%;}
-    #docsBody td:nth-child(6){width:8%;}
-    #docsBody td:nth-child(7){width:9%;}
-    #docsBody td:nth-child(8){width:11%;}
-    #docsBody td:nth-child(9){width:9%;}
-    #docsBody td:nth-child(10){width:8%;}
-    #docsBody td:nth-child(11){width:9%;}
-    #docsBody td:nth-child(3) strong{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.35;}
-    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:700;}
+    tbody td{padding:12px 10px;font-size:.86rem;color:#444;vertical-align:middle;line-height:1.4;overflow-wrap:anywhere;word-break:break-word;}
+    #bulkColHead,.bulk-col{width:4%;text-align:center;}
+    #documentsTable thead th:nth-child(2),#docsBody td:nth-child(2){width:22%;min-width:0;padding-left:2px;text-align:left;}
+    #documentsTable thead th:nth-child(3),#docsBody td:nth-child(3){width:9%;}
+    #documentsTable thead th:nth-child(4),#docsBody td:nth-child(4){width:10%;}
+    #documentsTable thead th:nth-child(5),#docsBody td:nth-child(5){width:9%;}
+    #documentsTable thead th:nth-child(6),#docsBody td:nth-child(6){width:10%;}
+    #documentsTable thead th:nth-child(7),#docsBody td:nth-child(7){width:11%;}
+    #documentsTable thead th:nth-child(8),#docsBody td:nth-child(8){width:9%;}
+    #documentsTable thead th:nth-child(9),#docsBody td:nth-child(9){width:10%;}
+    #documentsTable thead th:nth-child(10),#docsBody td:nth-child(10){width:6%;text-align:right;}
+    #docsBody td:nth-child(2) strong{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.35;font-size:.95rem;font-weight:800;}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:700;white-space:nowrap;word-break:normal;overflow-wrap:normal;}
     .badge-pub{background:#D5F5E3;color:#1E8449;}
     .badge-draft{background:#FEF9E7;color:#B7950B;}
     .badge-arch{background:#E2E8F0;color:#475569;}
@@ -103,7 +102,6 @@
     .document-menu-list button:hover,.document-menu-list a:hover{background:#E7F8EE;color:#1A4530;}
     .document-menu-list .menu-danger{color:#C0392B;}
     .document-menu-list .menu-warning{color:#9A7500;}
-    .bulk-col{width:52px;min-width:52px;text-align:center;}
     .bulk-check{
       appearance:none;
       -webkit-appearance:none;
@@ -140,34 +138,31 @@
     body.dark .table-wrap tbody tr:hover{background:rgba(61,140,98,.28)!important;}
     body.dark .table-wrap tbody tr.is-bulk-selected{background:rgba(61,140,98,.34)!important;}
     body.dark .table-wrap tbody tr.is-bulk-selected:hover{background:rgba(61,140,98,.42)!important;}
-    .bulk-actions{display:grid;gap:6px;align-items:start;}
-    .bulk-actions-title{font-weight:800;}
-    .bulk-actions-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-    .bulk-actions-row .btn-sm{padding:5px 8px;font-size:.74rem;}
-    .bulk-count{font-size:.74rem;color:rgba(255,255,255,.78);font-weight:700;}
+    .bulk-selection-bar{display:none;align-items:center;justify-content:space-between;gap:14px;padding:10px 14px;background:#1A6B46;color:#fff;border-radius:10px 10px 0 0;box-shadow:0 5px 14px rgba(15,72,46,.16);}
+    body.has-bulk-selection .bulk-selection-bar{display:flex;}
+    .bulk-selection-count{font-size:.84rem;font-weight:800;white-space:nowrap;}
+    .bulk-selection-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;}
+    .bulk-selection-bar .btn{min-height:32px;padding:6px 12px;border:1px solid transparent;font-size:.8rem;font-weight:800;transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;}
+    .bulk-selection-bar .btn:hover{transform:translateY(-1px);}
+    .bulk-selection-bar .bulk-archive-button{background:#fff;color:#1A4530;border-color:#fff;}
+    .bulk-selection-bar .bulk-archive-button:hover{background:#E8F5EB;box-shadow:0 3px 8px rgba(0,0,0,.16);}
+    .bulk-selection-bar .bulk-clear-button{background:transparent;color:#fff;border-color:rgba(255,255,255,.7);}
+    .bulk-selection-bar .bulk-clear-button:hover{background:rgba(255,255,255,.14);box-shadow:0 3px 8px rgba(0,0,0,.12);}
+    .bulk-selection-bar .bulk-cancel-button{background:transparent;color:#fff;border-color:transparent;}
+    .bulk-selection-bar .bulk-cancel-button:hover{background:rgba(255,255,255,.14);box-shadow:0 3px 8px rgba(0,0,0,.12);}
+    .bulk-action-divider{width:1px;height:24px;background:rgba(255,255,255,.45);margin:0 2px;}
     body:not(.role-admin) .bulk-admin-only{display:none!important;}
-    /* Bulk selection column: visible to roles that can archive (admin & chairperson) */
-    #bulkColHead, .bulk-col{display:none;}
-    body.role-admin #bulkColHead, body.role-admin .bulk-col,
-    body.role-chairperson #bulkColHead, body.role-chairperson .bulk-col{display:table-cell;}
-    body.role-admin .table-wrap:not(.selection-mode) #bulkColHead,
-    body.role-chairperson .table-wrap:not(.selection-mode) #bulkColHead,
-    body.role-admin .table-wrap:not(.selection-mode) .bulk-col,
-    body.role-chairperson .table-wrap:not(.selection-mode) .bulk-col{display:none;}
-     /* Bulk action controls appear beside Clear Filters while rows are selected. */
-     .filter-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-width:0;}
-     .bulk-control{display:none;align-items:center;gap:8px;white-space:nowrap;min-width:max-content;flex-wrap:nowrap;}
-     body.has-bulk-selection.role-admin .bulk-control, body.has-bulk-selection.role-chairperson .bulk-control{display:inline-flex;}
-     .bulk-control #bulkCount{white-space:nowrap;margin-right:4px;}
-     .bulk-control .bulk-btn-group{display:inline-flex;gap:4px;flex-shrink:0;}
-     .bulk-control .btn-xs,#clearFiltersBtn{width:104px;height:34px;padding:0;font-size:.82rem;line-height:1;justify-content:center;align-items:center;gap:6px;flex-shrink:0;text-align:center;}
+    /* Selection controls replace the row number, so selecting a row never moves columns. */
+    #bulkColHead .bulk-check,.bulk-col .bulk-check{display:none;}
+    .table-wrap.selection-mode #bulkColHead .bulk-check,.table-wrap.selection-mode .bulk-col .bulk-check{display:inline-grid;}
+    .table-wrap.selection-mode #bulkColHead .row-number,.table-wrap.selection-mode .bulk-col .row-number{display:none;}
     .barangay-filter{display:none;}
     body.role-admin .barangay-filter{display:block;}
     .barangay-col{display:none;}
     body.role-admin .barangay-col{display:table-cell;}
      body:not(.role-admin) .filter-row{grid-template-columns:minmax(220px,1.6fr) minmax(120px,150px) minmax(120px,140px) minmax(140px,1fr) minmax(140px,max-content);}
     @media(max-width:1060px){.filter-row{grid-template-columns:repeat(3,minmax(0,1fr));}}
-    @media(max-width:720px){.filter-row{grid-template-columns:1fr;}.filter-actions{justify-content:flex-start;}}
+    @media(max-width:720px){.filter-row{grid-template-columns:1fr;}.bulk-selection-bar{align-items:flex-start;flex-direction:column;}.bulk-selection-actions{justify-content:flex-start;}}
     body:not(.role-chairperson) #uploadDocBtn{display:none!important;}
     .admin-only-status{display:none;}
     body.role-admin .admin-only-status{display:inline;}
@@ -268,9 +263,8 @@
       </div>
 
       <div class="card">
-        <div class="card-header">
-          <h3 id="docListTitle">All Documents</h3>
-          <span id="docCount" style="font-size:.84rem;color:#888;"></span>
+          <div class="card-header">
+            <h3 id="docListTitle">All Documents</h3>
           <span id="archiveRetentionNote" style="display:none;font-size:.78rem;color:#64746A;font-weight:700;">Auto-deletes after 5 years</span>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-left:auto;">
             <button class="btn btn-warning btn-sm" id="archiveToggleBtn" onclick="openArchiveInventory()" style="display:none;">Archives</button>
@@ -311,24 +305,23 @@
              <div style="font-size:.82rem;color:#666;margin-bottom:4px;font-weight:600;">Search</div>
              <input type="text" id="fSearch" placeholder="Search title..."/>
             </div>
-            <div class="filter-actions">
-              <button type="button" class="btn btn-secondary btn-sm" id="clearFiltersBtn" onclick="resetFilters()" hidden>Clear Filters</button>
-              <div class="bulk-control">
-                <span id="bulkCount" style="font-size:.82rem;font-weight:700;color:#1A4530;">0 selected</span>
-                <div class="bulk-btn-group">
-                  <button class="btn btn-danger btn-xs" id="bulkArchiveBtn" disabled onclick="bulkArchiveSelected()">Archive</button>
-                  <button class="btn btn-secondary btn-xs" onclick="clearBulkSelection()">Clear</button>
-                </div>
-              </div>
+          </div>
+
+          <div class="bulk-selection-bar" id="documentBulkBar" aria-live="polite">
+            <span class="bulk-selection-count" id="bulkCount">0 selected</span>
+            <div class="bulk-selection-actions">
+              <button type="button" class="btn bulk-archive-button" id="bulkArchiveBtn" disabled onclick="bulkArchiveSelected()">Archive</button>
+              <button type="button" class="btn bulk-clear-button" onclick="clearBulkSelection()">Clear selection</button>
+              <span class="bulk-action-divider" aria-hidden="true"></span>
+              <button type="button" class="btn bulk-cancel-button" onclick="clearBulkSelection()">Cancel</button>
             </div>
           </div>
 
           <div class="table-wrap">
-          <table>
+          <table id="documentsTable">
             <thead>
                 <tr>
-                  <th id="bulkColHead"><input type="checkbox" id="selectAllDocs" class="bulk-check" aria-label="Select all documents" onchange="toggleSelectAll(this)"/></th>
-                  <th>#</th>
+                  <th id="bulkColHead"><span class="row-number">#</span><input type="checkbox" id="selectAllDocs" class="bulk-check" aria-label="Select all documents" onchange="toggleSelectAll(this)"/></th>
                   <th>Title</th>
                   <th>Category</th>
                   <th class="barangay-col">Barangay</th>
@@ -337,7 +330,7 @@
                   <th id="personColumn">Uploaded By</th>
                   <th id="dateColumn">Date</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th aria-label="Actions"></th>
                 </tr>
             </thead>
             <tbody id="docsBody">
@@ -546,7 +539,7 @@
         return;
       }
       allDocs=d.data;
-      updateDocumentStats(allDocs.length+' '+(showingArchived?'archived document(s)':'document(s)'));
+      updateDocumentStats();
       updateArchiveViewLabels();
       applyFilters();
     } catch (err) {
@@ -621,7 +614,7 @@
   function renderDocs(docs){
     var tbody=document.getElementById('docsBody');
     if(!docs.length){
-      tbody.innerHTML='<tr><td colspan="11"><div class="empty"><div class="eicon"><span class="ui-icon ui-icon-inbox ui-icon-xxl" aria-hidden="true"></span></div><p>No documents found.</p></div></td></tr>';
+      tbody.innerHTML='<tr><td colspan="10"><div class="empty"><div class="eicon"><span class="ui-icon ui-icon-inbox ui-icon-xxl" aria-hidden="true"></span></div><p>No documents found.</p></div></td></tr>';
       return;
     }
     var isAdmin = currentUser && currentUser.role === 'admin';
@@ -671,8 +664,7 @@
       }
 
       return '<tr id="row-'+d.id+'" data-doc-id="'+d.id+'" ondblclick="toggleDocumentSelectionMode(this, event)">'
-        +'<td class="bulk-col"><input type="checkbox" class="bulk-check doc-check" value="'+d.id+'" aria-label="Select document" onchange="updateBulkSelection()"></td>'
-        +'<td style="color:#bbb;">'+(i+1)+'</td>'
+        +'<td class="bulk-col"><span class="row-number">'+(i+1)+'</span><input type="checkbox" class="bulk-check doc-check" value="'+d.id+'" aria-label="Select document" onchange="updateBulkSelection()"></td>'
         +'<td><strong style="color:#1A4530;">'+escapeHtml(d.title)+'</strong></td>'
         +'<td><span class="badge badge-cat">'+escapeHtml(d.category_code)+'</span></td>'
         +'<td class="barangay-col">'+escapeHtml(d.barangay_name||d.barangay||'-')+'</td>'
@@ -772,14 +764,11 @@
     +'<div class="doc-viewer-frame-wrap">'+viewer+'</div>';
   }
 
-  function updateDocumentStats(countLabel){
+  function updateDocumentStats(){
     var pub=allDocs.filter(function(x){return toBool(x.is_published);}).length;
     document.getElementById('mTotal').textContent=allDocs.length;
     document.getElementById('mPub').textContent=pub;
     document.getElementById('mDraft').textContent=allDocs.length-pub;
-    if(countLabel){
-      document.getElementById('docCount').textContent=countLabel;
-    }
   }
 
   function updateArchiveViewLabels(){
@@ -1017,7 +1006,6 @@
     var year=document.getElementById('fYear').value;
     var q=document.getElementById('fSearch').value.trim().toLowerCase();
     var sort=document.getElementById('fSort').value;
-    updateClearFiltersVisibility();
     var filtered=allDocs.filter(function(d){
       var mCat=!cat||String(d.category_id)===cat;
       var pub=toBool(d.is_published);
@@ -1039,14 +1027,7 @@
       return sort==='oldest' ? aDate-bDate : bDate-aDate;
     });
     renderDocs(filtered);
-    document.getElementById('docCount').textContent=filtered.length+' result(s)';
-  }
 
-  function resetFilters(){
-    clearFilters();
-    updateClearFiltersVisibility();
-    renderDocs(allDocs);
-    document.getElementById('docCount').textContent=allDocs.length+' '+(showingArchived?'archived document(s)':'document(s)');
   }
 
   function clearFilters(){
@@ -1055,12 +1036,6 @@
     document.getElementById('fYear').value='';
     document.getElementById('fSort').value='newest';
     document.getElementById('fSearch').value='';
-  }
-
-  function updateClearFiltersVisibility(){
-    var button=document.getElementById('clearFiltersBtn');
-    if(!button) return;
-    button.hidden=!(document.getElementById('fCat').value || document.getElementById('fStatus').value || document.getElementById('fYear').value || document.getElementById('fSearch').value.trim() || document.getElementById('fSort').value !== 'newest');
   }
 
   function canBulkManage(){

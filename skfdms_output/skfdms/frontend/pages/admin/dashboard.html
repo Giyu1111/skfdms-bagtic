@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard</title>
 
-  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
   <style>
     body { display: flex; flex-direction: column; min-height: 100vh; background: #F0F4F8; margin: 0; font-family: 'DM Sans', system-ui, sans-serif; }
    .admin-layout{display:flex;flex:1;}
@@ -116,25 +116,9 @@
     .btn-logout:hover { background: #e0e0e0; }
     .empty-state { text-align: center; padding: 48px; color: #aaa; }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .quick-actions { display:flex; flex-wrap:wrap; gap:12px; padding:20px 24px; }
-    .quick-actions p { width:100%; margin:0 0 2px; color:#718078; font-size:.84rem; }
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
   <style>
-    /* Quick Actions use color only to indicate hover, not a preselected action. */
-    .quick-actions .btn-primary {
-      background: rgba(255, 255, 255, .62) !important;
-      border: 1px solid rgba(26, 69, 48, .18) !important;
-      box-shadow: none !important;
-      color: #1A4530 !important;
-    }
-    .quick-actions .btn-primary:hover,
-    .quick-actions .btn-secondary:hover {
-      background: #1A4530 !important;
-      border-color: #1A4530 !important;
-      color: #fff !important;
-      transform: translateY(-1px);
-    }
   </style>
   <script src="../../js/public-theme.js" defer></script>
 </head>
@@ -250,11 +234,6 @@
             <div class="category-chart" id="accomplishmentCategoryGraph" role="img" aria-label="Accomplishment count by expense category"></div>
           </section>
         </div>
-      </div>
-
-      <div class="section-card" aria-labelledby="quickActionsTitle">
-        <div class="sc-header"><h3 id="quickActionsTitle">Quick Actions</h3></div>
-        <div class="quick-actions" id="quickActions"></div>
       </div>
 
       <div class="section-card" id="profileDirectorySection" style="display:none;">
@@ -566,10 +545,6 @@
       document.getElementById('summaryLabel' + suffix).textContent = item[1];
       document.getElementById('summarySub' + suffix).textContent = item[2];
     });
-    const actions = isFedAdmin
-      ? '<p>Review records and manage disclosures across the selected barangay.</p><a href="transparency.html" class="btn btn-primary">Manage Accomplishments</a><a href="documents.html" class="btn btn-secondary">Manage Documents</a><a href="users.html" class="btn btn-secondary">Manage Users</a>'
-      : '<p>Submit and track records for your barangay.</p><a href="transparency.html" class="btn btn-primary">My Accomplishments</a><a href="documents.html" class="btn btn-secondary">My Documents</a><a href="announcements.html" class="btn btn-secondary">Post Announcement</a>';
-    document.getElementById('quickActions').innerHTML = actions;
   }
 
   async function loadDashboard() {
@@ -641,7 +616,7 @@
   }
 
   document.getElementById('logoutBtn').addEventListener('click', async function() {
-    if (!confirm('Are you sure you want to log out?')) return;
+    if (!await window.SkBarangay.confirmLogout()) return;
     await window.SkFDMS.logoutAndRedirect('/');
   });
 
@@ -666,7 +641,7 @@
     function updateSidebarLinks(role) {
       var links = document.querySelectorAll('#sidebarNav a[data-role]');
       links.forEach(function(link) {
-        var span = link.querySelector('span:last-child');
+        var span = link.querySelector('.document-nav-label, span:last-child');
         if (!span) return;
         var href = link.getAttribute('href');
         if (role === 'chairperson') {
