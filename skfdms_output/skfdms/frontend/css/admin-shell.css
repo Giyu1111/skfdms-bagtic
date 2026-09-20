@@ -3225,21 +3225,22 @@ textarea {
   color: var(--admin-text-secondary) !important;
 }
 
-/* Chairperson admin mobile layout. Desktop keeps the existing sidebar workspace. */
+/* Chairperson admin mobile layout. Desktop and SK Federated admin keep the
+   existing sidebar workspace. */
 @media (max-width: 768px) {
-  :root {
+  body.role-chairperson {
     --admin-mobile-brand-height: 56px;
     --admin-mobile-nav-height: 58px;
     --admin-mobile-shell-height: calc(var(--admin-mobile-brand-height) + var(--admin-mobile-nav-height));
   }
 
-  .admin-layout,
-  .layout {
+  body.role-chairperson .admin-layout,
+  body.role-chairperson .layout {
     display: block !important;
   }
 
-  .sidebar,
-  .sb {
+  body.role-chairperson .sidebar,
+  body.role-chairperson .sb {
     position: fixed !important;
     inset: 0 0 auto 0 !important;
     z-index: 100 !important;
@@ -3251,8 +3252,8 @@ textarea {
     overflow: hidden !important;
   }
 
-  .sidebar-logo,
-  .sb-logo {
+  body.role-chairperson .sidebar-logo,
+  body.role-chairperson .sb-logo {
     display: flex !important;
     align-items: center !important;
     height: var(--admin-mobile-brand-height) !important;
@@ -3260,30 +3261,30 @@ textarea {
     border-bottom: 1px solid rgba(255, 255, 255, .12) !important;
   }
 
-  .admin-brand {
+  body.role-chairperson .admin-brand {
     gap: 8px !important;
   }
 
-  .admin-brand-logo {
+  body.role-chairperson .admin-brand-logo {
     width: 32px !important;
     min-width: 32px !important;
     height: 32px !important;
   }
 
-  .admin-brand-logos {
+  body.role-chairperson .admin-brand-logos {
     gap: 4px !important;
   }
 
-  .admin-brand-kabataan {
+  body.role-chairperson .admin-brand-kabataan {
     font-size: 8px !important;
   }
 
-  .admin-brand-text {
+  body.role-chairperson .admin-brand-text {
     font-size: 11px !important;
   }
 
-  .sidebar-nav,
-  .sb-nav {
+  body.role-chairperson .sidebar-nav,
+  body.role-chairperson .sb-nav {
     display: flex !important;
     align-items: stretch !important;
     gap: 2px !important;
@@ -3297,15 +3298,15 @@ textarea {
     -webkit-overflow-scrolling: touch;
   }
 
-  .sidebar-nav::-webkit-scrollbar,
-  .sb-nav::-webkit-scrollbar {
+  body.role-chairperson .sidebar-nav::-webkit-scrollbar,
+  body.role-chairperson .sb-nav::-webkit-scrollbar {
     display: none;
   }
 
-  .sidebar-nav > a,
-  .sidebar-nav > button,
-  .sb-nav > a,
-  .sb-nav > button {
+  body.role-chairperson .sidebar-nav > a,
+  body.role-chairperson .sidebar-nav > button,
+  body.role-chairperson .sb-nav > a,
+  body.role-chairperson .sb-nav > button {
     display: inline-flex !important;
     flex: 0 0 auto !important;
     align-items: center !important;
@@ -3324,34 +3325,34 @@ textarea {
     white-space: nowrap !important;
   }
 
-  .sidebar-nav > a.active,
-  .sb-nav > a.active {
+  body.role-chairperson .sidebar-nav > a.active,
+  body.role-chairperson .sb-nav > a.active {
     border-bottom-color: var(--sk-gold) !important;
     box-shadow: none !important;
   }
 
-  .sidebar-nav .nav-icon,
-  .sb-nav .nav-icon {
+  body.role-chairperson .sidebar-nav .nav-icon,
+  body.role-chairperson .sb-nav .nav-icon {
     width: 20px !important;
     min-width: 20px !important;
     height: 20px !important;
   }
 
-  .sidebar-user,
-  .sb-user {
+  body.role-chairperson .sidebar-user,
+  body.role-chairperson .sb-user {
     display: none !important;
   }
 
-  .admin-main,
-  .main {
+  body.role-chairperson .admin-main,
+  body.role-chairperson .main {
     width: 100% !important;
     min-width: 0 !important;
     margin-left: 0 !important;
     padding-top: calc(var(--admin-mobile-shell-height) + var(--admin-topbar-height)) !important;
   }
 
-  .admin-topbar,
-  .topbar {
+  body.role-chairperson .admin-topbar,
+  body.role-chairperson .topbar {
     position: fixed !important;
     top: var(--admin-mobile-shell-height) !important;
     right: 0 !important;
@@ -3363,80 +3364,130 @@ textarea {
     padding: 0 16px !important;
   }
 
-  .topbar h1,
-  .topbar h2,
-  .admin-topbar h1,
-  .admin-topbar h2 {
+  body.role-chairperson .topbar h1,
+  body.role-chairperson .topbar h2,
+  body.role-chairperson .admin-topbar h1,
+  body.role-chairperson .admin-topbar h2 {
     overflow: hidden;
     font-size: 1rem !important;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .topbar-actions,
-  .admin-topbar-actions {
+  body.role-chairperson .topbar-actions,
+  body.role-chairperson .admin-topbar-actions {
     gap: 8px !important;
   }
 
-  .content,
-  .admin-content {
+  body.role-chairperson .content,
+  body.role-chairperson .admin-content {
     padding: 18px 14px !important;
   }
 
-  .page-intro {
+  body.role-chairperson .page-intro {
     align-items: flex-start !important;
     flex-direction: column !important;
     gap: 10px !important;
   }
 
-  .page-intro h1 {
+  body.role-chairperson .page-intro h1 {
     font-size: 1.4rem !important;
   }
 
-  .stat-grid,
-  .stats-grid,
-  .dashboard-stats {
+  body.role-chairperson .stat-grid,
+  body.role-chairperson .stats-grid,
+  body.role-chairperson .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
   }
 
-  .card-header,
-  .card-body {
+  body.role-chairperson .card-header,
+  body.role-chairperson .card-body {
     padding-right: 14px !important;
     padding-left: 14px !important;
   }
 
-  .form-row,
-  .form-row.three {
+  body.role-chairperson .form-row,
+  body.role-chairperson .form-row.three {
     grid-template-columns: 1fr !important;
   }
 
-  .modal-backdrop {
+  body.role-chairperson .modal-backdrop {
     padding: 12px !important;
+  }
+
+  body.role-chairperson .admin-topbar > div:last-child {
+    display: none !important;
+  }
+
+  body.role-chairperson .barangay-select {
+    max-width: 45vw;
+    padding: 8px 10px !important;
+  }
+
+  body.role-chairperson .dashboard-greeting {
+    margin-bottom: 14px;
+    padding: 17px 18px;
+  }
+
+  body.role-chairperson .dashboard-greeting h1 {
+    font-size: 1.28rem !important;
+  }
+
+  body.role-chairperson .dashboard-greeting p {
+    font-size: .9rem;
+  }
+
+  body.role-chairperson .dashboard-stat-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    margin-bottom: 18px;
+  }
+
+  body.role-chairperson .dashboard-stat-cards .stat-card {
+    min-width: 0;
+    padding: 17px 15px;
+    border-radius: 13px;
+  }
+
+  body.role-chairperson .dashboard-stat-cards .stat-num {
+    font-size: 2rem;
+  }
+
+  body.role-chairperson .dashboard-stat-cards .stat-label {
+    font-size: .8rem;
+    line-height: 1.3;
+  }
+
+  body.role-chairperson .dashboard-stat-cards .stat-sub {
+    font-size: .74rem;
+    line-height: 1.35;
   }
 }
 
 @media (max-width: 420px) {
-  .admin-brand-kabataan,
-  .admin-brand-rule {
+  body.role-chairperson .admin-brand-kabataan,
+  body.role-chairperson .admin-brand-rule {
     display: none !important;
   }
 
-  .admin-brand-text {
+  body.role-chairperson .admin-brand-text {
     font-size: 10px !important;
   }
 
-  .sidebar-nav > a,
-  .sidebar-nav > button,
-  .sb-nav > a,
-  .sb-nav > button {
+  body.role-chairperson .sidebar-nav > a,
+  body.role-chairperson .sidebar-nav > button,
+  body.role-chairperson .sb-nav > a,
+  body.role-chairperson .sb-nav > button {
     padding: 0 10px !important;
     font-size: .78rem !important;
   }
 
-  .stat-grid,
-  .stats-grid,
-  .dashboard-stats {
-    grid-template-columns: 1fr !important;
+  body.role-chairperson .dashboard-stat-cards {
+    gap: 9px !important;
+  }
+
+  body.role-chairperson .dashboard-stat-cards .stat-card {
+    padding: 14px 12px;
   }
 }

@@ -550,6 +550,7 @@
   async function loadDashboard() {
     currentUser = await window.SkFDMS.requireLogin();
     if (!currentUser) return;
+    document.body.classList.add('role-' + String(currentUser.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
 
     document.getElementById('sidebarName').textContent = currentUser.name;
     document.getElementById('sidebarRole').textContent = currentUser.role;

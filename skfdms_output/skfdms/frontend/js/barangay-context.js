@@ -8,6 +8,15 @@ window.SkBarangay = (function() {
 
   async function init(user) {
     currentUser = user;
+    // Page styles can safely tailor the compact workspace to the signed-in
+    // role.  In particular, the chairperson has a phone-first admin shell
+    // without changing the SK Federated admin workspace.
+    if (document.body) {
+      Array.from(document.body.classList)
+        .filter(className => className.startsWith('role-'))
+        .forEach(className => document.body.classList.remove(className));
+      document.body.classList.add('role-' + String(user.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
+    }
     if (user.role === 'admin') {
       try {
         const res = await fetch('/api/barangays');
