@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Posts</title>
+  <link rel="icon" type="image/png" href="../../images/favicon.png" />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/admin-shell.css" />
+  <script src="../../js/public-theme.js" defer></script>
+  <style>
+    *{box-sizing:border-box} body{margin:0;background:#f0f4f8;font-family:'DM Sans',system-ui,sans-serif;color:#26352d}
+    .admin-layout{display:flex;min-height:100vh}.sidebar{width:252px;background:#1a4530;flex-shrink:0;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0}.sidebar-logo{padding:24px 22px;border-bottom:1px solid rgba(255,255,255,.1)}.sidebar-nav{padding:12px 0;flex:1}.sidebar-nav a,.sidebar-logout-link{display:flex;align-items:center;gap:12px;width:100%;padding:13px 22px;background:transparent;border:0;border-left:3px solid transparent;color:rgba(255,255,255,.78);font:600 1rem inherit;text-align:left;text-decoration:none;cursor:pointer}.sidebar-nav a:hover,.sidebar-logout-link:hover,.sidebar-nav a.active{background:rgba(255,255,255,.12);color:#fff}.sidebar-nav a.active{border-left-color:#d4ac0d}.sidebar-nav a.active span:last-child{color:#fff}.nav-icon{width:22px;min-width:22px}.sidebar-user{padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);color:#fff}.sidebar-user .urole{margin-top:4px;color:rgba(255,255,255,.55);font-size:.82rem;text-transform:capitalize}
+    .admin-main{min-width:0;flex:1}.topbar{height:66px;padding:0 30px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e7ece8}.topbar h2{margin:0;color:#1a4530;font-size:1.2rem}.barangay-select{min-width:205px;padding:9px 12px;border:1px solid #cfd9d2;border-radius:8px;background:#fff;color:#1a4530;font:600 .9rem inherit}.content{max-width:1240px;margin:auto;padding:28px}
+    .page-intro{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:20px}.page-intro h1{margin:0;color:#1a4530;font-size:1.25rem}.page-intro p{margin:5px 0 0;color:#68756d}.count{display:inline-flex;align-items:center;justify-content:center;min-width:35px;padding:5px 10px;background:#d6f0e6;color:#1a4530;border-radius:999px;font-size:.82rem;font-weight:800}.posts-grid{width:min(100%,980px);margin:0 auto}.card{background:#fff;border:1px solid #e4ebe6;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}.card-header{padding:18px 22px;border-bottom:1px solid #edf1ee;display:flex;align-items:center;justify-content:space-between;gap:12px}.card-header h3{margin:0;color:#1a4530;font-size:1.05rem}.post-list{padding:20px}.post{padding:18px;border:1px solid #e1e9e3;border-left:4px solid #d4ac0d;border-radius:0 9px 9px 0;background:#fffdf6;margin-bottom:14px}.post:last-child{margin-bottom:0}.post-title{margin:0 0 7px;color:#1a4530;font-size:1.05rem}.post-body{margin:0;color:#536159;line-height:1.55;white-space:pre-wrap}.post-meta{margin-top:12px;color:#738078;font-size:.8rem}.post-actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:7px;padding:8px 12px;font:700 .84rem inherit;cursor:pointer}.btn-primary{background:#3d8c62;color:#fff}.btn-primary:hover{background:#1a4530}.btn-secondary{background:#e8f0eb;color:#1a4530}.btn-secondary:hover{background:#d7e5db}#postArchiveBtn:hover{background:#C0392B;color:#fff}.review-modal .post-actions .btn-secondary{background:#FDECEC;color:#B42318;border:1px solid #FECDCA}.review-modal .post-actions .btn-secondary:hover{background:#C0392B;color:#fff;border-color:#C0392B}.modal-backdrop{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,42,30,.52)}.modal-backdrop.show{display:flex}.review-modal{width:min(680px,96vw);max-height:88vh;overflow:auto;background:#fff;border:1px solid #dce5df;border-radius:14px;box-shadow:0 24px 70px rgba(15,42,30,.28)}.archive-post-modal{width:min(1040px,96vw);height:min(76vh,680px);min-height:500px;display:flex;flex-direction:column}.archive-post-modal .review-body{overflow:auto;flex:1}.modal-header{padding:18px 22px;border-bottom:1px solid #edf1ee;display:flex;align-items:center;justify-content:space-between;gap:14px}.modal-header h3{margin:0;color:#1a4530;font-size:1.1rem}.modal-close{border:0;border-radius:7px;width:34px;height:34px;background:#edf3ee;color:#1a4530;font-size:1.35rem;cursor:pointer}.review-body{padding:22px}.review-empty{color:#78847d;line-height:1.55;text-align:center;padding:20px 6px}.review-title{margin:0 0 12px;color:#1a4530;font-size:1.1rem}.review-copy{margin:0;color:#5b685f;line-height:1.6;white-space:pre-wrap}.detail{margin-top:14px;padding:11px 12px;border:1px solid #e4ece6;border-radius:8px;background:#f8fbf9;font-size:.84rem;color:#536159}.detail strong{display:block;margin-bottom:3px;color:#1a4530}.alert{padding:11px 14px;margin-bottom:16px;border-radius:8px}.alert-success{background:#eafaf1;color:#1e8449;border:1px solid #a9dfbf}.alert-danger{background:#fdecec;color:#c0392b;border:1px solid #f5b7b1}.empty{text-align:center;padding:54px 18px;color:#87928b}@media(max-width:900px){.sidebar{width:220px}.content{padding:18px}}@media(max-width:680px){.admin-layout{display:block}.sidebar{position:static;width:100%;min-height:auto}.topbar{height:auto;padding:15px 18px;align-items:flex-start;gap:12px;flex-direction:column}.barangay-select{width:100%}.page-intro{align-items:flex-start;flex-direction:column}.post-list{padding:14px}.review-body{padding:18px}.archive-post-modal{height:auto;min-height:0}}
+    .review-summary{margin:0 0 18px;color:#536159;line-height:1.65;white-space:pre-wrap}.review-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.review-meta{padding:12px;border:1px solid #e4ece6;border-radius:8px;background:#f8fbf9;min-width:0}.review-meta span{display:block;margin-bottom:4px;color:#738078;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.review-meta strong{display:block;color:#1a4530;font-size:.88rem;overflow-wrap:anywhere}.review-section{margin-top:18px;padding-top:16px;border-top:1px solid #edf1ee}.review-section h4{margin:0 0 9px;color:#1a4530;font-size:.88rem}.review-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;padding-top:16px;border-top:1px solid #edf1ee}.review-actions .btn-secondary{background:#FDECEC;color:#B42318;border:1px solid #FECDCA}.review-actions .btn-secondary:hover{background:#C0392B;color:#fff;border-color:#C0392B}@media(max-width:520px){.review-meta-grid{grid-template-columns:1fr}.review-actions .btn{flex:1}}
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="admin-brand"><span class="admin-brand-logos" aria-hidden="true"><img class="admin-brand-logo" src="../../images/cLogo.jpg" alt="" /><img class="admin-brand-logo" src="../../images/favicon.png" alt="" /></span><span class="admin-brand-title"><span class="admin-brand-kabataan">Sangguniang Kabataan</span><span class="admin-brand-rule"></span><span class="admin-brand-text">MUNICIPALITY OF CATIGBIAN</span></span></div></div>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+        <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
+        <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
+        <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
+        <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Post Announcements</span></a>
+        <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>User Management</span></a>
+        <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+        <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
+        <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
+      </nav>
+      <div class="sidebar-user"><div class="uname" id="sName">...</div><div class="urole" id="sRole"></div></div>
+    </aside>
+    <div class="admin-main">
+      <header class="topbar">
+        <div class="topbar-left"><h2>Manage Posts</h2></div>
+        <div class="topbar-actions">
+          <select id="barangaySelector" class="barangay-select" aria-label="Filter posts by barangay"></select>
+        </div>
+      </header>
+      <main class="content">
+        <div id="alertBox"></div>
+        <div class="page-intro"><div><h1>Announcement Requests</h1><p>Review posts submitted by SK chairpersons before they appear on the public website.</p></div><span class="count" id="postCount">0</span></div>
+        <div class="posts-grid"><section class="card"><div class="card-header"><h3 id="postListTitle">Pending Approval</h3><button type="button" class="btn btn-secondary" id="postArchiveBtn" onclick="togglePostArchives()">Archives</button></div><div class="post-list" id="postList"><div class="empty">Loading post requests...</div></div></section></div>
+      </main>
+    </div>
+  </div>
+  <div class="modal-backdrop" id="postReviewModal" aria-hidden="true" onclick="if(event.target===this) closePostReview()">
+    <section class="review-modal" role="dialog" aria-modal="true" aria-labelledby="postReviewModalTitle">
+      <div class="modal-header"><h3 id="postReviewModalTitle">Review Post</h3><button type="button" class="modal-close" onclick="closePostReview()" aria-label="Close">&times;</button></div>
+      <div class="review-body" id="postReviewBody"><div class="review-empty">Select a submitted post to review its details.</div></div>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="postArchiveModal" aria-hidden="true" onclick="if(event.target===this) closePostArchives()">
+    <section class="review-modal archive-post-modal" role="dialog" aria-modal="true" aria-labelledby="postArchiveModalTitle">
+      <div class="modal-header"><div><h3 id="postArchiveModalTitle">Archived Posts</h3><small>Restore a post for review or permanently remove it.</small></div><button class="modal-close" type="button" onclick="closePostArchives()" aria-label="Close">&times;</button></div>
+      <div class="review-body" id="archivePostList"><div class="empty">Loading archived posts...</div></div>
+    </section>
+  </div>
+  <script src="../../js/barangay-context.js"></script>
+  <script>
+    var API=window.location.origin+'/api', currentUser=null, pendingPosts=[], selectedPost=null, postLoadRequest=0;
+    function escapeHtml(value){return String(value==null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+    function formatDate(value){return value?new Date(value).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';}
+    function showAlert(message,type){document.getElementById('alertBox').innerHTML='<div class="alert alert-'+type+'">'+escapeHtml(message)+'</div>';}
+    function selectedBarangay(){return window.SkBarangay.getSelectedBarangayId();}
+    function barangayQuery(id){return '?barangay_id='+encodeURIComponent(id||'all');}
+    function schedule(post){var parts=[];if(post.event_date)parts.push(new Date(post.event_date+'T00:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}));if(post.start_time)parts.push(post.start_time.slice(0,5)+(post.end_time?' - '+post.end_time.slice(0,5):''));if(post.location)parts.push(post.location);return parts.join(' · ');}
+    function renderPosts(){var list=document.getElementById('postList');document.getElementById('postCount').textContent=pendingPosts.length;if(!pendingPosts.length){list.innerHTML='<div class="empty">No post requests are awaiting approval.</div>';renderReview(null);return;}list.innerHTML=pendingPosts.map(function(post){return '<article class="post"><h4 class="post-title">'+escapeHtml(post.title)+'</h4><p class="post-body">'+escapeHtml(post.body)+'</p><div class="post-meta">'+escapeHtml(post.barangay_name||'')+' · Submitted by '+escapeHtml(post.created_by_name||'SK Chairperson')+' · '+escapeHtml(formatDate(post.created_at))+'</div><div class="post-actions"><button class="btn btn-secondary" type="button" onclick="selectPost('+post.id+')">Review details</button><button class="btn btn-primary" type="button" onclick="reviewPost('+post.id+',\'approved\')">Approve &amp; Publish</button></div></article>';}).join('');if(selectedPost)renderReview(selectedPost);}
+    function selectPost(id){selectedPost=pendingPosts.find(function(post){return Number(post.id)===Number(id);})||null;renderReview(selectedPost);}
+    function renderReview(post){var panel=document.getElementById('reviewPanel');if(!post){panel.innerHTML='<div class="review-empty">Select a submitted post to review its details and decide whether to publish it.</div>';return;}var postSchedule=schedule(post);panel.innerHTML='<h4 class="review-title">'+escapeHtml(post.title)+'</h4><p class="review-copy">'+escapeHtml(post.body)+'</p><div class="detail"><strong>Submitted by</strong>'+escapeHtml(post.created_by_name||'SK Chairperson')+' · '+escapeHtml(post.barangay_name||'-')+'</div><div class="detail"><strong>Post details</strong>Type: '+escapeHtml(post.announcement_type||'general')+'<br>Priority: '+escapeHtml(post.priority||'normal')+(postSchedule?'<br>Schedule: '+escapeHtml(postSchedule):'')+'</div><div class="post-actions"><button class="btn btn-primary" type="button" onclick="reviewPost('+post.id+',\'approved\')">Approve &amp; Publish</button><button class="btn btn-secondary" type="button" onclick="reviewPost('+post.id+',\'rejected\')">Reject</button></div>';}
+    async function loadPosts(barangayId){var requestId=++postLoadRequest;var id=barangayId===undefined?selectedBarangay():barangayId;try{var response=await fetch(API+'/admin/announcements'+barangayQuery(id)+'&approval_status=pending',{credentials:'include'}),data=await response.json();if(requestId!==postLoadRequest)return;if(!response.ok||!data.success)throw new Error(data.message||'Unable to load post requests.');pendingPosts=(data.data||[]).filter(function(post){return(post.approval_status||'approved')==='pending';});if(selectedPost)selectedPost=pendingPosts.find(function(post){return Number(post.id)===Number(selectedPost.id);})||null;renderPosts();}catch(error){if(requestId!==postLoadRequest)return;document.getElementById('postList').innerHTML='<div class="empty">'+escapeHtml(error.message)+'</div>';showAlert(error.message,'danger');}}
+    async function reviewPost(id,status){var post=pendingPosts.find(function(item){return Number(item.id)===Number(id);});if(!post)return;var label=status==='approved'?'approve and publish':'reject';if(!confirm('Are you sure you want to '+label+' this post?'))return;try{var response=await fetch(API+'/admin/announcements/'+id+'/review'+barangayQuery(post.barangay_id),{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:status})}),data=await response.json();if(!response.ok||!data.success)throw new Error(data.message||'Unable to review this post.');showAlert(status==='approved'?'Post approved and published publicly.':'Post rejected.','success');selectedPost=null;loadPosts();}catch(error){showAlert(error.message,'danger');}}
+    async function doLogout(){if(!await window.SkBarangay.confirmLogout())return;await fetch(API+'/auth/logout',{method:'POST',credentials:'include'});window.location.href='/';}
+    window.addEventListener('load',async function(){try{var response=await fetch(API+'/auth/me',{credentials:'include'}),data=await response.json();if(!data.success){window.location.href='/pages/login.html';return;}currentUser=data.user;if(currentUser.role!=='admin'){window.location.href='dashboard.html';return;}document.getElementById('sName').textContent=currentUser.name;document.getElementById('sRole').textContent=currentUser.role;window.SkBarangay.renderSidebarUser(currentUser);window.SkBarangay.updateSidebarLogo(currentUser.role);var contextReady=window.SkBarangay.init(currentUser);loadPosts('all');await contextReady;var selector=document.getElementById('barangaySelector');window.SkBarangay.populateDropdown(selector);selector.addEventListener('change',function(){window.SkBarangay.setSelectedBarangayId(this.value);selectedPost=null;loadPosts();});if(selectedBarangay()!=='all')loadPosts();}catch(error){showAlert('Unable to start post management.','danger');}});
+  </script>
+  <script>
+    // The details workspace is intentionally modal-only so Pending Approval
+    // remains the single, centered main panel.
+    function selectPost(id){
+      selectedPost=pendingPosts.find(function(post){return Number(post.id)===Number(id);})||null;
+      renderReview(selectedPost);
+      var modal=document.getElementById('postReviewModal');
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closePostReview(){
+      var modal=document.getElementById('postReviewModal');
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+    }
+    function renderReview(post){
+      var panel=document.getElementById('postReviewBody');
+      if(!post){
+        panel.innerHTML='<div class="review-empty">Select a submitted post to review its details and decide whether to publish it.</div>';
+        return;
+      }
+      var postSchedule=schedule(post);
+      document.getElementById('postReviewModalTitle').textContent='Review: '+(post.title||'Post');
+      panel.innerHTML='<h4 class="review-title">'+escapeHtml(post.title)+'</h4><p class="review-copy">'+escapeHtml(post.body)+'</p><div class="detail"><strong>Submitted by</strong>'+escapeHtml(post.created_by_name||'SK Chairperson')+' · '+escapeHtml(post.barangay_name||'-')+'</div><div class="detail"><strong>Post details</strong>Type: '+escapeHtml(post.announcement_type||'general')+'<br>Priority: '+escapeHtml(post.priority||'normal')+(postSchedule?'<br>Schedule: '+escapeHtml(postSchedule):'')+'</div><div class="post-actions"><button class="btn btn-primary" type="button" onclick="reviewPost('+post.id+',\'approved\')">Approve &amp; Publish</button><button class="btn btn-secondary" type="button" onclick="reviewPost('+post.id+',\'rejected\')">Reject</button></div>';
+    }
+    async function reviewPost(id,status){
+      var post=pendingPosts.find(function(item){return Number(item.id)===Number(id);});
+      if(!post)return;
+      var label=status==='approved'?'approve and publish':'reject';
+      if(!confirm('Are you sure you want to '+label+' this post?'))return;
+      try{
+        var response=await fetch(API+'/admin/announcements/'+id+'/review'+barangayQuery(post.barangay_id),{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:status})});
+        var data=await response.json();
+        if(!response.ok||!data.success)throw new Error(data.message||'Unable to review this post.');
+        showAlert(status==='approved'?'Post approved and published publicly.':'Post rejected.','success');
+        selectedPost=null;
+        closePostReview();
+        loadPosts();
+      }catch(error){showAlert(error.message,'danger');}
+    }
+  </script>
+  <script>
+    // Clean, review-focused layout for a pending announcement.
+    function renderReview(post){
+      var panel=document.getElementById('postReviewBody');
+      if(!post){
+        panel.innerHTML='<div class="review-empty">Select a submitted post to review its details and decide whether to publish it.</div>';
+        return;
+      }
+      var typeLabel={general:'General update',event:'Event',meeting:'Meeting',deadline:'Deadline'}[post.announcement_type]||'General update';
+      var eventDetails=[];
+      if(post.event_date)eventDetails.push('Date: '+new Date(post.event_date+'T00:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}));
+      if(post.start_time)eventDetails.push('Time: '+post.start_time.slice(0,5)+(post.end_time?' – '+post.end_time.slice(0,5):''));
+      if(post.location)eventDetails.push('Venue: '+post.location);
+      document.getElementById('postReviewModalTitle').textContent='Review announcement';
+      panel.innerHTML='<h4 class="review-title">'+escapeHtml(post.title)+'</h4>'
+        +'<p class="review-summary">'+escapeHtml(post.body)+'</p>'
+        +'<div class="review-meta-grid">'
+          +'<div class="review-meta"><span>Submitted by</span><strong>'+escapeHtml(post.created_by_name||'SK Chairperson')+'</strong></div>'
+          +'<div class="review-meta"><span>Barangay</span><strong>'+escapeHtml(post.barangay_name||'-')+'</strong></div>'
+          +'<div class="review-meta"><span>Submitted on</span><strong>'+escapeHtml(formatDate(post.created_at))+'</strong></div>'
+          +'<div class="review-meta"><span>Announcement type</span><strong>'+escapeHtml(typeLabel)+'</strong></div>'
+        +'</div>'
+        +(eventDetails.length?'<div class="review-section"><h4>Schedule details</h4><div class="detail">'+eventDetails.map(escapeHtml).join('<br>')+'</div></div>':'')
+        +'<div class="review-actions"><button class="btn btn-secondary" type="button" onclick="reviewPost('+post.id+',\'rejected\')">Reject</button><button class="btn btn-primary" type="button" onclick="reviewPost('+post.id+',\'approved\')">Approve &amp; Publish</button></div>';
+    }
+  </script>
+  <script>
+    var archivedPosts=[];
+    function renderPosts(){var list=document.getElementById('postList');document.getElementById('postCount').textContent=pendingPosts.length;if(!pendingPosts.length){list.innerHTML='<div class="empty">No post requests are awaiting approval.</div>';return;}list.innerHTML=pendingPosts.map(function(post){return '<article class="post"><h4 class="post-title">'+escapeHtml(post.title)+'</h4><p class="post-body">'+escapeHtml(post.body)+'</p><div class="post-meta">'+escapeHtml(post.barangay_name||'')+' &middot; Submitted by '+escapeHtml(post.created_by_name||'SK Chairperson')+' &middot; '+escapeHtml(formatDate(post.created_at))+'</div><div class="post-actions"><button class="btn btn-secondary" type="button" onclick="selectPost('+post.id+')">Review details</button><button class="btn btn-primary" type="button" onclick="reviewPost('+post.id+',\'approved\')">Approve &amp; Publish</button><button class="btn btn-secondary" type="button" onclick="archivePost('+post.id+','+post.barangay_id+')">Archive</button></div></article>';}).join('');}
+    async function loadPosts(barangayId){var requestId=++postLoadRequest,id=barangayId===undefined?selectedBarangay():barangayId;try{var response=await fetch(API+'/admin/announcements'+barangayQuery(id)+'&approval_status=pending',{credentials:'include'}),data=await response.json();if(requestId!==postLoadRequest)return;if(!response.ok||!data.success)throw new Error(data.message||'Unable to load post requests.');pendingPosts=(data.data||[]).filter(function(post){return(post.approval_status||'approved')==='pending';});renderPosts();}catch(error){if(requestId===postLoadRequest){document.getElementById('postList').innerHTML='<div class="empty">'+escapeHtml(error.message)+'</div>';showAlert(error.message,'danger');}}}
+    function togglePostArchives(){openPostArchives();}
+    function openPostArchives(){var modal=document.getElementById('postArchiveModal');modal.classList.add('show');modal.setAttribute('aria-hidden','false');loadArchivedPosts();}
+    function closePostArchives(){var modal=document.getElementById('postArchiveModal');modal.classList.remove('show');modal.setAttribute('aria-hidden','true');}
+    async function loadArchivedPosts(){var list=document.getElementById('archivePostList');list.innerHTML='<div class="empty">Loading archived posts...</div>';try{var response=await fetch(API+'/admin/announcements'+barangayQuery(selectedBarangay())+'&archived=true',{credentials:'include'}),data=await response.json();if(!response.ok||!data.success)throw new Error(data.message||'Unable to load archived posts.');archivedPosts=data.data||[];if(!archivedPosts.length){list.innerHTML='<div class="empty">No archived posts.</div>';return;}list.innerHTML=archivedPosts.map(function(post){return '<article class="post"><h4 class="post-title">'+escapeHtml(post.title)+'</h4><p class="post-body">'+escapeHtml(post.body)+'</p><div class="post-meta">'+escapeHtml(post.barangay_name||'')+' &middot; Submitted by '+escapeHtml(post.created_by_name||'SK Chairperson')+' &middot; Archived post</div><div class="post-actions"><button class="btn btn-primary" type="button" onclick="restorePost('+post.id+','+post.barangay_id+')">Restore</button><button class="btn btn-secondary" type="button" onclick="permanentlyDeletePost('+post.id+','+post.barangay_id+')">Delete Permanently</button></div></article>';}).join('');}catch(error){list.innerHTML='<div class="empty">'+escapeHtml(error.message)+'</div>';showAlert(error.message,'danger');}}
+    async function archivePost(id,barangayId){if(!confirm('Archive this pending post?'))return;var r=await fetch(API+'/admin/announcements/'+id+'/archive'+barangayQuery(barangayId),{method:'PATCH',credentials:'include'}),d=await r.json();if(r.ok&&d.success){showAlert(d.message,'success');loadPosts();}else showAlert(d.message||'Unable to archive post.','danger');}
+    async function restorePost(id,barangayId){if(!confirm('Restore this post as pending for review?'))return;var r=await fetch(API+'/admin/announcements/'+id+'/restore'+barangayQuery(barangayId),{method:'PATCH',credentials:'include'}),d=await r.json();if(r.ok&&d.success){showAlert(d.message,'success');loadArchivedPosts();loadPosts();}else showAlert(d.message||'Unable to restore post.','danger');}
+    async function permanentlyDeletePost(id,barangayId){if(!confirm('Permanently delete this archived post? This cannot be undone.'))return;var r=await fetch(API+'/admin/announcements/'+id+barangayQuery(barangayId),{method:'DELETE',credentials:'include'}),d=await r.json();if(r.ok&&d.success){showAlert(d.message||'Post permanently deleted.','success');loadArchivedPosts();}else showAlert(d.message||'Unable to delete post.','danger');}
+  </script>
+</body>
+</html>

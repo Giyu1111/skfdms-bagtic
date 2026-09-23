@@ -55,6 +55,10 @@
     .ann-meta{font-size:.8rem;color:#aaa;display:flex;justify-content:space-between;align-items:center;}
     .empty{text-align:center;padding:40px;color:#bbb;}
     .count-badge{background:#D6F0E6;color:#1A4530;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+    .status-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+    .status-pending{background:#FFF3CD;color:#856404;}.status-approved{background:#D6F0E6;color:#1A4530;}.status-rejected{background:#FDE2E1;color:#9B2C2C;}
+    .ann-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end;}
+    .btn-secondary{background:#e8f0eb;color:#1A4530;}.btn-secondary:hover{background:#d6e5db;}
     @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
@@ -83,8 +87,7 @@
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
       <a href="announcements.html" class="active" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Post Announcements</span></a>
-      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
-      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Logs</span></a>
       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
       <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
@@ -94,7 +97,7 @@
   <div class="admin-main">
     <div class="topbar">
       <div class="topbar-left">
-        <h2>Announcements</h2>
+        <h2 id="pageTitle">Announcements</h2>
         <select id="barangaySelector" class="barangay-select"></select>
       </div>
     </div>
@@ -103,8 +106,8 @@
       <div class="two-col" id="announcementLayout">
         <div class="card">
           <div class="card-header">
-            <h3>Posted Announcements</h3>
-            <span class="count-badge" id="annCount">0</span>
+            <h3 id="announcementListTitle">Posted Announcements</h3>
+            <div style="display:flex;align-items:center;gap:10px;"><button type="button" class="btn btn-secondary btn-sm" id="announcementArchiveBtn" onclick="toggleAnnouncementArchives()" style="display:none;">Archives</button><span class="count-badge" id="annCount">0</span></div>
           </div>
           <div class="card-body" id="annList">
             <div class="empty">Loading...</div>
@@ -125,14 +128,13 @@
               </div>
               <div class="form-grid">
                 <div class="form-group"><label class="form-label">Announcement type</label><select class="form-control" id="annType" onchange="toggleAnnouncementTimes()"><option value="general">General update</option><option value="event">Event</option><option value="meeting">Meeting</option><option value="deadline">Deadline</option></select></div>
-                <div class="form-group"><label class="form-label">Priority</label><select class="form-control" id="annPriority"><option value="normal">Normal</option><option value="important">Important</option><option value="urgent">Urgent</option></select></div>
                 <div class="form-group"><label class="form-label">Schedule date</label><input class="form-control" id="annDate" type="date"></div>
                 <div class="form-group"><label class="form-label">Location / venue</label><input class="form-control" id="annLocation" placeholder="e.g. Barangay Hall"></div>
                 <div class="form-group" id="annStartTimeGroup" style="display:none;"><label class="form-label">Start time</label><input class="form-control" id="annStartTime" type="time"></div>
                 <div class="form-group" id="annEndTimeGroup" style="display:none;"><label class="form-label">End time</label><input class="form-control" id="annEndTime" type="time"></div>
               </div>
               <button class="btn btn-primary" id="postBtn" onclick="postAnn()" style="width:100%;justify-content:center;">
-                Post Announcement
+                Submit for Approval
               </button>
             </div>
           </div>
@@ -146,6 +148,8 @@
 <script>
   var API = window.location.origin + '/api';
   var currentUser = null;
+  var postView = new URLSearchParams(window.location.search).get('view') || 'published';
+  var showingAnnouncementArchives = false;
 
   function fmt(d){ if(!d)return'-'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
   function escapeHtml(value){
@@ -202,8 +206,15 @@
 
     applyRoleVisibility();
     applyAnnouncementAccess();
+    applyPostView();
     loadAnn();
   });
+
+  function applyPostView(){
+    if(!currentUser || currentUser.role !== 'admin') return;
+    document.getElementById('pageTitle').textContent='Manage Posts';
+    document.getElementById('announcementListTitle').textContent=postView === 'requested' ? 'Requested Announcements' : 'Approved Announcements';
+  }
 
   function applyAnnouncementAccess(){
     var layout=document.getElementById('announcementLayout');
@@ -211,6 +222,7 @@
     if(currentUser && currentUser.role === 'chairperson'){
       if(formPanel) formPanel.style.display='block';
       if(layout) layout.style.gridTemplateColumns='1fr 380px';
+      document.getElementById('announcementArchiveBtn').style.display='inline-flex';
     } else {
       if(formPanel) formPanel.style.display='none';
       if(layout) layout.style.gridTemplateColumns='1fr';
@@ -219,30 +231,60 @@
 
   async function loadAnn(){
     var qs = barangayQuery(selectedBarangayId());
+    if(showingAnnouncementArchives) qs += (qs ? '&' : '?')+'archived=true';
     var r=await fetch(API+'/admin/announcements' + qs, {credentials:'include'});
     var d=await r.json();
     var container=document.getElementById('annList');
     if(!d.success||!d.data.length){
-      var emptyText = currentUser && currentUser.role === 'chairperson'
-        ? 'No announcements yet.<br><small>Post one using the form.</small>'
-        : 'No announcements yet.';
+      var emptyText = showingAnnouncementArchives ? 'No archived announcements.' : (currentUser && currentUser.role === 'chairperson'
+        ? 'No announcements yet.<br><small>Submit one using the form for SK Federation approval.</small>'
+        : (postView === 'requested' ? 'No announcement requests awaiting approval.' : 'No approved announcements yet.'));
       container.innerHTML='<div class="empty">'+emptyText+'</div>';
       document.getElementById('annCount').textContent='0';
       return;
     }
-    document.getElementById('annCount').textContent=d.data.length;
-    container.innerHTML=d.data.map(function(a){
+    var visible = showingAnnouncementArchives ? d.data : (currentUser && currentUser.role === 'admin'
+      ? d.data.filter(function(a){ return (a.approval_status || 'approved') === (postView === 'requested' ? 'pending' : 'approved'); })
+      : d.data);
+    document.getElementById('annCount').textContent=visible.length;
+    if(!visible.length){
+      container.innerHTML='<div class="empty">'+(postView === 'requested' ? 'No announcement requests awaiting approval.' : 'No approved announcements yet.')+'</div>';
+      return;
+    }
+    container.innerHTML=visible.map(function(a){
       var meta=(a.barangay_name ? a.barangay_name+' - ' : '')+(a.created_by_name || 'Unknown')+' - '+fmt(a.created_at);
+      var status=(a.approval_status || 'approved');
+      var reviewButtons=currentUser && currentUser.role === 'admin' && status === 'pending'
+        ? '<button class="btn btn-primary btn-sm" onclick="reviewAnn('+a.id+',\''+a.barangay_id+'\',\'approved\')">Approve & Publish</button><button class="btn btn-secondary btn-sm" onclick="reviewAnn('+a.id+',\''+a.barangay_id+'\',\'rejected\')">Reject</button>' : '';
       return '<div class="ann-item" id="ann-'+a.id+'">'
         +'<div class="ann-title">'+escapeHtml(a.title)+'</div>'
         +'<div class="ann-body">'+escapeHtml(a.body)+'</div>'
         +(scheduleText(a)?'<div class="ann-body" style="font-size:.84rem;color:#1A4530;font-weight:700;">Schedule: '+escapeHtml(scheduleText(a))+'</div>':'')
         +'<div class="ann-meta">'
-          +'<span>'+escapeHtml(meta)+'</span>'
-          +'<button class="btn btn-danger btn-sm" onclick="deleteAnn('+a.id+',\''+a.barangay_id+'\')">Delete</button>'
+          +'<span>'+escapeHtml(meta)+' <span class="status-badge status-'+escapeHtml(status)+'">'+escapeHtml(status)+'</span></span>'
+          +'<span class="ann-actions">'+(showingAnnouncementArchives?'<button class="btn btn-primary btn-sm" onclick="restoreAnn('+a.id+',\''+a.barangay_id+'\')">Restore</button>':reviewButtons+'<button class="btn btn-secondary btn-sm" onclick="archiveAnn('+a.id+',\''+a.barangay_id+'\')">Archive</button><button class="btn btn-danger btn-sm" onclick="deleteAnn('+a.id+',\''+a.barangay_id+'\')">Delete</button>')+'</span>'
         +'</div>'
       +'</div>';
     }).join('');
+  }
+
+  function toggleAnnouncementArchives(){
+    showingAnnouncementArchives=!showingAnnouncementArchives;
+    document.getElementById('announcementArchiveBtn').textContent=showingAnnouncementArchives?'Back to posts':'Archives';
+    document.getElementById('announcementListTitle').textContent=showingAnnouncementArchives?'Archived Announcements':'Posted Announcements';
+    document.getElementById('announcementFormPanel').style.display=showingAnnouncementArchives?'none':'block';
+    loadAnn();
+  }
+
+  async function archiveAnn(id,barangayId){
+    if(!confirm('Archive this announcement? It will be removed from the public site if it is published.'))return;
+    var r=await fetch(API+'/admin/announcements/'+id+'/archive'+barangayQuery(barangayId||selectedBarangayId()),{method:'PATCH',credentials:'include'}),d=await r.json();
+    if(r.ok&&d.success){showAlert(d.message,'success');loadAnn();}else showAlert(d.message||'Unable to archive announcement.','danger');
+  }
+  async function restoreAnn(id,barangayId){
+    if(!confirm('Restore this announcement? It will return as pending and must be approved before it is public again.'))return;
+    var r=await fetch(API+'/admin/announcements/'+id+'/restore'+barangayQuery(barangayId||selectedBarangayId()),{method:'PATCH',credentials:'include'}),d=await r.json();
+    if(r.ok&&d.success){showAlert(d.message,'success');loadAnn();}else showAlert(d.message||'Unable to restore announcement.','danger');
   }
 
   async function postAnn(){
@@ -250,7 +292,6 @@
     var title=document.getElementById('annTitle').value.trim();
     var body=document.getElementById('annBody').value.trim();
     var announcement_type=document.getElementById('annType').value;
-    var priority=document.getElementById('annPriority').value;
     var event_date=document.getElementById('annDate').value;
     var location=document.getElementById('annLocation').value.trim();
     var start_time=document.getElementById('annStartTime').value;
@@ -259,7 +300,7 @@
     if(!title||!body){showAlert('Title and message are required.','danger');return;}
     if(currentUser.role === 'admin' && !barangayId){showAlert('Please select a barangay before posting an announcement.','danger');return;}
     var btn=document.getElementById('postBtn');
-    btn.disabled=true; btn.textContent='Posting...';
+    btn.disabled=true; btn.textContent='Submitting...';
     var r=await fetch(API+'/admin/announcements',{
       method:'POST',
       credentials:'include',
@@ -267,20 +308,31 @@
       body:JSON.stringify({
         title:title,
         body:body,
-        announcement_type:announcement_type, priority:priority, event_date:event_date,
+        announcement_type:announcement_type, event_date:event_date,
         location:location, start_time:start_time, end_time:end_time,
         barangay_id: barangayId
       })
     });
     var d=await r.json();
-    btn.disabled=false; btn.textContent='Post Announcement';
+    btn.disabled=false; btn.textContent='Submit for Approval';
     if(r.ok&&d.success){
-      showAlert('Announcement posted successfully!','success');
+      showAlert('Announcement submitted for SK Federation approval.','success');
       document.getElementById('annTitle').value='';
       document.getElementById('annBody').value='';
       ['annDate','annLocation','annStartTime','annEndTime'].forEach(function(id){document.getElementById(id).value='';});
       loadAnn();
     } else { showAlert(d.message||'Failed to post.','danger'); }
+  }
+
+  async function reviewAnn(id, barangayId, status){
+    var label=status === 'approved' ? 'Approve and publish' : 'Reject';
+    if(!confirm(label+' this announcement?')) return;
+    var r=await fetch(API+'/admin/announcements/'+id+'/review'+barangayQuery(barangayId),{
+      method:'PATCH', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:status})
+    });
+    var d=await r.json();
+    if(r.ok&&d.success){showAlert(status === 'approved' ? 'Announcement approved and published publicly.' : 'Announcement rejected.','success');loadAnn();}
+    else showAlert(d.message||'Unable to review announcement.','danger');
   }
 
   async function deleteAnn(id, barangayId){

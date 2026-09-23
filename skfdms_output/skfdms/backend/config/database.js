@@ -7,7 +7,16 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const databaseUrl = process.env.DATABASE_URL;
-const maxClients = Math.max(1, Math.min(Number.parseInt(process.env.DB_POOL_MAX, 10) || 5, 15));
+// Supabase pooler URLs share a small, database-wide session allowance.  A
+// separate Pool is created for each local process/serverless instance, so a
+// default of five here can exhaust that allowance very quickly.  Keep pooled
+// connections deliberately small; a Pool queues concurrent queries safely.
+const usesSupabasePooler = /\.pooler\.supabase\.com(?::\d+)?/i.test(databaseUrl || '');
+const defaultPoolMax = usesSupabasePooler ? 1 : 5;
+const maxClients = Math.max(
+  1,
+  Math.min(Number.parseInt(process.env.DB_POOL_MAX, 10) || defaultPoolMax, usesSupabasePooler ? 2 : 15)
+);
 const connectionTimeoutMillis = Math.max(
   5000,
   Number.parseInt(process.env.DB_CONNECTION_TIMEOUT_MS, 10) || 15000
@@ -21,7 +30,9 @@ const safeQueryRetries = Math.max(
 const pool = new Pool(databaseUrl ? {
   connectionString: databaseUrl,
   max: maxClients,
-  idleTimeoutMillis: 20000,
+  // Release an idle session quickly so nodemon restarts and quiet Vercel
+  // functions do not keep Supabase session-pool capacity occupied.
+  idleTimeoutMillis: usesSupabasePooler ? 5000 : 20000,
   connectionTimeoutMillis,
   keepAlive: true,
   keepAliveInitialDelayMillis: 10000,

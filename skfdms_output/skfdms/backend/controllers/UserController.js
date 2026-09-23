@@ -65,10 +65,10 @@ async function list(req, res) {
     const params = [];
 
     if (barangayId !== 'all') {
-      queryText += ' WHERE u.barangay_id = $1 AND COALESCE(u.is_archived, false) = false';
+      queryText += " WHERE u.barangay_id = $1 AND COALESCE(u.is_archived, false) = false AND COALESCE(u.approval_status, 'approved') = 'approved'";
       params.push(barangayId);
     } else {
-      queryText += ' WHERE COALESCE(u.is_archived, false) = false';
+      queryText += " WHERE COALESCE(u.is_archived, false) = false AND COALESCE(u.approval_status, 'approved') = 'approved'";
     }
 
     queryText += ' ORDER BY u.created_at DESC';
@@ -113,20 +113,28 @@ async function listPublicOfficials(req, res) {
 
 // POST /api/admin/users
 async function create(req, res) {
-  const { name, email, password, role } = req.body;
+  const { name, email, role } = req.body;
   const gender = normalizeGender(req.body.gender);
   const contact = req.body.contact ? String(req.body.contact).trim() : null;
-  if (!name || !email || !password || !role || !gender) {
+  const birthDate = req.body.birth_date || null;
+  const residentialAddress = req.body.residential_address ? String(req.body.residential_address).trim() : null;
+  const appointmentBasis = req.body.appointment_basis ? String(req.body.appointment_basis).trim().toLowerCase() : null;
+  const termStart = req.body.term_start || null;
+  const termEnd = req.body.term_end || null;
+  if (!name || !email || !role || !gender || !contact || !birthDate || !residentialAddress || !appointmentBasis || !termStart || !termEnd) {
     return res.status(400).json({ success: false, message: 'All fields are required.' });
+  }
+
+  if (!['elected', 'appointed'].includes(appointmentBasis)) {
+    return res.status(400).json({ success: false, message: 'Please select a valid basis of authority.' });
+  }
+  if (Number.isNaN(Date.parse(birthDate)) || Number.isNaN(Date.parse(termStart)) || Number.isNaN(Date.parse(termEnd)) || new Date(termEnd) < new Date(termStart)) {
+    return res.status(400).json({ success: false, message: 'Please provide valid dates. The term end must not be before the term start.' });
   }
 
   const validRoles = ['chairperson'];
   if (!validRoles.includes(role)) {
     return res.status(400).json({ success: false, message: 'Invalid role.' });
-  }
-
-  if (password.length < 8) {
-    return res.status(400).json({ success: false, message: 'Password must be at least 8 characters.' });
   }
 
   try {
@@ -137,12 +145,17 @@ async function create(req, res) {
       return res.status(409).json({ success: false, message: 'Email already exists.' });
     }
 
-    const hash = await bcrypt.hash(password, 12);
+    // Return this only in the creation response; persist only its bcrypt hash.
+    const temporaryPassword = crypto.randomBytes(9).toString('base64url');
+    const hash = await bcrypt.hash(temporaryPassword, 12);
     const { rows } = await db.query(
-      `INSERT INTO users (barangay_id, name, email, password_hash, role, gender, contact)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO users (barangay_id, name, email, password_hash, role, gender, contact,
+                          birth_date, residential_address, appointment_basis, term_start, term_end,
+                          approval_status, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'approved', true)
        RETURNING id`,
-      [barangayId, name.trim(), email.toLowerCase().trim(), hash, role, gender, contact]
+      [barangayId, name.trim(), email.toLowerCase().trim(), hash, role, gender, contact,
+       birthDate, residentialAddress, appointmentBasis, termStart, termEnd]
     );
 
     await logActivity({
@@ -160,6 +173,7 @@ async function create(req, res) {
       message: `User "${name}" created successfully.`,
       id: rows[0].id,
       barangay_id: barangayId,
+      temp_password: temporaryPassword,
     });
 
   } catch (err) {
@@ -453,13 +467,20 @@ async function update(req, res) {
   const { id } = req.params;
   const { name, email, role, password } = req.body;
   const gender = normalizeGender(req.body.gender);
+  const contact = String(req.body.contact || '').trim();
+  const birthDate = req.body.birth_date || null;
+  const residentialAddress = String(req.body.residential_address || '').trim();
+  const appointmentBasis = String(req.body.appointment_basis || '').trim();
+  const termStart = req.body.term_start || null;
+  const termEnd = req.body.term_end || null;
+  const newBarangayId = Number.parseInt(req.body.barangay_id, 10);
 
   if (parseInt(id, 10) === req.user.id && role && role !== req.user.role) {
     return res.status(400).json({ success: false, message: 'You cannot change your own role.' });
   }
 
-  if (!name || !email || !role || !gender) {
-    return res.status(400).json({ success: false, message: 'Name, email, gender, and role are required.' });
+  if (!name || !email || !role || !gender || !contact || !birthDate || !residentialAddress || !appointmentBasis || !termStart || !termEnd || !Number.isInteger(newBarangayId) || newBarangayId <= 0) {
+    return res.status(400).json({ success: false, message: 'Complete account, contact, barangay, and SK office details are required.' });
   }
 
   const validRoles = ['chairperson'];
@@ -499,40 +520,33 @@ async function update(req, res) {
       return res.status(409).json({ success: false, message: 'Email already exists.' });
     }
 
+    const { rows: barangayRows } = await db.query('SELECT id FROM barangays WHERE id = $1', [newBarangayId]);
+    if (barangayRows.length === 0) {
+      return res.status(400).json({ success: false, message: 'Selected barangay does not exist.' });
+    }
+
+    let updateSql = `UPDATE users
+                        SET name = $1, email = $2, role = $3, gender = $4, barangay_id = $5,
+                            contact = $6, birth_date = $7, residential_address = $8,
+                            appointment_basis = $9, term_start = $10, term_end = $11`;
+    const updateValues = [
+      name.trim(), normalizedEmail, role, gender, newBarangayId, contact,
+      birthDate, residentialAddress, appointmentBasis, termStart, termEnd,
+    ];
+
     if (password) {
       const hash = await bcrypt.hash(password, 12);
-      if (barangayId === 'all') {
-        await db.query(
-          `UPDATE users
-              SET name = $1, email = $2, role = $3, gender = $4, password_hash = $5, updated_at = CURRENT_TIMESTAMP
-           WHERE id = $6`,
-          [name.trim(), normalizedEmail, role, gender, hash, id]
-        );
-      } else {
-        await db.query(
-          `UPDATE users
-              SET name = $1, email = $2, role = $3, gender = $4, password_hash = $5, updated_at = CURRENT_TIMESTAMP
-           WHERE id = $6 AND barangay_id = $7`,
-          [name.trim(), normalizedEmail, role, gender, hash, id, barangayId]
-        );
-      }
-    } else {
-      if (barangayId === 'all') {
-        await db.query(
-          `UPDATE users
-              SET name = $1, email = $2, role = $3, gender = $4, updated_at = CURRENT_TIMESTAMP
-           WHERE id = $5`,
-          [name.trim(), normalizedEmail, role, gender, id]
-        );
-      } else {
-        await db.query(
-          `UPDATE users
-              SET name = $1, email = $2, role = $3, gender = $4, updated_at = CURRENT_TIMESTAMP
-           WHERE id = $5 AND barangay_id = $6`,
-          [name.trim(), normalizedEmail, role, gender, id, barangayId]
-        );
-      }
+      updateValues.push(hash);
+      updateSql += `, password_hash = $${updateValues.length}`;
     }
+    updateSql += ', updated_at = CURRENT_TIMESTAMP';
+    updateValues.push(id);
+    updateSql += ` WHERE id = $${updateValues.length}`;
+    if (barangayId !== 'all') {
+      updateValues.push(barangayId);
+      updateSql += ` AND barangay_id = $${updateValues.length}`;
+    }
+    await db.query(updateSql, updateValues);
 
     await logActivity({
       userId: req.user.id,
@@ -540,7 +554,7 @@ async function update(req, res) {
       entityType: 'user',
       entityId: parseInt(id, 10),
       details: `Updated user "${targetRows[0].name}"`,
-      barangayId: targetRows[0].barangay_id,
+      barangayId: newBarangayId,
       ip: req.ip,
     });
 

@@ -6,12 +6,9 @@
 
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
 const db = require('../config/database');
 const { logActivity } = require('../utils/logger');
 const { clearAuthCookie, getCurrentUser, setAuthCookie } = require('../utils/authCookie');
-const { getPrivateUploadDir } = require('../config/uploadPath');
 const { createPasswordSetupToken } = require('../utils/passwordSetup');
 
 let userOptionalColumnsReady = false;
@@ -46,10 +43,6 @@ function normalizeGender(value) {
   if (!gender) return '';
   const valid = ['male', 'female'];
   return valid.includes(gender) ? gender : '';
-}
-
-function removeRegistrationUpload(file) {
-  if (file && file.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
 }
 
 // ── POST /api/auth/login ────────────────────────────────────
@@ -341,66 +334,4 @@ async function completePasswordSetup(req, res) {
   }
 }
 
-// ── POST /api/auth/register-request ─────────────────────────────
-// Public registration request (chairman self-registers, pending SK Fed approval)
-async function registerRequest(req, res) {
-  const { full_name, name, email, gender, barangay_id, contact, birth_date, residential_address, appointment_basis, term_start, term_end } = req.body;
-
-  const fn = full_name || name;
-  if (!fn || !email || !gender || !barangay_id || !contact || !birth_date || !residential_address || !appointment_basis || !term_start || !term_end || !req.file) {
-    removeRegistrationUpload(req.file);
-    return res.status(400).json({ success: false, message: 'All fields are required.' });
-  }
-
-  try {
-    await ensureUserOptionalColumns();
-
-    const normalizedEmail = email.toLowerCase().trim();
-    const { rows: existing } = await db.query(
-      `SELECT id FROM users WHERE email = $1`,
-      [normalizedEmail]
-    );
-    if (existing.length > 0) {
-      removeRegistrationUpload(req.file);
-      return res.status(409).json({ success: false, message: 'An account with this email already exists.' });
-    }
-
-    // Validate barangay exists
-    const { rows: barRows } = await db.query(
-      `SELECT id FROM barangays WHERE id = $1`,
-      [parseInt(barangay_id, 10)]
-    );
-    if (barRows.length === 0) {
-      removeRegistrationUpload(req.file);
-      return res.status(400).json({ success: false, message: 'Invalid barangay selected.' });
-    }
-
-    const { rows } = await db.query(
-      `INSERT INTO users
-         (barangay_id, name, email, password_hash, role, gender, contact, birth_date, residential_address, appointment_basis, term_start, term_end, supporting_document_path, supporting_document_name, approval_status, is_active)
-       VALUES ($1, $2, $3, $4, 'chairperson', $5, $6, $7, $8, $9, $10, $11, $12, $13, 'pending', false)
-       RETURNING id`,
-      [parseInt(barangay_id, 10), fn.trim(), normalizedEmail, crypto.randomBytes(32).toString('hex'), normalizeGender(gender), contact.trim(), birth_date, residential_address.trim(), appointment_basis.trim(), term_start, term_end, path.relative(getPrivateUploadDir(), req.file.path).split(path.sep).join('/'), req.file.originalname]
-    );
-
-    await logActivity({
-      action: 'REGISTER_REQUEST',
-      entityType: 'user',
-      entityId: rows[0].id,
-      details: `Chairperson registration request submitted by ${fn} (${normalizedEmail})`,
-      ip: req.ip,
-    });
-
-    return res.status(201).json({
-      success: true,
-      message: 'Registration request submitted. It is now pending SK Federated Admin review.',
-      id: rows[0].id,
-    });
-  } catch (err) {
-    removeRegistrationUpload(req.file);
-    console.error('registerRequest error:', err);
-    return res.status(500).json({ success: false, message: 'Server error. Please try again.' });
-  }
-}
-
-module.exports = { login, logout, me, changeName, changeEmail, changePassword, registerRequest, validatePasswordSetup, completePasswordSetup };
+module.exports = { login, logout, me, changeName, changeEmail, changePassword, validatePasswordSetup, completePasswordSetup };

@@ -14,7 +14,10 @@ function ensureArchiveColumns() {
         ALTER TABLE documents
           ADD COLUMN IF NOT EXISTS is_archived BOOLEAN NOT NULL DEFAULT false,
           ADD COLUMN IF NOT EXISTS archived_at TIMESTAMPTZ,
-          ADD COLUMN IF NOT EXISTS archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL
+          ADD COLUMN IF NOT EXISTS archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+          ADD COLUMN IF NOT EXISTS chairperson_archived BOOLEAN NOT NULL DEFAULT false,
+          ADD COLUMN IF NOT EXISTS chairperson_archived_at TIMESTAMPTZ,
+          ADD COLUMN IF NOT EXISTS chairperson_archived_by INTEGER REFERENCES users(id) ON DELETE SET NULL
       `);
       await db.query(`
         CREATE INDEX IF NOT EXISTS idx_documents_archive_scope
@@ -199,6 +202,7 @@ async function listAdmin(req, res) {
              d.created_at, d.updated_at,
              d.category_id, d.barangay_id, d.is_published,
              COALESCE(d.is_archived, false) AS is_archived, d.archived_at,
+             COALESCE(d.chairperson_archived, false) AS chairperson_archived, d.chairperson_archived_at,
                 COALESCE(d.publish_requested, false) AS publish_requested,
                d.requested_by, d.requested_at,
                c.name AS category_name, c.code AS category_code,
@@ -228,7 +232,9 @@ async function listAdmin(req, res) {
     }
 
     params.push(showArchived);
-    queryText += ` AND COALESCE(d.is_archived, false) = $${params.length}`;
+    queryText += req.user.role === 'chairperson'
+      ? ` AND COALESCE(d.is_archived, false) = false AND COALESCE(d.chairperson_archived, false) = $${params.length}`
+      : ` AND COALESCE(d.is_archived, false) = $${params.length}`;
 
     if (category_id) { 
       params.push(category_id);
@@ -330,7 +336,7 @@ async function togglePublish(req, res) {
 
     const { rows } = await db.query(
       `SELECT id, title, is_published, COALESCE(is_archived, false) AS is_archived,
-              COALESCE(publish_requested, false) AS publish_requested, requested_by
+              COALESCE(publish_requested, false) AS publish_requested, requested_by, requested_at
          FROM documents
         WHERE id = $1 AND barangay_id = $2`,
       [id, barangayId]
@@ -346,7 +352,37 @@ async function togglePublish(req, res) {
     }
 
     if (requesterIsChair && doc.publish_requested) {
-      return res.status(400).json({ success: false, message: 'This document has already been requested for publish.' });
+      if (Number(doc.requested_by) !== Number(req.user.id)) {
+        return res.status(403).json({ success: false, message: 'Only the chairperson who submitted this request can cancel it.' });
+      }
+
+      await db.query(
+        `UPDATE documents
+            SET publish_requested = false,
+                requested_by = NULL,
+                requested_at = NULL,
+                updated_at = CURRENT_TIMESTAMP
+          WHERE id = $1 AND barangay_id = $2
+          RETURNING id`,
+        [id, barangayId]
+      );
+
+      await logActivity({
+        userId: req.user.id,
+        action: 'CANCEL_PUBLISH_REQUEST_DOCUMENT',
+        entityType: 'document',
+        entityId: parseInt(id, 10),
+        details: `Cancelled publish request for "${doc.title}"`,
+        barangayId,
+        ip: req.ip,
+      });
+
+      return res.json({
+        success: true,
+        message: 'Document publish request cancelled.',
+        is_published: doc.is_published,
+        publish_requested: false,
+      });
     }
 
     if (requesterIsChair && !doc.publish_requested) {
@@ -385,13 +421,13 @@ async function togglePublish(req, res) {
       const updated = await db.query(
         `UPDATE documents
             SET is_published = $1,
-                publish_requested = false,
-                requested_by = NULL,
-                requested_at = NULL,
-                published_at = $2
+                publish_requested = NOT $1,
+                requested_by = COALESCE(requested_by, $2::integer),
+                requested_at = COALESCE(requested_at, CURRENT_TIMESTAMP),
+                published_at = CASE WHEN $1 THEN CURRENT_TIMESTAMP ELSE NULL END
           WHERE id = $3
           RETURNING is_published, publish_requested, published_at`,
-        [newStatus, newStatus ? new Date() : null, id]
+        [newStatus, req.user.id, id]
       );
 
       await logActivity({
@@ -540,43 +576,68 @@ async function archive(req, res) {
 
   try {
     await ensureArchiveColumns();
+    await ensureRequestColumns();
     const barangayId = getEffectiveBarangayId(req);
+    const isChairperson = req.user.role === 'chairperson';
 
     const { rows } = await db.query(
-      `SELECT id, title FROM documents
-        WHERE id = $1 AND barangay_id = $2 AND COALESCE(is_archived, false) = false`,
-      [id, barangayId]
+      `SELECT id, title, is_published, COALESCE(publish_requested, false) AS publish_requested
+         FROM documents
+        WHERE id = $1 AND barangay_id = $2
+          AND COALESCE(is_archived, false) = false
+          AND ($3::boolean = false OR uploaded_by = $4)
+          AND ($3::boolean = false OR COALESCE(chairperson_archived, false) = false)`,
+      [id, barangayId, isChairperson, req.user.id]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Document not found or already archived.' });
     }
 
-    await db.query(
-      `UPDATE documents
-          SET is_archived = true,
-              archived_at = CURRENT_TIMESTAMP,
-              archived_by = $1,
-              is_published = false,
-              published_at = NULL,
-              publish_requested = false,
-              requested_by = NULL,
-              updated_at = CURRENT_TIMESTAMP
-        WHERE id = $2 AND barangay_id = $3`,
-      [req.user.id, id, barangayId]
-    );
+    if (isChairperson && rows[0].publish_requested) {
+      return res.status(400).json({ success: false, message: 'Requested documents cannot be archived while awaiting SK Fed approval.' });
+    }
+
+    if (isChairperson) {
+      // A chairperson archive is personal to their My Documents workspace.
+      // It must not unpublish a document already approved by SK Fed.
+      await db.query(
+        `UPDATE documents
+            SET chairperson_archived = true,
+                chairperson_archived_at = CURRENT_TIMESTAMP,
+                chairperson_archived_by = $1,
+                updated_at = CURRENT_TIMESTAMP
+          WHERE id = $2 AND barangay_id = $3`,
+        [req.user.id, id, barangayId]
+      );
+    } else {
+      await db.query(
+        `UPDATE documents
+            SET is_archived = true,
+                archived_at = CURRENT_TIMESTAMP,
+                archived_by = $1,
+                is_published = false,
+                published_at = NULL,
+                publish_requested = false,
+                requested_by = NULL,
+                requested_at = NULL,
+                updated_at = CURRENT_TIMESTAMP
+          WHERE id = $2 AND barangay_id = $3`,
+        [req.user.id, id, barangayId]
+      );
+    }
 
     await logActivity({
       userId:     req.user.id,
       action:     'ARCHIVE_DOCUMENT',
       entityType: 'document',
       entityId:   parseInt(id, 10),
-      details:    `Archived "${rows[0].title}"`,
+      details:    `${isChairperson ? 'Archived in My Documents' : 'Archived'} "${rows[0].title}"`,
       barangayId,
       ip:         req.ip,
     });
 
-    return res.json({ success: true, message: 'Document archived successfully.', is_archived: true });
+    return res.json({ success: true, message: 'Document archived successfully.', is_archived: !isChairperson });
   } catch (err) {
     if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message });
     console.error('archive error:', err);
@@ -589,28 +650,48 @@ async function restore(req, res) {
 
   try {
     await ensureArchiveColumns();
+    await ensureRequestColumns();
     await purgeExpiredArchivedDocuments();
     const barangayId = getEffectiveBarangayId(req);
+    const isChairperson = req.user.role === 'chairperson';
 
     const { rows } = await db.query(
       `SELECT id, title FROM documents
-         WHERE id = $1 AND barangay_id = $2 AND COALESCE(is_archived, false) = true`,
-      [id, barangayId]
+         WHERE id = $1 AND barangay_id = $2
+           AND ($3::boolean = false OR uploaded_by = $4)
+           AND (CASE WHEN $3::boolean THEN COALESCE(chairperson_archived, false) ELSE COALESCE(is_archived, false) END) = true`,
+      [id, barangayId, isChairperson, req.user.id]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Archived document not found.' });
     }
 
-    await db.query(
-      `UPDATE documents
+    if (isChairperson) {
+      await db.query(
+        `UPDATE documents
+            SET chairperson_archived = false,
+                chairperson_archived_at = NULL,
+                chairperson_archived_by = NULL,
+                updated_at = CURRENT_TIMESTAMP
+          WHERE id = $1 AND barangay_id = $2`,
+        [id, barangayId]
+      );
+    } else {
+      await db.query(
+        `UPDATE documents
            SET is_archived = false,
                archived_at = NULL,
                archived_by = NULL,
+               is_published = false,
+               publish_requested = true,
+               requested_by = $1,
+               requested_at = CURRENT_TIMESTAMP,
                updated_at = CURRENT_TIMESTAMP
-         WHERE id = $1 AND barangay_id = $2`,
-      [id, barangayId]
-    );
+         WHERE id = $2 AND barangay_id = $3`,
+        [req.user.id, id, barangayId]
+      );
+    }
 
     await logActivity({
       userId:     req.user.id,
@@ -622,7 +703,7 @@ async function restore(req, res) {
       ip:         req.ip,
     });
 
-    return res.json({ success: true, message: 'Document restored successfully.', is_archived: false });
+    return res.json({ success: true, message: isChairperson ? 'Document restored successfully.' : 'Document restored as requested.', is_archived: false, publish_requested: !isChairperson });
   } catch (err) {
     if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message });
     console.error('restore error:', err);
@@ -647,6 +728,46 @@ async function bulkArchive(req, res) {
     const idList = ids.map(Number).filter((n) => !isNaN(n));
     if (!idList.length) {
       return res.status(400).json({ success: false, message: 'No valid document ids provided.' });
+    }
+
+    // Chairperson archiving is local to My Documents. Never unpublish items
+    // that SK Fed has already approved, and never archive pending requests.
+    if (req.user.role === 'chairperson') {
+      const placeholders = idList.map((_, i) => `$${i + 1}`);
+      const { rows } = await db.query(
+        `SELECT id, title FROM documents
+          WHERE id IN (${placeholders.join(',')})
+            AND barangay_id = $${idList.length + 1}
+            AND uploaded_by = $${idList.length + 2}
+            AND COALESCE(is_archived, false) = false
+            AND COALESCE(chairperson_archived, false) = false
+            AND COALESCE(publish_requested, false) = false`,
+        [...idList, barangayId, req.user.id]
+      );
+      if (!rows.length) {
+        return res.status(400).json({ success: false, message: 'Requested or unavailable documents cannot be archived.' });
+      }
+      const validIds = rows.map((row) => row.id);
+      const updatePlaceholders = validIds.map((_, i) => `$${i + 1}`);
+      await db.query(
+        `UPDATE documents
+            SET chairperson_archived = true,
+                chairperson_archived_at = CURRENT_TIMESTAMP,
+                chairperson_archived_by = $${validIds.length + 1},
+                updated_at = CURRENT_TIMESTAMP
+          WHERE id IN (${updatePlaceholders.join(',')})`,
+        [...validIds, req.user.id]
+      );
+      await logActivity({
+        userId: req.user.id,
+        action: 'BULK_ARCHIVE_DOCUMENT',
+        entityType: 'document',
+        entityId: validIds[0],
+        details: `Archived ${validIds.length} document(s) in My Documents: ${rows.map((row) => row.title).join(', ')}`,
+        barangayId,
+        ip: req.ip,
+      });
+      return res.json({ success: true, message: `${validIds.length} document(s) archived successfully.`, archived: validIds.length });
     }
 
     const selParams = idList.map((_, i) => `$${i + 1}`);

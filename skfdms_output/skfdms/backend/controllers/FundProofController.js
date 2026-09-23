@@ -199,6 +199,8 @@ async function listAdmin(req, res) {
     const barangayId = getEffectiveBarangayId(req);
     const allBarangays = req.user.role === 'admin' && barangayId === 'all';
     const showArchived = req.query.archived === 'true' || req.query.archived === '1';
+    const isPublished = req.query.is_published;
+    const publishRequested = req.query.publish_requested;
 
     if (showArchived && req.user.role !== 'admin' && !['chairperson', 'treasurer'].includes(req.user.role)) {
       return res.status(403).json({ success: false, message: 'Archived fund proofs are available to SKFED admin only.' });
@@ -212,6 +214,17 @@ async function listAdmin(req, res) {
     }
     params.push(showArchived);
     where.push(`COALESCE(fp.is_archived, false) = $${params.length}`);
+
+    // Let the admin workspaces request their exact publication state instead
+    // of relying solely on a browser-side filter.
+    if (isPublished !== undefined) {
+      params.push(isPublished === 'true' || isPublished === '1');
+      where.push(`fp.is_published = $${params.length}`);
+    }
+    if (publishRequested !== undefined) {
+      params.push(publishRequested === 'true' || publishRequested === '1');
+      where.push(`COALESCE(fp.publish_requested, false) = $${params.length}`);
+    }
 
     const { rows } = await db.query(
       `SELECT fp.*, u.name AS uploaded_by_name, b.name AS barangay, d.title AS document_title,
@@ -365,8 +378,8 @@ async function togglePublish(req, res) {
     const isAdmin = req.user.role === 'admin';
 
     const { rows } = await db.query(
-      `SELECT id, title, is_published, COALESCE(is_archived, false) AS is_archived,
-              COALESCE(publish_requested, false) AS publish_requested
+      `SELECT id, title, uploaded_by, is_published, COALESCE(is_archived, false) AS is_archived,
+              COALESCE(publish_requested, false) AS publish_requested, requested_by, requested_at
          FROM fund_proofs
         WHERE id = $1 AND barangay_id = $2`,
       [req.params.id, barangayId]
@@ -380,7 +393,34 @@ async function togglePublish(req, res) {
     }
 
     if (req.user.role === 'chairperson' && proof.publish_requested) {
-      return res.status(400).json({ success: false, message: 'This fund proof has already been requested for publish.' });
+      if (Number(proof.requested_by) !== Number(req.user.id)) {
+        return res.status(403).json({ success: false, message: 'Only the chairperson who submitted this request can cancel it.' });
+      }
+      await db.query(
+        `UPDATE fund_proofs
+            SET publish_requested = false,
+                requested_by = NULL,
+                requested_at = NULL,
+                updated_at = CURRENT_TIMESTAMP
+          WHERE id = $1 AND barangay_id = $2
+          RETURNING id`,
+        [req.params.id, barangayId]
+      );
+      await logActivity({
+        userId: req.user.id,
+        action: 'CANCEL_PUBLISH_REQUEST_FUND_PROOF',
+        entityType: 'fund_proof',
+        entityId: parseInt(req.params.id, 10),
+        details: `Cancelled publish request for "${proof.title}"`,
+        barangayId,
+        ip: req.ip,
+      });
+      return res.json({
+        success: true,
+        message: 'Fund proof publish request cancelled.',
+        is_published: proof.is_published,
+        publish_requested: false,
+      });
     }
 
     if (req.user.role === 'chairperson' && !proof.publish_requested) {
@@ -418,13 +458,13 @@ async function togglePublish(req, res) {
       await db.query(
         `UPDATE fund_proofs
             SET is_published = $1,
-                publish_requested = false,
-                requested_by = NULL,
-                requested_at = NULL,
-                published_at = $2,
+                publish_requested = NOT $1,
+                requested_by = COALESCE(requested_by, $2::integer),
+                requested_at = COALESCE(requested_at, CURRENT_TIMESTAMP),
+                published_at = CASE WHEN $1 THEN CURRENT_TIMESTAMP ELSE NULL END,
                 updated_at = CURRENT_TIMESTAMP
           WHERE id = $3 AND barangay_id = $4`,
-        [nextStatus, nextStatus ? new Date() : null, req.params.id, barangayId]
+        [nextStatus, req.user.id, req.params.id, barangayId]
       );
 
       await logActivity({
@@ -441,7 +481,7 @@ async function togglePublish(req, res) {
         success: true,
         message: `Fund proof ${nextStatus ? 'published' : 'unpublished'} successfully.`,
         is_published: nextStatus,
-        publish_requested: false,
+        publish_requested: !nextStatus,
       });
     }
 

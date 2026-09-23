@@ -93,6 +93,7 @@
     .user-menu{position:relative;display:inline-block;}
     .user-menu-trigger{width:34px;height:34px;padding:0!important;font-size:1.2rem!important;line-height:1!important;}
     .user-menu-list{position:absolute;right:0;top:calc(100% + 5px);z-index:40;display:none;min-width:150px;padding:6px;background:#fff;border:1px solid #DCE5DF;border-radius:9px;box-shadow:0 10px 24px rgba(15,42,30,.16);}
+    .user-menu-list.floating{position:fixed;z-index:300;display:block;}
     .user-menu.open .user-menu-list{display:block;}
     .user-menu-list button{display:block;width:100%;border:0;border-radius:6px;background:transparent;padding:8px 10px;text-align:left;color:#33443A;cursor:pointer;font:800 .8rem inherit;white-space:nowrap;}
     .user-menu-list button:hover{background:#EAF7EF;color:#0F2A1E;}
@@ -118,6 +119,13 @@
     .modal-header small{display:block;margin-top:3px;color:#64748B;font-weight:600;}
     .modal-close{width:34px;height:34px;border:none;border-radius:8px;background:#F1F5F9;color:#0F2A1E;font-size:1.35rem;line-height:1;cursor:pointer;}
     .modal-body{padding:20px;overflow-y:auto;}
+    .create-account-modal{width:min(940px,96vw);height:min(86vh,780px);}
+    .create-account-modal .modal-body{flex:1;min-height:0;padding:24px 26px;}
+    .create-account-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;}
+    .create-account-form .form-section-title,.edit-user-form .form-section-title{grid-column:1 / -1;margin:2px 0 -4px;padding-bottom:9px;border-bottom:1px solid #E2E8F0;color:#0F2A1E;font-size:.92rem;font-weight:900;}
+    .create-account-form .form-group.full,.create-account-form .form-note,.create-account-form .form-actions,.edit-user-form .form-group.full{grid-column:1 / -1;}
+    .create-account-form textarea.form-control,.edit-user-form textarea.form-control{min-height:82px;resize:vertical;}
+    .create-account-form .form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:4px;}
     .review-modal{width:min(100%,760px);}
     .archive-modal{width:min(1040px,96vw);height:min(76vh,680px);min-height:500px;max-height:90vh;}
     .archive-modal .modal-body{flex:1;min-height:0;overflow:auto;}
@@ -134,6 +142,22 @@
     .review-document{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid #CDE5D4;border-radius:8px;background:#F3FBF5;margin-top:16px;}
     .review-document p{font-size:.82rem;color:#3A4A3E;line-height:1.45;}
     .review-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid #E2E8F0;}
+    .user-details-modal{width:min(100%,760px);}
+    .edit-user-modal{width:min(940px,96vw);height:min(86vh,780px);}
+    .edit-user-modal .modal-body{flex:1;min-height:0;padding:24px 26px;}
+    .edit-user-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;}
+    .edit-user-form .form-actions{grid-column:1 / -1;display:flex;justify-content:flex-end;gap:10px;padding-top:4px;}
+    .details-identity{padding:15px 16px;margin-bottom:16px;border-radius:8px;background:#F3FBF5;border:1px solid #CDE5D4;}
+    .details-identity strong{display:block;color:#0F2A1E;font-size:1.05rem;}
+    .details-identity span{display:block;color:#64748B;font-size:.84rem;margin-top:4px;}
+    .details-section{margin:18px 0 9px;color:#0F2A1E;font-size:.78rem;font-weight:900;letter-spacing:.3px;text-transform:uppercase;}
+    .edit-user-note{grid-column:1 / -1;padding:12px;border-radius:8px;background:#F8FAFC;border:1px solid #E2E8F0;color:#475569;font-size:.82rem;line-height:1.45;}
+    .password-dialog{padding:16px;border:1px solid #CDE5D4;border-radius:8px;background:#F3FBF5;}
+    .password-dialog p{color:#3A4A3E;font-size:.86rem;line-height:1.5;}
+    .password-value{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:11px 12px;border-radius:8px;background:#fff;border:1px solid #CDE5D4;}
+    .password-value code{color:#0F2A1E;font-size:1rem;font-weight:900;overflow-wrap:anywhere;}
+    .confirmation-message{color:#475569;font-size:.92rem;line-height:1.5;}
+    .confirmation-message strong{color:#0F2A1E;}
     @media(max-width:980px){
       .two-col{grid-template-columns:1fr;}
       .hero-strip{align-items:flex-start;flex-direction:column;}
@@ -150,9 +174,91 @@
       .review-document{align-items:flex-start;flex-direction:column;}
       .review-actions{justify-content:stretch;}
       .review-actions .btn{flex:1;}
+      .create-account-modal{width:min(100%,560px);height:auto;max-height:92vh;}
+      .create-account-form{grid-template-columns:1fr;}
+      .create-account-form .form-section-title,.create-account-form .form-group.full,.create-account-form .form-note,.create-account-form .form-actions,.edit-user-form .form-section-title,.edit-user-form .form-group.full{grid-column:auto;}
+      .edit-user-form{grid-template-columns:1fr;}
+      .edit-user-form .form-actions{grid-column:auto;}
+      .edit-user-note{grid-column:auto;}
     }
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
+  <style>
+    /* User Management dark-mode contrast overrides. Kept here after the shared shell so they remain page-scoped. */
+    body.dark .admin-main{background:#101A14!important;color:#E5F3E9!important;}
+    body.dark .hero-strip,
+    body.dark .card,
+    body.dark .stat-pill,
+    body.dark .modal,
+    body.dark .user-menu-list,
+    body.dark .review-field,
+    body.dark .details-identity,
+    body.dark .review-document,
+    body.dark .password-dialog,
+    body.dark .password-value,
+    body.dark .edit-user-note,
+    body.dark .form-note{background:#18261D!important;border-color:#385342!important;color:#D5E8DA!important;}
+    body.dark .card-header,
+    body.dark .modal-header{background:#1D2E23!important;border-color:#385342!important;}
+    body.dark .hero-strip h1,
+    body.dark .card-header h3,
+    body.dark .modal-header h3,
+    body.dark .review-field strong,
+    body.dark .details-identity strong,
+    body.dark .password-value code,
+    body.dark .user-info .name,
+    body.dark .stat-pill strong{color:#F1FBF3!important;}
+    body.dark .hero-strip p,
+    body.dark .card-header small,
+    body.dark .modal-header small,
+    body.dark .user-info .meta,
+    body.dark .stat-pill span,
+    body.dark .review-field span,
+    body.dark .details-identity span,
+    body.dark .form-hint,
+    body.dark .form-note,
+    body.dark .edit-user-note,
+    body.dark .confirmation-message,
+    body.dark .password-dialog p{color:#BBD2C1!important;}
+    body.dark .users-table th{background:#0A1710!important;color:#EAF7ED!important;border-color:#385342!important;}
+    body.dark .users-table td{background:#18261D!important;color:#D5E8DA!important;border-color:#385342!important;}
+    body.dark .users-table tr:hover td{background:#203525!important;}
+    body.dark .form-control,
+    body.dark .barangay-select,
+    body.dark input,
+    body.dark select,
+    body.dark textarea{background:#0F1A13!important;border-color:#496652!important;color:#F1FBF3!important;}
+    body.dark .form-control:focus,
+    body.dark .barangay-select:focus,
+    body.dark input:focus,
+    body.dark select:focus,
+    body.dark textarea:focus{border-color:#81C99A!important;box-shadow:0 0 0 4px rgba(129,201,154,.18)!important;}
+    body.dark input::placeholder,
+    body.dark textarea::placeholder{color:#91AC99!important;}
+    body.dark .user-menu-list button{color:#DDEFE1!important;}
+    body.dark .user-menu-list button:hover{background:#294633!important;color:#FFF!important;}
+    body.dark .user-menu-list .menu-warning{color:#F7D56A!important;}
+    body.dark .user-menu-list .menu-danger{color:#FDA29B!important;}
+    body.dark .btn-muted,
+    body.dark .toggle-btn,
+    body.dark .modal-close{background:#2A3C30!important;color:#EAF7ED!important;border-color:#496652!important;}
+    body.dark .btn-muted:hover,
+    body.dark .toggle-btn:hover,
+    body.dark .modal-close:hover{background:#385342!important;color:#FFF!important;}
+    body.dark .badge-active{background:#173D25!important;color:#A7F3C1!important;}
+    body.dark .badge-inactive,
+    body.dark .badge-rejected{background:#481F22!important;color:#FFB4AC!important;}
+    body.dark .badge-pending{background:#493B14!important;color:#FDE68A!important;}
+    body.dark .badge-role{background:#292951!important;color:#C7D2FE!important;}
+    body.dark .create-account-form .form-section-title,
+    body.dark .edit-user-form .form-section-title,
+    body.dark .details-section{color:#EAF7ED!important;border-color:#385342!important;}
+    body.dark .review-actions{border-color:#385342!important;}
+    body.dark .alert-success{background:#143A24!important;color:#B7F7CB!important;border-color:#34734A!important;}
+    body.dark .alert-danger{background:#461F23!important;color:#FFC4BE!important;border-color:#94444C!important;}
+    body.dark .alert-info{background:#15354D!important;color:#B9E4FF!important;border-color:#36769F!important;}
+    body.dark .empty{background:#18261D!important;color:#BBD2C1!important;}
+  </style>
   <script src="../../js/public-theme.js" defer></script>
 </head>
 <body>
@@ -172,7 +278,7 @@
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
       <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
@@ -197,13 +303,13 @@
     <main class="content">
       <div class="hero-strip">
         <div>
-          <h1 id="pageTitle">Registration Requests &amp; Users</h1>
-          <p id="pageSub">Review pending SK chairperson registration requests and manage approved users.</p>
+          <h1 id="pageTitle">SK OFFICIALS</h1>
+
         </div>
         <div class="stat-row soft-stat-cards">
           <div class="stat-pill"><strong id="totalCount">0</strong><span>Total</span></div>
-          <div class="stat-pill"><strong id="pendingCount">0</strong><span>Pending</span></div>
           <div class="stat-pill"><strong id="activeCount">0</strong><span>Active</span></div>
+          <div class="stat-pill"><strong id="deactivatedCount">0</strong><span>Deactivated</span></div>
         </div>
       </div>
 
@@ -212,11 +318,11 @@
         <section class="card">
           <div class="card-header">
             <div>
-              <h3>SK Officials &amp; Registration Requests</h3>
-              <small id="listSub">Pending registration requests and approved SK officials</small>
+              <h3>SK Official Accounts</h3>
+              <small id="listSub">Manage SK Federated and SK Chairperson accounts.</small>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-              <button class="btn btn-primary" type="button" id="createChairpersonBtn" onclick="openCreateChairpersonModal()">+ Account</button>
+              <button class="btn btn-primary" type="button" id="createChairpersonBtn" onclick="openCreateChairpersonModal()">Create Account</button>
               <button class="btn btn-warning btn-sm" type="button" onclick="openArchiveInventory()">Archived Users <span id="archiveCount" aria-label="archived users count">0</span></button>
             </div>
           </div>
@@ -235,10 +341,10 @@
                 <thead>
                   <tr>
                     <th>Full Name</th>
-                    <th>Email</th>
+                    <th>Email Address</th>
                     <th>Gender</th>
                     <th>Barangay</th>
-                    <th>Contact Info</th>
+                    <th>Contact Information</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -254,20 +360,29 @@
 </div>
 
 <div class="modal-backdrop" id="createChairpersonModal" aria-hidden="true">
-  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="createChairpersonTitle">
+  <section class="modal create-account-modal" role="dialog" aria-modal="true" aria-labelledby="createChairpersonTitle">
     <div class="modal-header">
       <div><h3 id="createChairpersonTitle">Create SK Chairperson Account</h3><small>A temporary password is generated securely after creation.</small></div>
       <button type="button" class="modal-close" onclick="closeCreateChairpersonModal()" aria-label="Close">&times;</button>
     </div>
     <div class="modal-body">
-      <form id="createChairpersonForm" class="form-grid">
-        <div class="form-group"><label class="form-label" for="createChairpersonName">Full name <span class="required">*</span></label><input class="form-control" id="createChairpersonName" required></div>
-        <div class="form-group"><label class="form-label" for="createChairpersonEmail">Email address <span class="required">*</span></label><input class="form-control" id="createChairpersonEmail" type="email" required></div>
+      <form id="createChairpersonForm" class="form-grid create-account-form">
+        <div class="form-section-title">Account and personal information</div>
+        <div class="form-group"><label class="form-label" for="createChairpersonFirstName">First name <span class="required">*</span></label><input class="form-control" id="createChairpersonFirstName" autocomplete="given-name" required></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonMiddleName">Middle name</label><input class="form-control" id="createChairpersonMiddleName" autocomplete="additional-name"></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonLastName">Last name <span class="required">*</span></label><input class="form-control" id="createChairpersonLastName" autocomplete="family-name" required></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonEmail">Email address <span class="required">*</span></label><input class="form-control" id="createChairpersonEmail" type="email" autocomplete="email" placeholder="name@example.com" required></div>
         <div class="form-group"><label class="form-label" for="createChairpersonGender">Gender <span class="required">*</span></label><select class="form-control" id="createChairpersonGender" required><option value="">Select gender</option><option value="male">Male</option><option value="female">Female</option></select></div>
-        <div class="form-group"><label class="form-label" for="createChairpersonContact">Contact information</label><input class="form-control" id="createChairpersonContact" type="tel"></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonBirthDate">Date of birth <span class="required">*</span></label><input class="form-control" id="createChairpersonBirthDate" type="date" required></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonContact">Mobile / contact number <span class="required">*</span></label><input class="form-control" id="createChairpersonContact" type="tel" autocomplete="tel" placeholder="09XX XXX XXXX" required></div>
         <div class="form-group"><label class="form-label" for="createChairpersonBarangay">Barangay <span class="required">*</span></label><select class="form-control" id="createChairpersonBarangay" required><option value="">Loading barangays...</option></select></div>
-        <p class="form-note">The temporary password is shown only once. Copy it and share it privately with the chairperson.</p>
-        <div style="display:flex;justify-content:flex-end;gap:10px;"><button class="btn btn-muted" type="button" onclick="closeCreateChairpersonModal()">Cancel</button><button class="btn btn-primary" id="createChairpersonSubmit" type="submit">Create Account</button></div>
+        <div class="form-group full"><label class="form-label" for="createChairpersonAddress">Residential address <span class="required">*</span></label><textarea class="form-control" id="createChairpersonAddress" autocomplete="street-address" placeholder="House number, street, purok, barangay, municipality" required></textarea></div>
+        <div class="form-section-title">SK office details</div>
+        <div class="form-group"><label class="form-label" for="createChairpersonBasis">Basis of authority <span class="required">*</span></label><select class="form-control" id="createChairpersonBasis" required><option value="">Select basis</option><option value="elected">Elected</option><option value="appointed">Appointed</option></select></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonTermStart">Term start <span class="required">*</span></label><input class="form-control" id="createChairpersonTermStart" type="date" required></div>
+        <div class="form-group"><label class="form-label" for="createChairpersonTermEnd">Term end <span class="required">*</span></label><input class="form-control" id="createChairpersonTermEnd" type="date" required></div>
+        <p class="form-note">Fields marked <span class="required">*</span> are required. The temporary password is shown only once after account creation; copy it and share it privately.</p>
+        <div class="form-actions"><button class="btn btn-muted" type="button" onclick="closeCreateChairpersonModal()">Cancel</button><button class="btn btn-primary" id="createChairpersonSubmit" type="submit">Create Account</button></div>
       </form>
     </div>
   </section>
@@ -280,6 +395,82 @@
       <button type="button" class="modal-close" onclick="closeRegistrationReview()" aria-label="Close">&times;</button>
     </div>
     <div class="modal-body" id="registrationReviewBody"></div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="userDetailsModal" aria-hidden="true">
+  <section class="modal user-details-modal" role="dialog" aria-modal="true" aria-labelledby="userDetailsTitle">
+    <div class="modal-header">
+      <div><h3 id="userDetailsTitle">User Details</h3><small>Account and SK official information</small></div>
+      <button type="button" class="modal-close" onclick="closeUserDetails()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="userDetailsBody"></div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="editUserModal" aria-hidden="true">
+  <section class="modal edit-user-modal" role="dialog" aria-modal="true" aria-labelledby="editUserTitle">
+    <div class="modal-header">
+      <div><h3 id="editUserTitle">Edit User</h3><small>Update account information for this SK official.</small></div>
+      <button type="button" class="modal-close" onclick="closeEditUser()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="editUserForm" class="form-grid edit-user-form">
+        <input id="editUserId" type="hidden">
+        <div class="form-section-title">Account and personal information</div>
+        <div class="form-group"><label class="form-label" for="editUserFirstName">First name <span class="required">*</span></label><input class="form-control" id="editUserFirstName" autocomplete="given-name" required></div>
+        <div class="form-group"><label class="form-label" for="editUserMiddleName">Middle name</label><input class="form-control" id="editUserMiddleName" autocomplete="additional-name"></div>
+        <div class="form-group"><label class="form-label" for="editUserLastName">Last name <span class="required">*</span></label><input class="form-control" id="editUserLastName" autocomplete="family-name" required></div>
+        <div class="form-group"><label class="form-label" for="editUserEmail">Email address <span class="required">*</span></label><input class="form-control" id="editUserEmail" type="email" autocomplete="email" required></div>
+        <div class="form-group"><label class="form-label" for="editUserGender">Gender <span class="required">*</span></label><select class="form-control" id="editUserGender" required><option value="male">Male</option><option value="female">Female</option></select></div>
+        <div class="form-group"><label class="form-label" for="editUserBirthDate">Date of birth <span class="required">*</span></label><input class="form-control" id="editUserBirthDate" type="date" required></div>
+        <div class="form-group"><label class="form-label" for="editUserContact">Mobile / contact number <span class="required">*</span></label><input class="form-control" id="editUserContact" type="tel" autocomplete="tel" required></div>
+        <div class="form-group"><label class="form-label" for="editUserBarangay">Barangay <span class="required">*</span></label><select class="form-control" id="editUserBarangay" required><option value="">Loading barangays...</option></select></div>
+        <div class="form-group full"><label class="form-label" for="editUserAddress">Residential address <span class="required">*</span></label><textarea class="form-control" id="editUserAddress" autocomplete="street-address" required></textarea></div>
+        <div class="form-section-title">SK office details</div>
+        <div class="form-group"><label class="form-label" for="editUserBasis">Basis of authority <span class="required">*</span></label><select class="form-control" id="editUserBasis" required><option value="elected">Elected</option><option value="appointed">Appointed</option></select></div>
+        <div class="form-group"><label class="form-label" for="editUserTermStart">Term start <span class="required">*</span></label><input class="form-control" id="editUserTermStart" type="date" required></div>
+        <div class="form-group"><label class="form-label" for="editUserTermEnd">Term end <span class="required">*</span></label><input class="form-control" id="editUserTermEnd" type="date" required></div>
+        <p class="edit-user-note" id="editUserNote">Account role is retained. Update the official’s account and SK office records below.</p>
+        <div class="form-actions"><button class="btn btn-muted" type="button" onclick="closeEditUser()">Cancel</button><button class="btn btn-primary" id="editUserSubmit" type="submit">Save Changes</button></div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="resetPasswordModal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="resetPasswordTitle">
+    <div class="modal-header">
+      <div><h3 id="resetPasswordTitle">Temporary Password</h3><small>Share this securely with the SK official.</small></div>
+      <button type="button" class="modal-close" onclick="closeResetPasswordModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="resetPasswordBody"></div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="resetPasswordConfirmModal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="resetPasswordConfirmTitle">
+    <div class="modal-header">
+      <div><h3 id="resetPasswordConfirmTitle">Reset Password</h3><small>A new temporary password will be generated.</small></div>
+      <button type="button" class="modal-close" onclick="closeResetPasswordConfirmModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="confirmation-message" id="resetPasswordConfirmMessage"></p>
+      <div class="review-actions"><button class="btn btn-muted" type="button" onclick="closeResetPasswordConfirmModal()">Cancel</button><button class="btn btn-primary" id="resetPasswordConfirmButton" type="button" onclick="confirmResetUserPassword()">Reset Password</button></div>
+    </div>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="accountStatusModal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="accountStatusTitle">
+    <div class="modal-header">
+      <div><h3 id="accountStatusTitle">Update Account Status</h3><small id="accountStatusSubtitle">Confirm this account status change.</small></div>
+      <button type="button" class="modal-close" onclick="closeAccountStatusModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="confirmation-message" id="accountStatusMessage"></p>
+      <div class="review-actions"><button class="btn btn-muted" type="button" onclick="closeAccountStatusModal()">Cancel</button><button class="btn btn-primary" id="accountStatusConfirm" type="button" onclick="confirmAccountStatusChange()">Confirm</button></div>
+    </div>
   </section>
 </div>
 
@@ -307,6 +498,8 @@
   var currentUser = null;
   var loadedUsers = [];
   var archivedUsers = [];
+  var pendingAccountStatusChange = null;
+  var pendingPasswordResetUserId = null;
 
   function fmt(d){ if(!d)return'Never'; return new Date(d).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'}); }
   function escapeHtml(value){
@@ -493,11 +686,11 @@
 
     var users=d.data || [];
     loadedUsers=users;
-    var pending=users.filter(function(u){return u.approval_status === 'pending';}).length;
     var active=users.filter(function(u){return u.is_active;}).length;
+    var deactivated=users.filter(function(u){return !u.is_active;}).length;
     document.getElementById('totalCount').textContent=users.length;
-    document.getElementById('pendingCount').textContent=pending;
     document.getElementById('activeCount').textContent=active;
+    document.getElementById('deactivatedCount').textContent=deactivated;
     loadArchiveCount();
 
 
@@ -520,12 +713,18 @@
       if(u.approval_status === 'pending'){
         actions=userActionsMenu('<button type="button" onclick="openRegistrationReview('+u.id+')">Review request</button>');
       } else if(u.is_active){
-        actions=userActionsMenu('<button type="button" class="menu-warning" onclick="toggleUser('+u.id+',true)">Deactivate</button>'
+        actions=userActionsMenu('<button type="button" onclick="openUserDetails('+u.id+')">View Details</button>'
+          +'<button type="button" onclick="openEditUser('+u.id+')">Edit</button>'
+          +'<button type="button" onclick="resetUserPassword('+u.id+')">Reset Password</button>'
+          +'<button type="button" class="menu-warning" onclick="toggleUser('+u.id+',true)">Deactivate</button>'
           +'<button type="button" class="menu-danger" onclick="archiveUser('+u.id+','+userNameArg+')">Archive</button>');
       } else if(u.approval_status === 'declined'){
         actions='<span style="font-size:.72rem;color:#94A3B8;">Rejected</span>';
       } else {
-        actions=userActionsMenu('<button type="button" onclick="toggleUser('+u.id+',false)">Activate</button>'
+        actions=userActionsMenu('<button type="button" onclick="openUserDetails('+u.id+')">View Details</button>'
+          +'<button type="button" onclick="openEditUser('+u.id+')">Edit</button>'
+          +'<button type="button" onclick="resetUserPassword('+u.id+')">Reset Password</button>'
+          +'<button type="button" onclick="toggleUser('+u.id+',false)">Activate</button>'
           +'<button type="button" class="menu-danger" onclick="archiveUser('+u.id+','+userNameArg+')">Archive</button>');
       }
     }
@@ -550,7 +749,17 @@
     var menu=trigger.closest('.user-menu');
     var open=!menu.classList.contains('open');
     closeUserMenus();
-    menu.classList.toggle('open',open);
+    if(open){
+      var list=menu.querySelector('.user-menu-list');
+      var bounds=trigger.getBoundingClientRect();
+      list._menuOwner=menu;
+      document.body.appendChild(list);
+      list.classList.add('floating');
+      list.style.right='auto';
+      list.style.left=Math.max(8,bounds.right-list.offsetWidth)+'px';
+      list.style.top=(bounds.bottom+5)+'px';
+      menu.classList.add('open');
+    }
     trigger.setAttribute('aria-expanded',open ? 'true' : 'false');
   }
 
@@ -560,9 +769,110 @@
       var trigger=menu.querySelector('.user-menu-trigger');
       if(trigger) trigger.setAttribute('aria-expanded','false');
     });
+    document.querySelectorAll('.user-menu-list.floating').forEach(function(list){
+      list.classList.remove('floating');
+      list.style.left='';
+      list.style.top='';
+      list.style.right='';
+      if(list._menuOwner) list._menuOwner.appendChild(list);
+      list._menuOwner=null;
+    });
   }
 
   document.addEventListener('click',closeUserMenus);
+  window.addEventListener('scroll',closeUserMenus,true);
+
+  function getLoadedUser(id){
+    return loadedUsers.find(function(user){ return Number(user.id)===Number(id); });
+  }
+
+  function fullName(first,middle,last){
+    return [first,middle,last].map(function(part){return String(part||'').trim();}).filter(Boolean).join(' ');
+  }
+
+  function splitName(name){
+    var parts=String(name||'').trim().split(/\s+/).filter(Boolean);
+    if(parts.length===1)return {first:parts[0],middle:'',last:''};
+    return {first:parts.shift()||'',last:parts.pop()||'',middle:parts.join(' ')};
+  }
+
+  function inputDate(value){
+    return value ? String(value).slice(0,10) : '';
+  }
+
+  function openUserDetails(id){
+    var user=getLoadedUser(id);
+    if(!user)return;
+    document.getElementById('userDetailsTitle').textContent='User Details: '+(user.name || 'SK Official');
+    document.getElementById('userDetailsBody').innerHTML='<div class="details-identity"><strong>'+reviewValue(user.name)+'</strong><span>'+reviewValue(roleLabel(user.role))+' &middot; '+reviewValue(user.barangay_name)+'</span></div>'
+      +'<div class="details-section">Account information</div><div class="review-grid">'
+      +'<div class="review-field"><span>Email address</span><strong>'+reviewValue(user.email)+'</strong></div>'
+      +'<div class="review-field"><span>Account status</span><strong>'+reviewValue(statusLabel(user))+'</strong></div>'
+      +'<div class="review-field"><span>Role</span><strong>'+reviewValue(roleLabel(user.role))+'</strong></div>'
+      +'<div class="review-field"><span>Last sign-in</span><strong>'+reviewDate(user.last_login)+'</strong></div></div>'
+      +'<div class="details-section">Contact information</div><div class="review-grid">'
+      +'<div class="review-field"><span>Contact number</span><strong>'+reviewValue(user.contact)+'</strong></div>'
+      +'<div class="review-field"><span>Gender</span><strong>'+reviewValue(genderLabel(user.gender))+'</strong></div>'
+      +'<div class="review-field full"><span>Residential address</span><strong>'+reviewValue(user.residential_address)+'</strong></div></div>'
+      +'<div class="details-section">SK office details</div><div class="review-grid">'
+      +'<div class="review-field"><span>Barangay</span><strong>'+reviewValue(user.barangay_name)+'</strong></div>'
+      +'<div class="review-field"><span>Basis of authority</span><strong>'+reviewValue(user.appointment_basis)+'</strong></div>'
+      +'<div class="review-field full"><span>Term of office</span><strong>'+reviewDate(user.term_start)+' - '+reviewDate(user.term_end)+'</strong></div></div>';
+    var modal=document.getElementById('userDetailsModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+  }
+
+  function closeUserDetails(){
+    var modal=document.getElementById('userDetailsModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  }
+
+  function openEditUser(id){
+    var user=getLoadedUser(id);
+    if(!user)return;
+    var name=splitName(user.name);
+    document.getElementById('editUserId').value=user.id;
+    document.getElementById('editUserFirstName').value=name.first;
+    document.getElementById('editUserMiddleName').value=name.middle;
+    document.getElementById('editUserLastName').value=name.last;
+    document.getElementById('editUserEmail').value=user.email || '';
+    document.getElementById('editUserGender').value=String(user.gender || '').toLowerCase();
+    document.getElementById('editUserBirthDate').value=inputDate(user.birth_date);
+    document.getElementById('editUserContact').value=user.contact || '';
+    document.getElementById('editUserAddress').value=user.residential_address || '';
+    document.getElementById('editUserBasis').value=user.appointment_basis || 'elected';
+    document.getElementById('editUserTermStart').value=inputDate(user.term_start);
+    document.getElementById('editUserTermEnd').value=inputDate(user.term_end);
+    document.getElementById('editUserTitle').textContent='Edit: '+(user.name || 'SK Official');
+    document.getElementById('editUserNote').textContent='Editing '+(user.name || 'this SK official')+'. Their account role is retained.';
+    var modal=document.getElementById('editUserModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    loadEditUserBarangays(user.barangay_id);
+  }
+
+  function closeEditUser(){
+    var modal=document.getElementById('editUserModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  }
+
+  async function loadEditUserBarangays(selectedId){
+    var select=document.getElementById('editUserBarangay');
+    select.innerHTML='<option value="">Loading barangays...</option>';
+    try{
+      var r=await fetch(API+'/barangays',{credentials:'include'});
+      var d=await r.json();
+      if(!r.ok||!d.success)throw new Error(d.message||'Unable to load barangays.');
+      select.innerHTML='<option value="">Select barangay</option>'+(d.data||[]).map(function(b){return '<option value="'+escapeHtml(b.id)+'">'+escapeHtml(b.name)+'</option>';}).join('');
+      select.value=String(selectedId || '');
+    }catch(err){
+      select.innerHTML='<option value="">Unable to load barangays</option>';
+      showAlert(err.message||'Unable to load barangays.','danger');
+    }
+  }
 
   function openCreateChairpersonModal(){
     if(!currentUser || currentUser.role !== 'admin'){
@@ -600,11 +910,16 @@
     event.preventDefault();
     var submit=document.getElementById('createChairpersonSubmit');
     var payload={
-      name:document.getElementById('createChairpersonName').value.trim(),
+      name:fullName(document.getElementById('createChairpersonFirstName').value,document.getElementById('createChairpersonMiddleName').value,document.getElementById('createChairpersonLastName').value),
       email:document.getElementById('createChairpersonEmail').value.trim(),
       gender:document.getElementById('createChairpersonGender').value,
       contact:document.getElementById('createChairpersonContact').value.trim(),
       barangay_id:document.getElementById('createChairpersonBarangay').value,
+      birth_date:document.getElementById('createChairpersonBirthDate').value,
+      residential_address:document.getElementById('createChairpersonAddress').value.trim(),
+      appointment_basis:document.getElementById('createChairpersonBasis').value,
+      term_start:document.getElementById('createChairpersonTermStart').value,
+      term_end:document.getElementById('createChairpersonTermEnd').value,
       role:'chairperson'
     };
     submit.disabled=true;
@@ -621,6 +936,44 @@
     }finally{
       submit.disabled=false;
       submit.textContent='Create Account';
+    }
+  });
+
+  document.getElementById('editUserForm').addEventListener('submit',async function(event){
+    event.preventDefault();
+    var id=document.getElementById('editUserId').value;
+    var user=getLoadedUser(id);
+    if(!user)return;
+    var submit=document.getElementById('editUserSubmit');
+    submit.disabled=true;
+    submit.textContent='Saving...';
+    try{
+      var r=await fetch(API+'/admin/users/'+id+'?barangay_id=all',{
+        method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          name:fullName(document.getElementById('editUserFirstName').value,document.getElementById('editUserMiddleName').value,document.getElementById('editUserLastName').value),
+          email:document.getElementById('editUserEmail').value.trim(),
+          gender:document.getElementById('editUserGender').value,
+          contact:document.getElementById('editUserContact').value.trim(),
+          barangay_id:document.getElementById('editUserBarangay').value,
+          birth_date:document.getElementById('editUserBirthDate').value,
+          residential_address:document.getElementById('editUserAddress').value.trim(),
+          appointment_basis:document.getElementById('editUserBasis').value,
+          term_start:document.getElementById('editUserTermStart').value,
+          term_end:document.getElementById('editUserTermEnd').value,
+          role:user.role
+        })
+      });
+      var d=await r.json();
+      if(!r.ok||!d.success)throw new Error(d.message||'Unable to update the user.');
+      closeEditUser();
+      showAlert(d.message||'User updated successfully.','success');
+      loadUsers();
+    }catch(err){
+      showAlert(err.message||'Unable to update the user.','danger');
+    }finally{
+      submit.disabled=false;
+      submit.textContent='Save Changes';
     }
   });
 
@@ -833,11 +1186,112 @@
   }
 
   async function toggleUser(id, isActive){
-    if(!confirm((isActive?'Deactivate':'Activate')+' this user?'))return;
-    var r=await fetch(API+'/admin/users/'+id+'/toggle?barangay_id=all',{method:'PATCH',credentials:'include'});
-    var d=await r.json();
-    if(r.ok&&d.success){showAlert(d.message,'success');loadUsers();}
-    else{showAlert(d.message||'Failed.','danger');}
+    var user=getLoadedUser(id);
+    var action=isActive?'Deactivate':'Activate';
+    document.getElementById('accountStatusTitle').textContent=action+' Account';
+    document.getElementById('accountStatusSubtitle').textContent=isActive?'This user will no longer be able to sign in.':'This user will be able to sign in again.';
+    document.getElementById('accountStatusMessage').innerHTML='Are you sure you want to <strong>'+action.toLowerCase()+'</strong> the account for <strong>'+escapeHtml(user ? user.name : 'this user')+'</strong>?';
+    document.getElementById('accountStatusConfirm').textContent=action;
+    pendingAccountStatusChange={id:id,isActive:isActive};
+    var modal=document.getElementById('accountStatusModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+  }
+
+  function closeAccountStatusModal(){
+    pendingAccountStatusChange=null;
+    var modal=document.getElementById('accountStatusModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  }
+
+  async function confirmAccountStatusChange(){
+    var change=pendingAccountStatusChange;
+    if(!change)return;
+    var confirmButton=document.getElementById('accountStatusConfirm');
+    confirmButton.disabled=true;
+    confirmButton.textContent='Saving...';
+    try{
+      var r=await fetch(API+'/admin/users/'+change.id+'/toggle?barangay_id=all',{method:'PATCH',credentials:'include'});
+      var d=await r.json();
+      if(r.ok&&d.success){
+        closeAccountStatusModal();
+        showAlert(d.message,'success');
+        loadUsers();
+        return;
+      }
+      showAlert(d.message||'Failed.','danger');
+    }catch(err){
+      showAlert('Cannot connect to server.','danger');
+    }finally{
+      confirmButton.disabled=false;
+      confirmButton.textContent=change.isActive?'Deactivate':'Activate';
+    }
+  }
+
+  async function resetUserPassword(id){
+    var user=getLoadedUser(id);
+    if(!user)return;
+    pendingPasswordResetUserId=id;
+    document.getElementById('resetPasswordConfirmMessage').innerHTML='Are you sure you want to reset the password for <strong>'+escapeHtml(user.name || 'this user')+'</strong>? A new temporary password will be generated and must be shared privately.';
+    var modal=document.getElementById('resetPasswordConfirmModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+  }
+
+  function closeResetPasswordConfirmModal(){
+    pendingPasswordResetUserId=null;
+    var modal=document.getElementById('resetPasswordConfirmModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  }
+
+  async function confirmResetUserPassword(){
+    var id=pendingPasswordResetUserId;
+    var user=getLoadedUser(id);
+    if(!id||!user)return;
+    var button=document.getElementById('resetPasswordConfirmButton');
+    button.disabled=true;
+    button.textContent='Resetting...';
+    try{
+      var r=await fetch(API+'/admin/users/'+id+'/reset-password?barangay_id=all',{method:'POST',credentials:'include'});
+      var d=await r.json();
+      if(!r.ok||!d.success)throw new Error(d.message||'Unable to reset the password.');
+      closeResetPasswordConfirmModal();
+      showResetPasswordModal(user,d);
+      showAlert('A new temporary password was generated.','success');
+    }catch(err){
+      showAlert(err.message||'Unable to reset the password.','danger');
+    }finally{
+      button.disabled=false;
+      button.textContent='Reset Password';
+    }
+  }
+
+  function showResetPasswordModal(user,data){
+    var password=String(data.temp_password || '');
+    document.getElementById('resetPasswordTitle').textContent='Password Reset: '+(user.name || 'SK Official');
+    document.getElementById('resetPasswordBody').innerHTML='<div class="password-dialog">'
+      +'<p>A new temporary password has been created for <strong>'+escapeHtml(data.email || user.email || user.name)+'</strong>. Copy it now and share it privately. For security, it will not be shown again.</p>'
+      +'<div class="password-value"><code id="resetPasswordValue">'+escapeHtml(password)+'</code><button class="copy-btn" type="button" onclick="copyResetPassword(this)" aria-label="Copy temporary password" title="Copy temporary password"><span class="ui-icon ui-icon-clipboard" aria-hidden="true"></span></button></div>'
+      +'</div><div class="review-actions"><button class="btn btn-primary" type="button" onclick="closeResetPasswordModal()">Done</button></div>';
+    var modal=document.getElementById('resetPasswordModal');
+    modal.dataset.password=password;
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+  }
+
+  function closeResetPasswordModal(){
+    var modal=document.getElementById('resetPasswordModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+    modal.dataset.password='';
+  }
+
+  function copyResetPassword(button){
+    var password=document.getElementById('resetPasswordModal').dataset.password;
+    if(!password)return;
+    copyPasswordText(password,button);
   }
 
   async function loadArchiveCount(){

@@ -208,7 +208,25 @@ function startServer(port, retriesLeft = MAX_PORT_RETRIES) {
 }
 
 if (require.main === module) {
-  startServer(PORT);
+  const server = startServer(PORT);
+
+  // nodemon terminates the old process before restarting it.  Explicitly
+  // ending the PostgreSQL pool returns its session immediately instead of
+  // waiting for Supabase/the TCP stack to time it out.
+  const shutdown = (signal) => {
+    server.close(() => {
+      const db = require('./config/database');
+      db.end()
+        .catch((err) => console.warn('[WARN] Database pool shutdown failed:', err.message))
+        .finally(() => process.exit(0));
+    });
+
+    // Do not leave a stalled HTTP connection holding the process forever.
+    setTimeout(() => process.exit(0), 5000).unref();
+  };
+
+  process.once('SIGINT', () => shutdown('SIGINT'));
+  process.once('SIGTERM', () => shutdown('SIGTERM'));
 }
 
 module.exports = app;

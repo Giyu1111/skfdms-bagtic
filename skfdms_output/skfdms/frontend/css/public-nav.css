@@ -1106,6 +1106,79 @@ body.dark .hero-panel h2 {
   color: #061D11 !important;
 }
 
+/* Public document actions: keep Preview and Download distinct and responsive. */
+body .doc-actions .btn-preview,
+body .doc-actions .btn-download,
+body .doc-actions .home-link,
+body .fund-meta .home-link,
+body .fund-card .footer .link,
+body .modal-download-btn {
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease !important;
+}
+
+body .doc-actions .btn-preview,
+body .doc-actions .home-link.preview,
+body .fund-meta .home-link,
+body .fund-card .footer .link {
+  background: #28A745 !important;
+  color: #fff !important;
+  box-shadow: 0 3px 8px rgba(31, 122, 52, .22) !important;
+}
+
+body .doc-actions .btn-download,
+body .doc-actions .home-link:not(.preview),
+body .modal-download-btn {
+  background: #2E86C1 !important;
+  color: #fff !important;
+  box-shadow: 0 3px 8px rgba(26, 82, 118, .22) !important;
+}
+
+body .doc-actions .btn-preview:hover,
+body .doc-actions .btn-preview:focus-visible,
+body .doc-actions .home-link.preview:hover,
+body .doc-actions .home-link.preview:focus-visible,
+body .fund-meta .home-link:hover,
+body .fund-meta .home-link:focus-visible,
+body .fund-card .footer .link:hover,
+body .fund-card .footer .link:focus-visible {
+  background: #1F7A34 !important;
+  color: #fff !important;
+  box-shadow: 0 7px 15px rgba(31, 122, 52, .30) !important;
+  transform: translateY(-2px);
+}
+
+body .doc-actions .btn-download:hover,
+body .doc-actions .btn-download:focus-visible,
+body .doc-actions .home-link:not(.preview):hover,
+body .doc-actions .home-link:not(.preview):focus-visible,
+body .modal-download-btn:hover,
+body .modal-download-btn:focus-visible {
+  background: #1A5276 !important;
+  color: #fff !important;
+  box-shadow: 0 7px 15px rgba(26, 82, 118, .30) !important;
+  transform: translateY(-2px);
+}
+
+body .doc-actions .btn-preview:active,
+body .doc-actions .btn-download:active,
+body .doc-actions .home-link:active,
+body .fund-meta .home-link:active,
+body .fund-card .footer .link:active,
+body .modal-download-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(13, 43, 85, .22) !important;
+}
+
+body .doc-actions .btn-preview:focus-visible,
+body .doc-actions .btn-download:focus-visible,
+body .doc-actions .home-link:focus-visible,
+body .fund-meta .home-link:focus-visible,
+body .fund-card .footer .link:focus-visible,
+body .modal-download-btn:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, .9);
+  outline-offset: 2px;
+}
+
 body.dark .section {
   background: rgba(7, 21, 13, .80) !important;
 }

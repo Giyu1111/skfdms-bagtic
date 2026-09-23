@@ -140,13 +140,13 @@
       
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" class="active" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="dashboard.html" class="active" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
       <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Fund Proofs</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
-      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
-      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>User Management</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Logs</span></a>
        <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
       <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
@@ -525,19 +525,24 @@
   function setDashboardSummary() {
     const publishedProofs = dashboardProofs.filter(proof => proof.is_published === true || proof.is_published === 'true' || proof.is_published === 1);
     const requestedProofs = dashboardProofs.filter(proof => !publishedProofs.includes(proof) && (proof.publish_requested === true || proof.publish_requested === 'true' || proof.publish_requested === 1));
+    const requestedDocuments = dashboardDocs.filter(doc => {
+      const isPublished = doc.is_published === true || doc.is_published === 'true' || doc.is_published === 1;
+      return !isPublished && (doc.publish_requested === true || doc.publish_requested === 'true' || doc.publish_requested === 1);
+    });
+    const requestedTotal = requestedDocuments.length + requestedProofs.length;
     const isFedAdmin = currentUser.role === 'admin';
     const summary = isFedAdmin
       ? [
           [dashboardBarangays.length, 'Total Barangays', 'Barangays in the federation'],
           [dashboardDocs.length, 'Documents', 'In the current dashboard view'],
           [publishedProofs.length, 'Published Accomplishments', 'Visible on the public site'],
-          [requestedProofs.length, 'Pending Reviews', 'Accomplishments awaiting action']
+          [requestedTotal, 'Pending Reviews', 'Documents and accomplishments awaiting action']
         ]
       : [
           [dashboardDocs.length, 'My Documents', 'Documents from my barangay'],
           [dashboardProofs.length, 'My Accomplishments', 'Submitted proof records'],
           [publishedProofs.length, 'Published Records', 'Visible on the public site'],
-          [requestedProofs.length, 'Pending Requests', 'Awaiting SK Fed review']
+          [requestedTotal, 'Pending Requests', 'Requested documents and accomplishments']
         ];
     summary.forEach((item, index) => {
       const suffix = index + 1;

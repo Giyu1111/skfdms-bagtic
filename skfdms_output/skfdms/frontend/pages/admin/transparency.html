@@ -55,6 +55,7 @@
     .grid{display:grid;grid-template-columns:minmax(360px,.72fr) minmax(0,1.28fr);gap:20px;align-items:start;}
     .grid.read-only{grid-template-columns:1fr;}
     .card{background:#fff;border:1px solid #e1e9e3;border-radius:15px;box-shadow:0 3px 12px rgba(15,42,30,.06);overflow:hidden;margin-bottom:20px;}
+    .card:has(.proof-menu.open){overflow:visible;position:relative;z-index:30;}
     .card-header{padding:18px 22px;border-bottom:1px solid #edf2ee;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
     .card-header h3{font-size:1.2rem;color:#1A4530;font-weight:900;}
     .card-sub{font-size:.8rem;color:#8b938e;margin-top:3px;}
@@ -88,6 +89,7 @@
     .file-input-wrapper input[type=file]{display:none;}
     .file-selected{font-size:.82rem;color:#7d8780;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .table-wrap{overflow-x:auto;scrollbar-color:#b8c9bd transparent;scrollbar-width:thin;}
+    .table-wrap:has(.proof-menu.open){overflow:visible;position:relative;z-index:20;}
     table{width:100%;min-width:980px;border-collapse:collapse;table-layout:fixed;}
     col.col-select{width:4%;} col.col-number{width:4%;} col.col-details{width:22%;} col.col-category{width:10%;} col.col-date{width:10%;}
     col.col-amount{width:11%;} col.col-proof{width:12%;} col.col-status{width:10%;} col.col-actions{width:13%;}
@@ -108,9 +110,11 @@
     .proof-file-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid #dce5df;background:#f8fbf9;color:#1A4530;border-radius:999px;padding:4px 9px;font-size:.74rem;font-weight:800;}
     .file-count{font-size:.76rem;color:#7d8780;font-weight:700;}
     .amount{font-weight:900;color:#1A4530;white-space:nowrap;}
-    .action-row{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;}
+    #proofsTable th:last-child,#proofsTable td:last-child{text-align:right;}
+    .action-row{display:flex;justify-content:flex-end;gap:6px;align-items:center;flex-wrap:nowrap;}
     .action-row .btn-sm{padding-left:10px!important;padding-right:10px!important;}
     .proof-menu{position:relative;display:inline-block;}
+    .proof-menu.open{z-index:50;}
     .proof-menu-trigger{width:34px;height:32px;padding:0!important;font-size:1.2rem!important;line-height:1!important;}
     .proof-menu-list{position:absolute;right:0;top:calc(100% + 5px);z-index:40;display:none;min-width:155px;padding:6px;background:#fff;border:1px solid #dce5df;border-radius:9px;box-shadow:0 10px 24px rgba(15,42,30,.16);}
     .proof-menu.open .proof-menu-list{display:block;}
@@ -129,6 +133,7 @@
     .alert-success{background:#EAFAF1;color:#1E8449;border:1px solid #A9DFBF;}
     .alert-danger{background:#FDEDEC;color:#C0392B;border:1px solid #F5B7B1;}
     .empty{text-align:center;padding:34px;color:#9aa39d;}
+    #proofRows .empty{height:106px;padding:24px;text-align:center!important;vertical-align:middle;color:#64746a;font-size:.95rem;font-weight:600;}
     @media(max-width:1050px){.grid{grid-template-columns:1fr;}.sidebar{width:220px;}}
     @media(max-width:780px){.admin-layout{display:block;}.sidebar{position:static;width:100%;min-height:auto;}.topbar{position:static;height:auto;padding:16px;align-items:flex-start;gap:12px;flex-direction:column;}.content{padding:18px;}.form-row,.form-row.three{grid-template-columns:1fr;}}
     .modal-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.58);display:none;align-items:center;justify-content:center;padding:20px;z-index:200;}
@@ -141,8 +146,9 @@
     .modal-body{padding:20px 22px;}
     .archive-inventory-modal{width:min(1120px,96vw);height:min(76vh,680px);min-height:540px;max-height:90vh;display:flex;flex-direction:column;}
     .archive-inventory-body{flex:1;min-height:0;overflow:auto;}
-    .archive-inventory-table{min-width:900px;}
+    .archive-inventory-table{width:100%;min-width:900px;}
     .archive-inventory-table th{background:#334155;}
+    .archive-inventory-table tbody{background:#e7f8ee;}
     .archive-inventory-actions,.archive-actions{display:flex;gap:6px;align-items:center;white-space:nowrap;}
     .archive-inventory-body .table-wrap{min-height:100%;}
     .archive-inventory-body .empty{height:420px;vertical-align:middle;}
@@ -173,9 +179,11 @@
     .proof-viewer-toolbar strong{font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .proof-viewer-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
     .proof-viewer-actions .btn{background:#4b4b4b;color:#fff;border:1px solid #5a5a5a;}
+    .proof-viewer-actions .btn.download-proof-file{background:#fff;color:#2f7a55;border-color:#a9d8bb;}.proof-viewer-actions .btn.download-proof-file:hover,.proof-viewer-actions .btn.download-proof-file:focus-visible{background:#dcefe3;color:#1a4530;border-color:#82bd99;}.proof-viewer-details-toggle{border:0;background:transparent;color:#bce3ca;font:700 .82rem inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}.proof-viewer-details-toggle:hover{color:#fff;}.proof-viewer-details{padding:12px 14px;background:#303030;border-bottom:1px solid #4a4a4a;color:#e8eaed;font-size:.82rem;line-height:1.5;}.proof-viewer-details[hidden]{display:none;}.proof-viewer-details-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px;}.proof-viewer-details-grid div{background:#3b3b3b;border-radius:5px;padding:7px 8px;}.proof-viewer-details-grid strong{display:block;color:#bce3ca;font-size:.7rem;text-transform:uppercase;}
     .proof-viewer-frame-wrap{flex:1;min-height:0;display:flex;align-items:stretch;justify-content:center;background:#252525;overflow:hidden;}
     .proof-viewer-frame{width:100%;height:100%;border:0;background:#252525;}
     .proof-viewer-image{max-width:100%;max-height:100%;object-fit:contain;margin:auto;display:block;}
+    .proof-viewer-image{cursor:zoom-in;}.proof-fullscreen{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.9);}.proof-fullscreen.show{display:flex;}.proof-fullscreen img{max-width:100%;max-height:100%;object-fit:contain;}.proof-fullscreen .modal-close{position:absolute;right:18px;top:18px;background:rgba(255,255,255,.2);color:#fff;}
     .proof-viewer-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#e8eaed;padding:26px;}
     .doc-select-tools{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:12px;}
     .doc-filter-toggle{display:inline-flex;border:1px solid #dce5df;border-radius:9px;overflow:hidden;background:#f8fbf9;}
@@ -214,13 +222,13 @@
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
-      <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+      <a href="documents.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" class="active" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>Manage Accomplishments</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Post Announcements</span></a>
-      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
-      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Log</span></a>
+      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>User Management</span></a>
+      <a href="activity-log.html" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Logs</span></a>
       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
       <button type="button" class="sidebar-logout-link" id="logoutBtn"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
     </nav>
@@ -240,7 +248,7 @@
       
 
       <section class="stat-grid soft-stat-cards">
-        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total proof records</div></div>
+        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label" id="statTotalLabel">Total proof records</div></div>
         <div class="stat-card"><div class="stat-num" id="statPublished">0</div><div class="stat-label">Visible on homepage</div></div>
         <div class="stat-card gold"><div class="stat-num" id="statDraft">0</div><div class="stat-label">Draft proof records</div></div>
         <div class="stat-card blue"><div class="stat-num" id="statAmount">₱0</div><div class="stat-label">Published amount with proof</div></div>
@@ -358,9 +366,9 @@
           </div>
           <div class="proof-bulk-tools" id="proofBulkTools" aria-live="polite"><span id="proofBulkCount"></span><div class="bulk-selection-actions"><button type="button" class="btn bulk-archive-button" onclick="bulkArchiveProofs()">Archive</button><button type="button" class="btn bulk-clear-button" onclick="clearProofSelection()">Clear selection</button><span class="bulk-action-divider" aria-hidden="true"></span><button type="button" class="btn bulk-cancel-button" onclick="clearProofSelection()">Cancel</button></div></div>
           <div class="table-wrap">
-            <table>
+            <table id="proofsTable">
               <colgroup><col class="col-select"><col class="col-number"><col class="col-details"><col class="col-category"><col class="col-date"><col class="col-amount"><col class="col-proof"><col class="col-status"><col class="col-actions"></colgroup>
-              <thead><tr><th id="proofSelectionHead"><input id="selectAllProofs" class="proof-check" type="checkbox" aria-label="Select visible accomplishments" onchange="toggleSelectAllProofs(this)"></th><th class="proof-number">#</th><th>Accomplishment</th><th>Category</th><th>Date</th><th>Budget</th><th>Proofs</th><th>Status</th><th>Actions</th></tr></thead>
+              <thead><tr><th id="proofSelectionHead"><input id="selectAllProofs" class="proof-check" type="checkbox" aria-label="Select visible accomplishments" onchange="toggleSelectAllProofs(this)"></th><th class="proof-number">#</th><th>Accomplishment</th><th>Category</th><th>Date</th><th>Budget</th><th>Proofs</th><th>Status</th><th aria-label="More actions"></th></tr></thead>
               <tbody id="proofRows"><tr><td colspan="9" class="empty">Loading proof records...</td></tr></tbody>
             </table>
           </div>
@@ -379,6 +387,7 @@
           </div>
         </div>
       </div>
+      <div class="proof-fullscreen" id="proofFullscreen" aria-hidden="true" onclick="if(event.target===this) closeProofFullscreen()"><button type="button" class="modal-close" onclick="closeProofFullscreen()" aria-label="Close full-size image">&times;</button><img id="proofFullscreenImage" src="" alt=""></div>
 
   <!-- Archive Inventory Modal -->
   <div class="modal-backdrop" id="archiveInventoryModal" aria-hidden="true" onclick="if(event.target===this) closeArchiveInventory()">
@@ -390,19 +399,7 @@
       <div class="modal-body archive-inventory-body">
         <div class="table-wrap">
           <table class="archive-inventory-table">
-            <thead><tr><th>Expense Details</th><th><div class="input-group">
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-secondary dropdown-toggle" aria-label="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
-                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">Toggle Dropdown</span></button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item disabled" href="#">Disabled action</a>
-                <div role="separator" class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
-              </div>
-              </span>
-              <input type="text" class="form-control" name="name" id="name" placeholder="" aria-label="">
-            </div></th><th>Barangay</th><th>FY / Period</th><th>Archived</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Expense Details</th><th>Amount</th><th>Barangay</th><th>FY / Period</th><th>Archived</th><th>Actions</th></tr></thead>
             <tbody id="archiveInventoryBody"><tr><td colspan="6" class="empty">Loading archived accomplishments...</td></tr></tbody>
           </table>
         </div>
@@ -594,7 +591,7 @@ function setBarangayUI() {
       proofSub.textContent = '';
     } else {
       proofTitle.textContent = 'My Submitted Accomplishments';
-      proofSub.textContent = 'Track proof albums and request publication to the SK Federated Admin.';
+      proofSub.textContent = 'Track accomplishment records, upload proofs, and request publication to the SK Federated Admin.';
     }
   }
   if (proofTitle && proofSub && currentUser.role === 'admin') {
@@ -666,12 +663,21 @@ async function loadProofs() {
     var params = [];
     if (currentUser.role === 'admin') {
       params.push('barangay_id=' + encodeURIComponent(window.SkBarangay.getSelectedBarangayId()));
+      // Fetch exactly the records for the selected SKFED workspace instead of
+      // loading every record and depending on the hidden status control.
+      if (!showingArchived && proofView === 'requested') {
+        params.push('is_published=false');
+        params.push('publish_requested=true');
+      } else if (!showingArchived && proofView === 'published') {
+        params.push('is_published=true');
+      }
     }
     if (showingArchived) params.push('archived=true');
     if (params.length) url += '?' + params.join('&');
     var res = await fetch(url, { credentials:'include' });
-    var data = await res.json();
-    if (!data.success) throw new Error(data.message || 'Failed to load fund proofs.');
+    var data;
+    try { data = await res.json(); } catch (parseError) { data = {}; }
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed to load fund proofs.');
     proofs = data.data || [];
     renderProofs();
   } catch (err) {
@@ -777,11 +783,17 @@ function setProofView(view, shouldRender) {
 
 function renderProofs() {
   populateProofFilters();
-  var published = proofs.filter(function(item){ return toBool(item.is_published); });
+  // The Requested view's summary must reflect requests only, not every
+  // accomplishment loaded for the selected barangay.
+  var summaryProofs = isAdmin() && proofView === 'requested'
+    ? proofs.filter(function(item){ return !toBool(item.is_published) && toBool(item.publish_requested); })
+    : proofs;
+  var published = summaryProofs.filter(function(item){ return toBool(item.is_published); });
   var publishedAmount = published.reduce(function(sum, item){ return sum + Number(item.amount || 0); }, 0);
-  document.getElementById('statTotal').textContent = proofs.length;
+  document.getElementById('statTotal').textContent = summaryProofs.length;
+  document.getElementById('statTotalLabel').textContent = isAdmin() && proofView === 'requested' ? 'Requested proof records' : 'Total proof records';
   document.getElementById('statPublished').textContent = published.length;
-  document.getElementById('statDraft').textContent = proofs.length - published.length;
+  document.getElementById('statDraft').textContent = summaryProofs.length - published.length;
   document.getElementById('statAmount').textContent = money(publishedAmount);
   var filtered = filteredProofs();
   var pageItems = filtered;
@@ -801,29 +813,30 @@ function renderProofs() {
   }
 
   var canManage = canManageProofs();
-  var isAdmin = currentUser && currentUser.role === 'admin';
+  var isAdminUser = currentUser && currentUser.role === 'admin';
   document.getElementById('proofRows').innerHTML = pageItems.map(function(item, index) {
     var isPublished = toBool(item.is_published);
     var isRequested = toBool(item.publish_requested);
     var files = proofFiles(item);
-    var menuItems = '';
+    var menuItems = '<button type="button" onclick="previewProof(' + item.id + ')">View Details</button>';
     if (canManage) {
       if (showingArchived) {
-        if (isAdmin || ['chairperson', 'treasurer'].includes(currentUser.role)) {
+        if (isAdminUser || ['chairperson', 'treasurer'].includes(currentUser.role)) {
           menuItems += '<button type="button" id="restore-proof-' + item.id + '" onclick="restoreProof(' + item.id + ')">Restore</button>';
           menuItems += '<button type="button" class="menu-danger" id="delete-proof-' + item.id + '" onclick="deleteProof(' + item.id + ')">Delete permanently</button>';
         }
-      } else if (isAdmin) {
+      } else if (isAdminUser) {
         menuItems += '<button type="button" class="' + (isPublished ? 'menu-warning' : '') + '" id="pub-proof-' + item.id + '" onclick="togglePublish(' + item.id + ')">' + (isPublished ? 'Unpublish' : 'Publish') + '</button>';
         menuItems += '<button type="button" class="menu-danger" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ')">Archive</button>';
       } else {
           if (!isPublished && !isRequested && currentUser.role === 'chairperson') menuItems += '<button type="button" id="pub-proof-'+item.id+'" onclick="requestPublish('+item.id+')">Request publication</button>';
+          if (!isPublished && isRequested && currentUser.role === 'chairperson') menuItems += '<button type="button" class="menu-warning" id="cancel-request-proof-'+item.id+'" onclick="cancelPublishRequest('+item.id+')">Cancel Request</button>';
           if (['chairperson', 'treasurer'].includes(currentUser.role)) {
             menuItems += '<button type="button" class="menu-danger" id="archive-proof-' + item.id + '" onclick="archiveProof(' + item.id + ')">Archive</button>';
           }
         }
     }
-    var actions = '<button class="btn btn-primary btn-sm" onclick="previewProof(' + item.id + ')">Preview</button><div class="proof-menu"><button class="btn btn-secondary btn-sm proof-menu-trigger" type="button" onclick="toggleProofMenu(this,event)" aria-label="More actions" aria-expanded="false">&#8942;</button><div class="proof-menu-list">'+menuItems+'</div></div>';
+    var actions = '<div class="proof-menu"><button class="btn btn-secondary btn-sm proof-menu-trigger" type="button" onclick="toggleProofMenu(this,event)" aria-label="More actions" aria-expanded="false">&#8942;</button><div class="proof-menu-list">'+menuItems+'</div></div>';
     return '<tr ondblclick="toggleProofSelectionMode(this,event)">'
       + '<td class="proof-selection-cell"><input class="proof-check proof-row-check" type="checkbox" value="'+item.id+'" '+(selectedProofIds[item.id] ? 'checked' : '')+' onchange="updateProofSelection()"></td>'
       + '<td class="proof-number">' + (index + 1) + '</td>'
@@ -885,12 +898,13 @@ function proofActionUrl(id, action) {
     url += '?barangay_id=' + encodeURIComponent(barangayId);
   }
 
-  ['proofSearch','proofStatus','proofYear','proofCategory'].forEach(function(id){
-    var field=document.getElementById(id);
-    if(field) field.addEventListener(id === 'proofSearch' ? 'input' : 'change', renderProofs);
-  });
   return url;
 }
+
+['proofSearch','proofStatus','proofYear','proofCategory'].forEach(function(id){
+  var field=document.getElementById(id);
+  if(field) field.addEventListener(id === 'proofSearch' ? 'input' : 'change', renderProofs);
+});
 async function togglePublish(id) {
   var proof = getProofById(id);
   if (proof && toBool(proof.is_published) && !confirm('Unpublish "' + (proof.title || 'this accomplishment') + '"? It will no longer be visible on the public site.')) return;
@@ -953,6 +967,36 @@ async function requestPublish(id) {
       btn.disabled = false;
       btn.textContent = 'Request';
     }
+  }
+}
+
+async function cancelPublishRequest(id) {
+  var proof = getProofById(id);
+  if (!proof) { showAlert('Accomplishment not found.', 'danger'); return; }
+  if (!confirm('Cancel the publication request for "' + (proof.title || 'this accomplishment') + '"?')) return;
+  var btn = document.getElementById('cancel-request-proof-' + id);
+  if (btn) { btn.disabled = true; btn.textContent = 'Cancelling...'; }
+  try {
+    var res = await fetch(proofActionUrl(id, '/publish'), { method:'PATCH', credentials:'include' });
+    var data = await res.json();
+    if (res.ok && data.success) {
+      proofs = proofs.map(function(item) {
+        if (Number(item.id) === Number(id)) {
+          item.publish_requested = false;
+          item.requested_by = null;
+          item.requested_at = null;
+        }
+        return item;
+      });
+      renderProofs();
+      showAlert(data.message || 'Publication request cancelled.', 'success');
+    } else {
+      showAlert(data.message || 'Unable to cancel publication request.', 'danger');
+      if (btn) { btn.disabled = false; btn.textContent = 'Cancel Request'; }
+    }
+  } catch (err) {
+    showAlert(err.message || 'Unable to cancel publication request.', 'danger');
+    if (btn) { btn.disabled = false; btn.textContent = 'Cancel Request'; }
   }
 }
 
@@ -1092,7 +1136,7 @@ function renderArchiveInventory(items){
 }
 
 document.getElementById('logoutBtn').addEventListener('click', async function() {
-  if (!confirm('Are you sure you want to log out?')) return;
+  if (!await window.SkBarangay.confirmLogout()) return;
   await window.SkFDMS.logoutAndRedirect('/');
 });
 
@@ -1134,7 +1178,7 @@ function buildProofViewerHtml(proof, files, activeIndex) {
 
   var viewer = '';
   if (activeFile.is_image || ['jpg','jpeg','png','gif','webp','bmp'].includes(activeExt)) {
-    viewer = '<img class="proof-viewer-image" src="' + activePreviewUrl + '" alt="' + escapeHtml(fileLabel) + '">';
+    viewer = '<img class="proof-viewer-image" src="' + activePreviewUrl + '" alt="' + escapeHtml(fileLabel) + '" onclick="openProofFullscreen(this.src,this.alt)">';
   } else if (activeExt === 'pdf') {
     viewer = '<iframe class="proof-viewer-frame" src="' + activePreviewUrl + '" title="' + escapeHtml(fileLabel) + '"></iframe>';
   } else {
@@ -1149,12 +1193,13 @@ function buildProofViewerHtml(proof, files, activeIndex) {
     + '<aside class="proof-viewer-sidebar">' + thumbs + '</aside>'
     + '<section class="proof-viewer-main">'
       + '<div class="proof-viewer-toolbar">'
-        + '<strong>' + escapeHtml(fileLabel) + '</strong>'
+        + '<strong>' + escapeHtml(fileLabel) + '</strong><button class="proof-viewer-details-toggle" type="button" onclick="toggleAdminProofDetails(this)" aria-expanded="false">Show more details</button>'
         + '<div class="proof-viewer-actions">'
           + '<a class="btn btn-sm" href="' + activePreviewUrl + '" target="_blank" rel="noopener">Open</a>'
-          + '<a class="btn btn-sm" href="' + activeDownloadUrl + '" target="_blank" rel="noopener" download>Download</a>'
+          + '<a class="btn btn-sm download-proof-file" href="' + activeDownloadUrl + '" target="_blank" rel="noopener" download>Download</a>'
         + '</div>'
       + '</div>'
+      + '<div class="proof-viewer-details" hidden><strong>' + escapeHtml(proof.title || 'Accomplishment details') + '</strong><div>' + escapeHtml(proof.purpose || '') + '</div><div class="proof-viewer-details-grid"><div><strong>Category</strong>' + escapeHtml(proof.expense_category || '-') + '</div><div><strong>Amount</strong>' + money(proof.amount) + '</div><div><strong>Barangay</strong>' + escapeHtml(proof.barangay || '-') + '</div><div><strong>Date spent</strong>' + escapeHtml(formatDate(proof.spent_at)) + '</div></div></div>'
       + '<div class="proof-viewer-frame-wrap">' + viewer + '</div>'
     + '</section>'
   + '</div>';
@@ -1170,6 +1215,24 @@ function closeProofPreview() {
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden', 'true');
   document.getElementById('proofPreviewBody').innerHTML = '';
+}
+function toggleAdminProofDetails(button) {
+  var details = button.closest('.proof-viewer-main').querySelector('.proof-viewer-details');
+  var isOpen = !details.hasAttribute('hidden');
+  details.toggleAttribute('hidden', isOpen);
+  button.setAttribute('aria-expanded', String(!isOpen));
+  button.textContent = isOpen ? 'Show more details' : 'Hide details';
+}
+function openProofFullscreen(url, label) {
+  document.getElementById('proofFullscreenImage').src = url;
+  document.getElementById('proofFullscreenImage').alt = label || 'Full-size proof image';
+  document.getElementById('proofFullscreen').classList.add('show');
+  document.getElementById('proofFullscreen').setAttribute('aria-hidden', 'false');
+}
+function closeProofFullscreen() {
+  document.getElementById('proofFullscreen').classList.remove('show');
+  document.getElementById('proofFullscreen').setAttribute('aria-hidden', 'true');
+  document.getElementById('proofFullscreenImage').src = '';
 }
 
 function connectedDocumentsHtml(item) {

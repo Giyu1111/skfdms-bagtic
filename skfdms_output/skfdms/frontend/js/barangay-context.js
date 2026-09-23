@@ -17,7 +17,6 @@ window.SkBarangay = (function() {
         .forEach(className => document.body.classList.remove(className));
       document.body.classList.add('role-' + String(user.role || '').toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
     }
-    setupChairpersonMobileMenu(user);
     if (user.role === 'admin') {
       try {
         const res = await fetch('/api/barangays');
@@ -153,6 +152,7 @@ window.SkBarangay = (function() {
     if (role) role.textContent = roleText || user.role || '';
     ensureDocumentMenu(user);
     ensureAccomplishmentMenu(user);
+    ensurePostManagementLink(user);
     ensureAccountLink(user);
     updateEditableSidebarLogo(user);
   }
@@ -247,7 +247,7 @@ window.SkBarangay = (function() {
     };
     selectDocumentView(new URLSearchParams(window.location.search).get('view') || 'published');
     if (!submenu.hidden) documentsLink.setAttribute('aria-expanded', 'true');
-    submenu.addEventListener('click', function(event) {
+    submenu.addEventListener('click', async function(event) {
       const link = event.target.closest('a[href]');
       if (!link) return;
       const view = new URL(link.href).searchParams.get('view');
@@ -260,7 +260,16 @@ window.SkBarangay = (function() {
       }
       history.replaceState(null, '', link.href);
       selectDocumentView(view);
-      window.setDocumentView(view);
+      // Switching views happens in-place. Keep this navigation menu expanded
+      // while the new Published/Requests content is loading and after it loads.
+      documentsLink.setAttribute('aria-expanded', 'true');
+      submenu.hidden = false;
+      try {
+        await window.setDocumentView(view);
+      } finally {
+        documentsLink.setAttribute('aria-expanded', 'true');
+        submenu.hidden = false;
+      }
     });
     documentsLink.insertAdjacentElement('afterend', submenu);
   }
@@ -353,6 +362,37 @@ window.SkBarangay = (function() {
       window.setProofView(view, true);
     });
     link.insertAdjacentElement('afterend', submenu);
+  }
+
+  function ensurePostManagementLink(user) {
+    const nav = document.getElementById('sidebarNav');
+    if (!nav) return;
+    const existing = nav.querySelector('.post-management-link');
+    const chairpersonPostLink = nav.querySelector('a[href="announcements.html"]');
+    if (!user || user.role !== 'admin') {
+      if (existing) existing.remove();
+      return;
+    }
+    // Each page includes the chairperson-only posting link in its static
+    // sidebar. Remove it for SK Federation admins rather than relying solely
+    // on page-specific role visibility, so the two workspaces never overlap.
+    if (chairpersonPostLink) chairpersonPostLink.remove();
+    if (existing) return;
+    const link = document.createElement('a');
+    link.href = 'manage-posts.html';
+    link.dataset.role = 'admin';
+    link.className = 'post-management-link';
+    // Admin pages may use either the clean route (/manage-posts) or the
+    // physical HTML file (/manage-posts.html).
+    if (/\/manage-posts(?:\.html)?\/?$/i.test(window.location.pathname)) {
+      link.classList.add('active');
+    }
+    link.innerHTML = '<span class="nav-icon" aria-hidden="true"></span><span>Manage Posts</span>';
+    const accomplishmentMenu = nav.querySelector('.accomplishment-nav-submenu');
+    const accomplishmentLink = nav.querySelector('a[href="#"].accomplishment-nav-toggle, a[href^="transparency.html"]');
+    if (accomplishmentMenu) accomplishmentMenu.insertAdjacentElement('afterend', link);
+    else if (accomplishmentLink) accomplishmentLink.insertAdjacentElement('afterend', link);
+    else nav.insertBefore(link, nav.querySelector('.sidebar-logout-link') || null);
   }
 
   function updateSidebarLogo(role) {

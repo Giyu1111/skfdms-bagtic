@@ -18,14 +18,13 @@ const FeedbackController     = require('../controllers/FeedbackController');
 const ContactMessageController = require('../controllers/ContactMessageController');
 
 const { requireAuth, requireRole } = require('../middleware/auth');
-const { upload, documentUpload, registrationUpload } = require('../middleware/upload');
+const { upload, documentUpload } = require('../middleware/upload');
 
 // ─────────────────────────────────────────────────────────────
 // AUTH routes
 // ─────────────────────────────────────────────────────────────
 router.post('/auth/login',  AuthController.login);
 router.post('/auth/logout', AuthController.logout);
-router.post('/auth/register-request', registrationUpload.single('supporting_document'), AuthController.registerRequest);
 router.get ('/auth/password-setup/validate', AuthController.validatePasswordSetup);
 router.post('/auth/password-setup', AuthController.completePasswordSetup);
 router.get ('/auth/me',     AuthController.me);
@@ -80,10 +79,7 @@ router.get  ('/admin/users/archived',          requireRole('admin'), UserControl
 router.post ('/admin/users',                   requireRole('admin'), UserController.create);
 router.put  ('/admin/users/:id',               requireRole('admin'), UserController.update);
 router.patch('/admin/users/:id/toggle',        requireRole('admin'), UserController.toggleActive);
-router.post  ('/admin/users/:id/approve',      requireRole('admin'), UserController.approveRequest);
-router.post  ('/admin/users/:id/reject',       requireRole('admin'), UserController.rejectRequest);
 router.post  ('/admin/users/:id/reset-password', requireRole('admin'), UserController.resetPassword);
-router.get  ('/admin/users/:id/registration-document', requireRole('admin'), UserController.registrationDocument);
 router.patch ('/admin/users/:id/password',       requireRole('admin'), UserController.updatePassword);
 router.patch ('/admin/users/:id/archive',        requireRole('admin'), UserController.archive);
 router.patch ('/admin/users/:id/restore',        requireRole('admin'), UserController.restore);
@@ -94,6 +90,9 @@ router.delete('/admin/users/:id/profile-image', requireRole(['admin', 'chairpers
 // Announcements
 router.get   ('/admin/announcements',      requireAuth, AnnouncementController.listAdmin);
 router.post  ('/admin/announcements',      requireRole('chairperson'), AnnouncementController.create);
+router.patch ('/admin/announcements/:id/review', requireRole('admin'), AnnouncementController.review);
+router.patch ('/admin/announcements/:id/archive', requireRole(['admin', 'chairperson']), AnnouncementController.archive);
+router.patch ('/admin/announcements/:id/restore', requireRole(['admin', 'chairperson']), AnnouncementController.restore);
 router.delete('/admin/announcements/:id',  requireRole(['admin', 'chairperson']), AnnouncementController.remove);
 
 // Activity logs

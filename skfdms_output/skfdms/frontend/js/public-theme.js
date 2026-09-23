@@ -152,6 +152,10 @@
     return document.body && document.body.dataset.defaultTheme === 'dark';
   }
 
+  function isAdminWorkspace() {
+    return Boolean(document.querySelector('.admin-layout, .admin-main, .admin-topbar'));
+  }
+
   function updateToggleButtons(isDark) {
     document.querySelectorAll('.dark-toggle').forEach(function (button) {
       button.innerHTML = isDark ? darkIcon : lightIcon;
@@ -171,6 +175,10 @@
   }
 
   window.toggleDark = function () {
+    if (isAdminWorkspace()) {
+      applyMode(false, false);
+      return;
+    }
     applyMode(!document.body.classList.contains('dark'), true);
   };
 
@@ -518,50 +526,19 @@
   }
 
   function userCanSeeContactMessages(user) {
-    return user && ['admin', 'chairperson'].includes(user.role);
+    // The inbox is not part of either SK Federation or chairperson admin
+    // workspace.  Keeping this disabled also removes any previously injected
+    // message icon when an admin page is loaded.
+    return false;
   }
 
   function ensureAdminToggle(user) {
-    var canSeeMessages = userCanSeeContactMessages(user);
-    document.querySelectorAll('.admin-topbar, .topbar').forEach(function (topbar) {
-      if (topbar.querySelector('.dark-toggle') && (!canSeeMessages || topbar.querySelector('.admin-message-button'))) return;
-
-      var button = createToggleButton();
-      var notification = canSeeMessages ? createNotificationButton() : null;
-      var actions = topbar.querySelector('.topbar-actions');
-
-      if (actions) {
-        if (canSeeMessages && !actions.querySelector('.admin-message-button')) actions.insertBefore(notification, actions.firstChild);
-        if (!actions.querySelector('.dark-toggle')) {
-          var existingNotification = actions.querySelector('.admin-message-button');
-          actions.insertBefore(button, existingNotification ? existingNotification.nextSibling : actions.firstChild);
-        }
-        return;
-      }
-
-      var topbarChildren = Array.prototype.slice.call(topbar.children);
-      var actionChildren = topbarChildren.filter(function (child) {
-        return !child.classList.contains('topbar-left');
-      });
-
-      if (actionChildren.length === 1 && actionChildren[0].tagName === 'DIV') {
-        actionChildren[0].classList.add('topbar-actions');
-        if (canSeeMessages) actionChildren[0].insertBefore(notification, actionChildren[0].firstChild);
-        actionChildren[0].insertBefore(button, canSeeMessages ? notification.nextSibling : actionChildren[0].firstChild);
-        return;
-      }
-
-      actions = document.createElement('div');
-      actions.className = 'topbar-actions';
-      topbar.appendChild(actions);
-      if (canSeeMessages) actions.appendChild(notification);
-      actions.appendChild(button);
-      actionChildren.forEach(function (child) {
-        actions.appendChild(child);
-      });
+    // Theme controls belong on the public site only. Remove any legacy
+    // admin toggle that may be present in a Federation or chairperson workspace.
+    document.querySelectorAll('.admin-topbar .admin-theme-toggle, .topbar .admin-theme-toggle').forEach(function (button) {
+      button.remove();
     });
-
-    if (!canSeeMessages) removeAdminMessageUi();
+    removeAdminMessageUi();
   }
 
   function getCachedAdminUser() {
@@ -650,7 +627,7 @@
     bindAdminSidebarClicks();
     ensureAdminToggle(cachedUser);
     initMobileNav();
-    applyMode(getSavedMode(), false);
+    applyMode(isAdminWorkspace() ? false : getSavedMode(), false);
     startAdminNotificationPolling(cachedUser);
   }
 
@@ -683,7 +660,7 @@
 
   window.addEventListener('storage', function (event) {
     if (event.key === storageKey) {
-      applyMode(event.newValue === '1', false);
+      applyMode(isAdminWorkspace() ? false : event.newValue === '1', false);
     }
   });
 })();

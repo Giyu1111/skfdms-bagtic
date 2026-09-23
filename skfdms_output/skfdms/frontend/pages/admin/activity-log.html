@@ -56,6 +56,8 @@
     .filter-row{padding:14px 22px;border-bottom:1px solid #f5f5f5;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fafafa;}
     .filter-row select{padding:9px 11px;border:1.5px solid #ddd;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;}
     .filter-row select:focus{border-color:#3D8C62;}
+    .log-pagination{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:14px 22px;border-top:1px solid #f1f3f2;background:#fafafa;}
+    .log-pagination-info{font-size:.84rem;color:#68756d;margin-right:auto;}
   </style>
   <link rel="stylesheet" href="../../css/admin-shell.css"/>
   <link rel="icon" type="image/png" href="../../images/favicon.png">
@@ -78,12 +80,12 @@
       </div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>My Dashboard</span></a>
+      <a href="dashboard.html" data-role="chairperson,admin"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
       <a href="documents.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Documents</span></a>
       <a href="upload.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Upload</span></a>
       <a href="transparency.html" data-role="chairperson,admin,treasurer,secretary,councilor"><span class="nav-icon" aria-hidden="true"></span><span>My Accomplishments</span></a>
       <a href="announcements.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Announcements</span></a>
-      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>Users</span></a>
+      <a href="users.html" data-role="admin"><span class="nav-icon" aria-hidden="true"></span><span>User Management</span></a>
       <a href="activity-log.html" class="active" data-role="admin,chairperson"><span class="nav-icon" aria-hidden="true"></span><span>Activity Logs</span></a>
       <a href="my-account.html" data-role="chairperson"><span class="nav-icon" aria-hidden="true"></span><span>My Account</span></a>
       <button type="button" class="sidebar-logout-link" onclick="doLogout()"><span class="nav-icon" aria-hidden="true"></span><span>Log Out</span></button>
@@ -146,6 +148,11 @@
             </tbody>
           </table>
         </div>
+        <div class="log-pagination" id="logPagination" hidden>
+          <span class="log-pagination-info" id="logPaginationInfo"></span>
+          <button type="button" class="btn btn-secondary btn-sm" id="previousLogPage" onclick="changeLogPage(-1)">Previous</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="nextLogPage" onclick="changeLogPage(1)">Next</button>
+        </div>
       </div>
     </div>
   </div>
@@ -156,6 +163,7 @@
   var API = window.location.origin + '/api';
   var allLogs = [];
   var currentUser = null;
+  var logPage = 1, logPageSize = 50, logTotal = 0;
 
   function fmtTs(d){
     if(!d)return'-';
@@ -176,14 +184,21 @@
 
   function renderLogs(logs){
     var tbody=document.getElementById('logBody');
-    document.getElementById('logCount').textContent=logs.length+' entries';
+    var start=logs.length ? ((logPage-1)*logPageSize)+1 : 0;
+    var end=logs.length ? start+logs.length-1 : 0;
+    document.getElementById('logCount').textContent=logs.length ? 'Showing '+start+'–'+end+' of '+logTotal : 'Showing 0–0 of '+logTotal;
+    var pagination=document.getElementById('logPagination');
+    pagination.hidden=logTotal<=logPageSize;
+    document.getElementById('logPaginationInfo').textContent=logTotal ? 'Page '+logPage+' of '+Math.ceil(logTotal/logPageSize) : '';
+    document.getElementById('previousLogPage').disabled=logPage<=1;
+    document.getElementById('nextLogPage').disabled=end>=logTotal;
     if(!logs.length){
       tbody.innerHTML='<tr><td colspan="7"><div class="empty">No activity logs found.</div></td></tr>';
       return;
     }
     tbody.innerHTML=logs.map(function(l,i){
       return '<tr>'
-        +'<td style="color:#ccc;">'+(i+1)+'</td>'
+        +'<td style="color:#ccc;">'+(((logPage-1)*logPageSize)+i+1)+'</td>'
         +'<td><span class="action-chip '+chipClass(l.action)+'">'+l.action+'</span></td>'
         +'<td><strong>'+(l.user_name||'System')+'</strong></td>'
         +'<td style="text-transform:capitalize;color:#888;">'+(l.role||'-')+'</td>'
@@ -196,6 +211,7 @@
 
   function applyFilter(){
     var f=document.getElementById('fAction').value;
+    if(currentUser && currentUser.role==='chairperson'){logPage=1;loadLogs();return;}
     if(!f){ renderLogs(allLogs); document.getElementById('filterInfo').textContent=''; return; }
     var filtered=allLogs.filter(function(l){ return l.action&&l.action.includes(f); });
     renderLogs(filtered);
@@ -213,11 +229,22 @@
         qs = '?barangay_id=' + sel;
       }
     }
+    var action=document.getElementById('fAction').value;
+    if(currentUser && currentUser.role==='chairperson' && action) qs += (qs?'&':'?')+'action='+encodeURIComponent(action);
+    qs += (qs?'&':'?')+'limit='+logPageSize+'&offset='+((logPage-1)*logPageSize);
     var r=await fetch(API+'/admin/activity-logs'+qs,{credentials:'include'});
     var d=await r.json();
     if(!d.success){ document.getElementById('logBody').innerHTML='<tr><td colspan="7"><div class="empty">Failed to load logs.</div></td></tr>'; return; }
     allLogs=d.data;
+    logTotal=d.pagination ? d.pagination.total : d.data.length;
     renderLogs(allLogs);
+  }
+
+  function changeLogPage(direction){
+    var next=logPage+direction;
+    if(next<1 || (next-1)*logPageSize>=logTotal)return;
+    logPage=next;
+    loadLogs();
   }
 
   window.addEventListener('load', async function(){
@@ -266,6 +293,7 @@
     }
 
     sel.addEventListener('change', function() {
+      logPage=1;
       if (currentUser.role === 'admin') {
         if (this.value === 'all') {
           window.SkBarangay.setSelectedBarangayId('all');

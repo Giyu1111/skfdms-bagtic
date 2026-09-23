@@ -31,9 +31,9 @@
     .fund-card{background:white;border:1px solid #e7eee9;border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;flex-direction:column;min-height:100%;}
     .proof{height:190px;background:linear-gradient(135deg,var(--gray-100),#fff);display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:8px;border-bottom:1px solid #edf2ee;overflow:hidden;}
     .proof.single-proof{grid-template-columns:1fr;}
-    .proof-tile{border-radius:9px;background:#f8fbf9;border:1px solid #dce5df;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;overflow:hidden;min-width:0;}
-    .proof-tile img{width:100%;height:100%;object-fit:cover;}
-    .proof-tile.more{background:rgba(26,69,48,.9);color:#fff;font-size:1.1rem;}
+    .proof-tile{position:relative;border-radius:9px;background:#f8fbf9;border:1px solid #dce5df;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:900;overflow:hidden;min-width:0;cursor:pointer;}
+    .proof-tile img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;}
+    .proof-tile-count{position:absolute;right:8px;bottom:8px;min-width:30px;padding:4px 7px;border-radius:999px;background:rgba(12,27,19,.8);color:#fff;font-size:.76rem;line-height:1;font-weight:900;}
     .body{padding:18px;display:flex;flex-direction:column;flex:1;}
     .meta{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px;}
     .category{background:var(--gray-100);color:var(--sky);font-size:.72rem;font-weight:900;padding:3px 10px;border-radius:20px;}
@@ -51,11 +51,12 @@
     footer{background:var(--navy-dark);color:rgba(255,255,255,.6);padding:34px 24px;text-align:center;}
     .modal-backdrop{position:fixed;inset:0;background:rgba(8,20,13,.7);display:none;align-items:center;justify-content:center;padding:22px;z-index:300;}
     .modal-backdrop.show{display:flex;}
-    .proof-modal{width:min(100%,860px);max-height:90vh;overflow:auto;background:white;border-radius:14px;border:1px solid #dce5df;box-shadow:0 24px 70px rgba(0,0,0,.32);}
+    .proof-modal{width:min(100%,860px);max-height:90vh;overflow:hidden;background:white;border-radius:14px;border:1px solid #dce5df;box-shadow:0 24px 70px rgba(0,0,0,.32);}
     .proof-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid #edf2ee;}
     .proof-modal-head h3{font-size:1rem;color:var(--navy);font-weight:900;}
     .modal-close{width:34px;height:34px;border:0;border-radius:8px;background:#f1f5f2;color:var(--navy);font-size:1.35rem;cursor:pointer;}
     .proof-modal-body{padding:18px;}
+    .proof-carousel{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:10px;}.proof-carousel-stage{min-height:min(44vh,400px);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #dce5df;border-radius:10px;background:#f8fbf9;}.proof-carousel-stage img{display:block;max-width:100%;max-height:min(44vh,400px);object-fit:contain;cursor:zoom-in;}.proof-carousel-stage .proof-preview-embed{width:100%;height:min(44vh,400px);border:0;border-radius:0;}.proof-carousel-control{width:44px;height:44px;border:0;border-radius:50%;background:var(--navy);color:#fff;font-size:1.8rem;line-height:1;cursor:pointer;}.proof-carousel-control:hover{background:var(--sky);}.proof-carousel-control:disabled{visibility:hidden;}.proof-carousel-info{margin:10px 0 0;text-align:center;color:var(--gray-700);font-size:.82rem;font-weight:800;}
     .proof-preview-stack{display:grid;gap:14px;margin-bottom:18px;}
     .proof-preview-panel{background:#f8fbf9;border:1px solid #dce5df;border-radius:10px;overflow:hidden;}
     .proof-preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #edf2ee;color:var(--navy);font-size:.84rem;font-weight:900;}
@@ -65,11 +66,13 @@
     .proof-preview-placeholder{padding:34px;color:var(--gray-700);font-size:.95rem;text-align:center;}
     .proof-details{border-top:1px solid #edf2ee;padding:16px 0;position:relative;color:var(--gray-700);line-height:1.65;}
     .proof-details h4{color:var(--navy);font-size:1.05rem;margin-bottom:6px;}
+    .proof-details-toggle{padding:0;border:0;background:transparent;color:#2f7a55;font:800 .86rem var(--font);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}.proof-details-toggle:hover,.proof-details-toggle:focus-visible{color:var(--navy);}.proof-details-content[hidden]{display:none;}
     .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px;}
     .detail-grid div{background:#f8fbf9;border:1px solid #edf2ee;border-radius:8px;padding:9px 10px;font-size:.84rem;}
     .modal-download-wrapper{text-align:right;margin-top:12px;}
     .modal-download-btn{display:inline-flex;align-items:center;gap:4px;background:var(--sky);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.76rem;font-weight:700;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.12);}
     .modal-download-btn:hover{background:var(--navy);transform:translateY(-1px);}
+    .modal-download-btn.download-first{background:#fff;color:#2f7a55;border:1px solid #a9d8bb;box-shadow:0 2px 6px rgba(26,69,48,.1);}.modal-download-btn.download-first:hover,.modal-download-btn.download-first:focus-visible{background:#dcefe3;color:var(--navy);border-color:#82bd99;transform:translateY(-1px);}.modal-download-btn.download-first:active{background:#c7e5d1;transform:translateY(0);}
     .modal-download-btn:focus{outline:2px solid var(--gold);outline-offset:2px;}
     .footer-brand{color:var(--gold);font-weight:900;margin-bottom:8px;}
     .footer-links{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:12px 0;}
@@ -91,7 +94,7 @@
     body.dark .connected-doc-link{background:#1e3325;border-color:#2f4d39;color:#c8e8d4;}
     body.dark .connected-doc-link:hover{background:#263f2f;border-color:#7acea8;}
     body.dark footer{background:#060f09;}
-    @media(max-width:760px){.page-header h1{font-size:1.8rem;}}
+    @media(max-width:760px){.page-header h1{font-size:1.8rem;}.proof-carousel{grid-template-columns:38px minmax(0,1fr) 38px;gap:6px}.proof-carousel-control{width:38px;height:38px;font-size:1.5rem}.proof-carousel-stage{min-height:38vh}.proof-carousel-stage img,.proof-carousel-stage .proof-preview-embed{max-height:38vh;height:38vh;}}
     @media(max-width:768px){
       .filters{grid-template-columns:1fr;}
       .summary{grid-template-columns:1fr;}
@@ -171,7 +174,7 @@
   <p>Municipality of Catigbian, Bohol · DILG Full Disclosure Policy Compliant</p>
 </footer>
 
-<div class="modal-backdrop" id="proofModal" aria-hidden="true">
+<div class="modal-backdrop" id="proofModal" aria-hidden="true" onclick="if(event.target===this) closeProofAlbum()">
   <div class="proof-modal" role="dialog" aria-modal="true" aria-labelledby="proofModalTitle">
     <div class="proof-modal-head">
       <h3 id="proofModalTitle">Proof Album</h3>
@@ -180,6 +183,7 @@
     <div class="proof-modal-body" id="proofModalBody"></div>
   </div>
 </div>
+<div class="modal-backdrop" id="proofFullscreen" aria-hidden="true" onclick="if(event.target===this) closeProofFullscreen()"><button class="modal-close" type="button" onclick="closeProofFullscreen()" aria-label="Close full-size image" style="position:absolute;top:18px;right:18px;z-index:1;">&times;</button><img id="proofFullscreenImage" src="" alt="" style="max-width:100%;max-height:100%;object-fit:contain;"></div>
 <script>
 var API = window.location.origin + '/api';
 var proofs = [];
@@ -218,12 +222,15 @@ function proofFileExtension(file) {
   var parts = name.split('.');
   return parts.length > 1 ? parts.pop().toLowerCase() : 'file';
 }
+function isProofImage(file) {
+  return !!(file && (file.is_image || ['jpg','jpeg','png','gif','webp','svg'].includes(proofFileExtension(file))));
+}
 function renderProofPreviewFile(item, file, index) {
   var ext = proofFileExtension(file);
   var title = file && file.name ? file.name : ('Proof file ' + (index + 1));
   var previewUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=' + encodeURIComponent(index);
   var downloadUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?file=' + encodeURIComponent(index);
-  var isImage = file && (file.is_image || ['jpg','jpeg','png','gif','webp','svg'].includes(ext));
+  var isImage = isProofImage(file);
   var content = '';
   if (isImage) {
     content = '<img src="' + previewUrl + '" alt="' + escapeHtml(title) + '">';
@@ -332,9 +339,10 @@ function renderProofs() {
     var files = proofFiles(item);
     var proof = files.slice(0, 4).map(function(file, index) {
       var proofUrl = item.id ? API + '/fund-proofs/' + item.id + '/download?preview=1&file=' + encodeURIComponent(index) : '';
-      if (index === 3 && files.length > 4) return '<div class="proof-tile more">+' + (files.length - 3) + '</div>';
-      if (file.is_image && proofUrl) return '<div class="proof-tile"><img src="' + proofUrl + '" alt="Proof image"></div>';
-      return '<div class="proof-tile">' + fileIconHtml(file) + '</div>';
+      var open = ' onclick="openProofAlbum(' + Number(item.id) + ',' + index + ')"';
+      var count = index === 3 && files.length > 4 ? '<span class="proof-tile-count">+' + (files.length - 4) + '</span>' : '';
+      if (isProofImage(file) && proofUrl) return '<div class="proof-tile"' + open + '><img src="' + proofUrl + '" alt="Proof image ' + (index + 1) + '">' + count + '</div>';
+      return '<div class="proof-tile"' + open + '>' + fileIconHtml(file) + count + '</div>';
     }).join('');
     return '<article class="fund-card">'
       + '<div class="proof' + (files.length === 1 ? ' single-proof' : '') + '">' + proof + '</div>'
@@ -348,7 +356,7 @@ function renderProofs() {
     + '</article>';
   }).join('');
 }
-function openProofAlbum(id) {
+function legacyOpenProofAlbum(id) {
   var item = proofs.find(function(proof) { return Number(proof.id) === Number(id); });
   if (!item) return;
   var files = proofFiles(item);
@@ -374,7 +382,36 @@ function openProofAlbum(id) {
 function closeProofAlbum() {
   document.getElementById('proofModal').classList.remove('show');
   document.getElementById('proofModal').setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
 }
+function openProofAlbum(id, startIndex) {
+  var item = proofs.find(function(proof) { return Number(proof.id) === Number(id); });
+  if (!item) return;
+  var files = proofFiles(item);
+  document.getElementById('proofModalTitle').textContent = item.title || 'Proof Album';
+  document.getElementById('proofModalBody').innerHTML = buildProofCarousel(item, files, Number(startIndex) || 0) + proofDetailsHtml(item);
+  document.getElementById('proofModal').classList.add('show');
+  document.getElementById('proofModal').setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+}
+function proofDetailsHtml(item) {
+  return '<div class="proof-details"><button class="proof-details-toggle" type="button" onclick="toggleProofDetails(this)" aria-expanded="false">Show more details</button><div class="proof-details-content" hidden>'
+    + '<h4>' + escapeHtml(item.title || 'Expense details') + '</h4><p>' + escapeHtml(item.purpose || '') + '</p>'
+    + '<div class="detail-grid"><div><strong>Category</strong><br>' + escapeHtml(item.expense_category || '-') + '</div><div><strong>Amount</strong><br>' + money(item.amount) + '</div><div><strong>Barangay</strong><br>' + escapeHtml(item.barangay || 'Barangay') + '</div><div><strong>Date Spent</strong><br>' + formatDate(item.spent_at) + '</div></div>'
+    + connectedDocumentsHtml(item) + '<div class="modal-download-wrapper"><a href="' + API + '/fund-proofs/' + item.id + '/download?file=0" class="modal-download-btn download-first" target="_blank" rel="noopener" download>Download First File</a></div></div></div>';
+}
+function buildProofCarousel(item, files, activeIndex) {
+  activeIndex = Math.max(0, Math.min(files.length - 1, activeIndex));
+  var file = files[activeIndex], ext = proofFileExtension(file), label = file.name || ('Proof file ' + (activeIndex + 1));
+  var previewUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?preview=1&file=' + encodeURIComponent(activeIndex), downloadUrl = API + '/fund-proofs/' + encodeURIComponent(item.id) + '/download?file=' + encodeURIComponent(activeIndex);
+  var viewer = isProofImage(file) ? '<img src="' + previewUrl + '" alt="' + escapeHtml(label) + '" onclick="openProofFullscreen(this.src,this.alt)">' : (ext === 'pdf' ? '<iframe class="proof-preview-embed" src="' + previewUrl + '" title="Preview of ' + escapeHtml(label) + '"></iframe>' : '<div class="proof-preview-placeholder">' + fileIconHtml(file) + '<p style="margin-top:10px;font-size:.85rem;">Preview not available for this file type.</p></div>');
+  return '<div class="proof-carousel"><button class="proof-carousel-control" type="button" onclick="showProofFile(' + Number(item.id) + ',' + (activeIndex - 1) + ')"' + (activeIndex === 0 ? ' disabled' : '') + ' aria-label="Previous file">&#8249;</button><div class="proof-carousel-stage">' + viewer + '</div><button class="proof-carousel-control" type="button" onclick="showProofFile(' + Number(item.id) + ',' + (activeIndex + 1) + ')"' + (activeIndex === files.length - 1 ? ' disabled' : '') + ' aria-label="Next file">&#8250;</button></div><div class="proof-carousel-info">' + (activeIndex + 1) + ' of ' + files.length + ' &middot; ' + escapeHtml(label) + ' &middot; <a href="' + downloadUrl + '" download>Download this file</a></div>';
+}
+function showProofFile(id, index) { var item = proofs.find(function(proof) { return Number(proof.id) === Number(id); }); if (!item) return; var files = proofFiles(item); if (index < 0 || index >= files.length) return; document.getElementById('proofModalBody').innerHTML = buildProofCarousel(item, files, index) + proofDetailsHtml(item); }
+function toggleProofDetails(button) { var content = button.parentElement.querySelector('.proof-details-content'), isOpen = !content.hasAttribute('hidden'); content.toggleAttribute('hidden', isOpen); button.setAttribute('aria-expanded', String(!isOpen)); button.textContent = isOpen ? 'Show more details' : 'Hide details'; }
+function openProofFullscreen(url, label) { document.getElementById('proofFullscreenImage').src = url; document.getElementById('proofFullscreenImage').alt = label || 'Full-size proof image'; document.getElementById('proofFullscreen').classList.add('show'); document.getElementById('proofFullscreen').setAttribute('aria-hidden','false'); }
+function closeProofFullscreen() { document.getElementById('proofFullscreen').classList.remove('show'); document.getElementById('proofFullscreen').setAttribute('aria-hidden','true'); document.getElementById('proofFullscreenImage').src = ''; }
+document.addEventListener('keydown', function(event) { if (event.key !== 'Escape') return; if (document.getElementById('proofFullscreen').classList.contains('show')) closeProofFullscreen(); else if (document.getElementById('proofModal').classList.contains('show')) closeProofAlbum(); });
 loadBarangays().then(loadProofs);
 </script>
 </body>
